@@ -1,0 +1,23 @@
+#Version. Do NOT touch this
+config-version: 1
+
+#Special types of signs. These ones will be handled differently to avoid conflicts
+special-signs:
+    - '[color]'
+    - '[balance]'
+    - '[buy]'
+    - '[sell]'
+    - '[trade]'
+    - '[free]'
+    - '[disposal]'
+    - '[warp]'
+    - '[kit]'
+    - '[mail]'
+    - '[enchant]'
+    - '[gamemode]'
+    - '[heal]'
+    - '[info]'
+    - '[spawnmob]'
+    - '[repair]'
+    - '[time]'
+    - '[weather]'

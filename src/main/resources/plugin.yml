@@ -1,0 +1,13 @@
+main: io.github.winx64.sse.SmartSignEditor
+name: SmartSignEditor
+description: Edit your signs with style
+version: ${version}
+author: '123'
+website: 'http://dev.bukkit.org/bukkit-plugins/sse/'
+
+commands:
+    sse-undo:
+        description: Undo your sign edits
+        usage: /<command> [times]
+        aliases: [sseundo, smartundo, sse-u, sundo, s-undo]
+        permission: sse.command.undo

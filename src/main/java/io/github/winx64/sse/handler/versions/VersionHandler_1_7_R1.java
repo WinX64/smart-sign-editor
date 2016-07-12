@@ -32,7 +32,6 @@ import net.minecraft.server.v1_7_R1.EntityPlayer;
 import net.minecraft.server.v1_7_R1.PacketPlayOutOpenSignEditor;
 import net.minecraft.server.v1_7_R1.PacketPlayOutUpdateSign;
 import net.minecraft.server.v1_7_R1.PlayerConnection;
-import net.minecraft.server.v1_7_R1.TileEntity;
 import net.minecraft.server.v1_7_R1.TileEntitySign;
 
 public class VersionHandler_1_7_R1 extends VersionHandler {
@@ -48,18 +47,13 @@ public class VersionHandler_1_7_R1 extends VersionHandler {
     public void openSignEditor(Player player, Sign sign) {
 	Location loc = sign.getLocation();
 	EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-	TileEntity tileEntity = nmsPlayer.world.getTileEntity(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-	if (!(tileEntity instanceof TileEntitySign)) {
-	    return;
-	}
+	TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(loc.getBlockX(), loc.getBlockY(),
+		loc.getBlockZ());
+	PlayerConnection conn = nmsPlayer.playerConnection;
 
-	TileEntitySign tileEntitySign = (TileEntitySign) tileEntity;
 	tileEntitySign.isEditable = true;
 	tileEntitySign.a(nmsPlayer);
-
-	PlayerConnection conn = nmsPlayer.playerConnection;
 	conn.sendPacket(new PacketPlayOutOpenSignEditor(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
-
     }
 
     @Override

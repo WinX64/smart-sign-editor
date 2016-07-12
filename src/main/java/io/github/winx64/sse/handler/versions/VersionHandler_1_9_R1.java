@@ -33,7 +33,6 @@ import net.minecraft.server.v1_9_R1.EntityPlayer;
 import net.minecraft.server.v1_9_R1.PacketPlayOutOpenSignEditor;
 import net.minecraft.server.v1_9_R1.PacketPlayOutUpdateSign;
 import net.minecraft.server.v1_9_R1.PlayerConnection;
-import net.minecraft.server.v1_9_R1.TileEntity;
 import net.minecraft.server.v1_9_R1.TileEntitySign;
 
 public class VersionHandler_1_9_R1 extends VersionHandler {
@@ -42,10 +41,11 @@ public class VersionHandler_1_9_R1 extends VersionHandler {
     public void updateSignText(Player player, Sign sign, String[] text) {
 	Location loc = sign.getLocation();
 	ChatComponentText[] chatComponent = new ChatComponentText[4];
+	PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
+
 	for (int i = 0; i < 4; i++) {
 	    chatComponent[i] = new ChatComponentText(text[i]);
 	}
-	PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
 	conn.sendPacket(new PacketPlayOutUpdateSign(null, new BlockPosition(loc.getX(), loc.getY(), loc.getZ()),
 		chatComponent));
     }
@@ -55,16 +55,11 @@ public class VersionHandler_1_9_R1 extends VersionHandler {
 	Location loc = sign.getLocation();
 	BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
 	EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-	TileEntity tileEntity = nmsPlayer.world.getTileEntity(pos);
-	if (!(tileEntity instanceof TileEntitySign)) {
-	    return;
-	}
-
-	TileEntitySign tileEntitySign = (TileEntitySign) tileEntity;
+	TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
 	tileEntitySign.isEditable = true;
-	tileEntitySign.a(nmsPlayer);
-
 	PlayerConnection conn = nmsPlayer.playerConnection;
+
+	tileEntitySign.a(nmsPlayer);
 	conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
     }
 

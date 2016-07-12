@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
+import io.github.winx64.sse.handler.versions.VersionHandler_1_10_R1;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_7_R1;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_7_R2;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_7_R3;
@@ -35,6 +36,7 @@ import io.github.winx64.sse.handler.versions.VersionHandler_1_8_R1;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_8_R2;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_8_R3;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_9_R1;
+import io.github.winx64.sse.handler.versions.VersionHandler_1_9_R2;
 
 public abstract class VersionHandler {
 
@@ -61,6 +63,8 @@ public abstract class VersionHandler {
 	SUPPORTED_VERSIONS.put("v1_8_R2", VersionHandler_1_8_R2.class);
 	SUPPORTED_VERSIONS.put("v1_8_R3", VersionHandler_1_8_R3.class);
 	SUPPORTED_VERSIONS.put("v1_9_R1", VersionHandler_1_9_R1.class);
+	SUPPORTED_VERSIONS.put("v1_9_R2", VersionHandler_1_9_R2.class);
+	SUPPORTED_VERSIONS.put("v1_10_R1", VersionHandler_1_10_R1.class);
     }
 
     /**

@@ -22,32 +22,44 @@ import java.util.Collection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import io.github.winx64.sse.handler.VersionHandler;
-import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.ChatComponentText;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
-import net.minecraft.server.v1_8_R3.PacketPlayOutOpenSignEditor;
-import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateSign;
-import net.minecraft.server.v1_8_R3.PlayerConnection;
-import net.minecraft.server.v1_8_R3.TileEntitySign;
+import net.minecraft.server.v1_9_R2.ChatComponentText;
+import net.minecraft.server.v1_9_R2.IChatBaseComponent;
+import net.minecraft.server.v1_9_R2.BlockPosition;
+import net.minecraft.server.v1_9_R2.EntityPlayer;
+import net.minecraft.server.v1_9_R2.PacketPlayOutOpenSignEditor;
+import net.minecraft.server.v1_9_R2.PlayerConnection;
+import net.minecraft.server.v1_9_R2.TileEntitySign;
 
-public class VersionHandler_1_8_R3 extends VersionHandler {
+public class VersionHandler_1_9_R2 extends VersionHandler {
 
+    /**
+     * Looks like the sign turns invisible if we try to build and send the
+     * packet manually. Will look into the matter later.
+     * 
+     * For now, this fix should work without problems.
+     */
     @Override
     public void updateSignText(Player player, Sign sign, String[] text) {
 	Location loc = sign.getLocation();
-	ChatComponentText[] chatComponent = new ChatComponentText[4];
+	BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
+	TileEntitySign tileEntitySign = (TileEntitySign) ((CraftWorld) sign.getWorld()).getHandle().getTileEntity(pos);
 	PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
+	IChatBaseComponent[] oldSignText = new IChatBaseComponent[4];
 
 	for (int i = 0; i < 4; i++) {
-	    chatComponent[i] = new ChatComponentText(text[i]);
+	    oldSignText[i] = tileEntitySign.lines[i];
+	    tileEntitySign.lines[i] = new ChatComponentText(text[i]);
 	}
-	conn.sendPacket(new PacketPlayOutUpdateSign(null, new BlockPosition(loc.getX(), loc.getY(), loc.getZ()),
-		chatComponent));
+	conn.sendPacket(tileEntitySign.getUpdatePacket());
+	for (int i = 0; i < 4; i++) {
+	    tileEntitySign.lines[i] = oldSignText[i];
+	}
     }
 
     @Override

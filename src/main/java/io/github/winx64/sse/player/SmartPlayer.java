@@ -35,6 +35,7 @@ public class SmartPlayer {
 
     private String lineBuffer;
     private String[] textBuffer;
+    private long signCooldown;
 
     public SmartPlayer(Player player) {
 	this.player = player;
@@ -42,6 +43,7 @@ public class SmartPlayer {
 
 	this.lineBuffer = null;
 	this.textBuffer = null;
+	this.signCooldown = 0;
     }
 
     /**
@@ -119,6 +121,15 @@ public class SmartPlayer {
     }
 
     /**
+     * Gets the sign cooldown
+     * 
+     * @return The sign cooldown
+     */
+    public long getSignCooldown() {
+	return signCooldown;
+    }
+
+    /**
      * Sets a specific line of the copied sign text
      * 
      * @param line
@@ -141,5 +152,15 @@ public class SmartPlayer {
      */
     public void setTextBuffer(String[] textBuffer) {
 	this.textBuffer = textBuffer;
+    }
+
+    /**
+     * Sets the cooldown for both line copy/paste/erase actions
+     * 
+     * @param signCooldown
+     *            The new sign cooldown
+     */
+    public void setSignCooldown(long signCooldown) {
+	this.signCooldown = signCooldown;
     }
 }

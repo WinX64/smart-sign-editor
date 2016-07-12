@@ -50,9 +50,14 @@ public class SignInteractionListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent event) {
+	event.getPlayer().sendMessage("Interact event fired! LOWEST priority");
 	Player player = event.getPlayer();
 	SmartPlayer sPlayer = plugin.getSmartPlayer(player.getUniqueId());
 	Action a = event.getAction();
+
+	if (sPlayer.getSignCooldown() > System.currentTimeMillis()) {
+	    return;
+	}
 
 	if (player.getItemInHand().getType() != Material.FEATHER) {
 	    return;
@@ -65,25 +70,25 @@ public class SignInteractionListener implements Listener {
 		event.setCancelled(true);
 
 		switch (sPlayer.getToolMode()) {
-		case EDIT:
-		    handleSpecialSigns(sign);
-		    handleEdit(sPlayer, sign);
-		    break;
+		    case EDIT:
+			handleSpecialSigns(sign);
+			handleEdit(sPlayer, sign);
+			break;
 
-		case COPY:
-		    handleCopy(sPlayer, sign);
-		    handleSpecialSigns(sign);
-		    break;
+		    case COPY:
+			handleCopy(sPlayer, sign);
+			handleSpecialSigns(sign);
+			break;
 
-		case PASTE:
-		    handlePaste(sPlayer, sign);
-		    handleSpecialSigns(sign);
-		    break;
+		    case PASTE:
+			handlePaste(sPlayer, sign);
+			handleSpecialSigns(sign);
+			break;
 
-		case ERASE:
-		    handleErase(sPlayer, sign);
-		    handleSpecialSigns(sign);
-		    break;
+		    case ERASE:
+			handleErase(sPlayer, sign);
+			handleSpecialSigns(sign);
+			break;
 		}
 	    } else {
 		changeToolMode(sPlayer);
@@ -91,10 +96,12 @@ public class SignInteractionListener implements Listener {
 	} else if (a == Action.RIGHT_CLICK_AIR) {
 	    changeToolMode(sPlayer);
 	}
+	sPlayer.setSignCooldown(System.currentTimeMillis() + 100);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void postProcess(PlayerInteractEvent event) {
+	event.getPlayer().sendMessage("Interact event fired! MONITOR priority");
 	if (lastSignState != null) {
 	    lastSignState.update();
 	    this.lastSignState = null;
@@ -148,6 +155,8 @@ public class SignInteractionListener implements Listener {
 	    player.sendMessage(ChatColor.RED + "You don't have permission to use the Copy Tool!");
 	    return;
 	}
+
+	player.sendMessage("handleCopy called!");
 
 	if (player.isSneaking()) {
 	    if (!player.hasPermission(Permissions.TOOL_COPY_LINE)) {

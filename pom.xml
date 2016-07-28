@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.winx64</groupId>
 	<artifactId>SmartSignEditor</artifactId>
-	<version>2.1.0</version>
+	<version>2.2.0</version>
 	<name>SmartSignEditor</name>
 	<description>Edit your signs with style</description>
 
@@ -18,12 +18,12 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.7.2-R0.3</version>
+			<version>1.6.2-R0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>1.7-1.9</version>
+			<version>1.6-1.10</version>
 		</dependency>
 	</dependencies>
 	<build>

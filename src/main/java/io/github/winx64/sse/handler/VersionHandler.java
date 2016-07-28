@@ -28,6 +28,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import io.github.winx64.sse.handler.versions.VersionHandler_1_10_R1;
+import io.github.winx64.sse.handler.versions.VersionHandler_1_6_R2;
+import io.github.winx64.sse.handler.versions.VersionHandler_1_6_R3;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_7_R1;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_7_R2;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_7_R3;
@@ -43,11 +45,9 @@ public abstract class VersionHandler {
     private static final String NMS = "net.minecraft.server.";
 
     /**
-     * Older versions that will not receive support anytime soon. Unless people
-     * give me a good reason to provide
+     * Older client version that have no support for the plugin's mechanisms
      */
-    private static final List<String> UNSUPPORTED_VERSIONS = Arrays.asList("v1_4_R1", "v1_4_R2", "v1_4_R3", "v1_4_R4",
-	    "v1_5_R1", "v1_5_R2", "v1_5_R3", "v1_5_R4", "v1_6_R1", "v1_6_R2", "v1_6_R3", "v1_6_R4");
+    private static final List<String> UNSUPPORTED_VERSIONS = Arrays.asList("v1_4", "v1_5", "v1_6");
 
     /**
      * Official supported versions by the current version of plugin
@@ -55,6 +55,8 @@ public abstract class VersionHandler {
     private static final Map<String, Class<? extends VersionHandler>> SUPPORTED_VERSIONS = new LinkedHashMap<String, Class<? extends VersionHandler>>();
 
     static {
+	SUPPORTED_VERSIONS.put("v1_6_R2", VersionHandler_1_6_R2.class);
+	SUPPORTED_VERSIONS.put("v1_6_R3", VersionHandler_1_6_R3.class);
 	SUPPORTED_VERSIONS.put("v1_7_R1", VersionHandler_1_7_R1.class);
 	SUPPORTED_VERSIONS.put("v1_7_R2", VersionHandler_1_7_R2.class);
 	SUPPORTED_VERSIONS.put("v1_7_R3", VersionHandler_1_7_R3.class);
@@ -75,7 +77,12 @@ public abstract class VersionHandler {
      * @return Whether the specified version will ever receive support or not
      */
     public static boolean isVersionUnsupported(String version) {
-	return UNSUPPORTED_VERSIONS.contains(version);
+	for (String unsupportedVersion : UNSUPPORTED_VERSIONS) {
+	    if (version.startsWith(unsupportedVersion)) {
+		return true;
+	    }
+	}
+	return false;
     }
 
     /**

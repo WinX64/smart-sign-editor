@@ -36,14 +36,8 @@ import net.minecraft.server.v1_9_R2.PacketPlayOutOpenSignEditor;
 import net.minecraft.server.v1_9_R2.PlayerConnection;
 import net.minecraft.server.v1_9_R2.TileEntitySign;
 
-public class VersionHandler_1_9_R2 extends VersionHandler {
+public final class VersionHandler_1_9_R2 extends VersionHandler {
 
-    /**
-     * Looks like the sign turns invisible if we try to build and send the
-     * packet manually. Will look into the matter later.
-     * 
-     * For now, this fix should work without problems.
-     */
     @Override
     public void updateSignText(Player player, Sign sign, String[] text) {
 	Location loc = sign.getLocation();

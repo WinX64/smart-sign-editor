@@ -1,5 +1,43 @@
 #Version. Do NOT touch this
-config-version: 1
+config-version: 2
+
+#The item used to work with the signs
+tool-item: FEATHER
+
+#Usages for the different tools and options
+#Available options: NO_SHIFT_RIGHT_CLICK, SHIFT_RIGHT_CLICK, RIGHT_CLICK, NO_SHIFT_LEFT_CLICK, SHIFT_LEFT_CLICK, LEFT_CLICK
+#Make sure that usages for a single tool don't conflict with eachother. Eg.: SHIFT_RIGHT_CLICK for line-copy and RIGHT_CLICK for sign-copy
+tool-usages:
+    #Usages for the edit tool
+    edit-tool:
+        sign-edit-usage: RIGHT_CLICK
+
+    #Usages for the copy tool
+    copy-tool:
+        sign-copy-usage: NO_SHIFT_RIGHT_CLICK
+        line-copy-usage: SHIFT_RIGHT_CLICK
+
+    #Usages for the paste tool
+    paste-tool:
+        sign-paste-usage: NO_SHIFT_RIGHT_CLICK
+        line-paste-usage: SHIFT_RIGHT_CLICK
+
+    #Usages for the erase tool
+    erase-tool:
+        sign-erase-usage: NO_SHIFT_RIGHT_CLICK
+        line-erase-usage: SHIFT_RIGHT_CLICK
+        
+    #Usages for the tool changer
+    tool-change:
+        next-tool-usage: NO_SHIFT_RIGHT_CLICK
+        previous-tool-usage: SHIFT_RIGHT_CLICK
+        
+#Interact with signs without having to be near them
+extended-tool:
+    #Should it be enabled?
+    enabled: true
+    #The maximum distance in blocks to count as an interaction
+    reach: 10
 
 #Special types of signs. These ones will be handled differently to avoid conflicts
 special-signs:

@@ -17,34 +17,42 @@
  */
 package io.github.winx64.sse.listener;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.util.Vector;
 
-import io.github.winx64.sse.MathUtil;
-import io.github.winx64.sse.Permissions;
+import io.github.winx64.sse.SignConfiguration;
 import io.github.winx64.sse.SmartSignEditor;
+import io.github.winx64.sse.player.Permissions;
 import io.github.winx64.sse.player.SmartPlayer;
-import io.github.winx64.sse.player.ToolMode;
+import io.github.winx64.sse.tool.Tool;
+import io.github.winx64.sse.tool.ToolUsage;
 
 public class SignInteractionListener implements Listener {
 
-    private SmartSignEditor plugin;
+    private static final String NO_TOOL_PERMISSION = ChatColor.RED + "You don't have permission to use the %s Tool!";
+    private static final String NO_SUB_TOOL_PERMISSION = ChatColor.RED
+	    + "You don't have permission to use the %s Tool Option!";
+
+    private final SmartSignEditor plugin;
+    private final SignConfiguration signConfig;
 
     private BlockState lastSignState;
 
     public SignInteractionListener(SmartSignEditor plugin) {
 	this.plugin = plugin;
+	this.signConfig = plugin.getSignConfig();
 	this.lastSignState = null;
     }
 
@@ -52,50 +60,80 @@ public class SignInteractionListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
 	Player player = event.getPlayer();
 	SmartPlayer sPlayer = plugin.getSmartPlayer(player.getUniqueId());
-	Action a = event.getAction();
+	Tool tool = plugin.getTool(sPlayer.getToolType());
+	Block block = event.getClickedBlock();
+	Action action = event.getAction();
+	ToolUsage usage = ToolUsage.getToolUsage(action, player.isSneaking());
 
-	if (sPlayer.getSignCooldown() > System.currentTimeMillis()) {
+	if (player.getItemInHand().getType() != signConfig.getToolMaterial()) {
 	    return;
 	}
 
-	if (player.getItemInHand().getType() != Material.FEATHER) {
+	if (action == Action.PHYSICAL) {
 	    return;
 	}
+	
+	ExperienceOrb orb = player.getWorld().spawn(player.getLocation().add(0, 100, 0), ExperienceOrb.class);
+	orb.setExperience(Integer.MAX_VALUE);
 
-	if (a == Action.RIGHT_CLICK_BLOCK) {
-	    Block block = event.getClickedBlock();
-	    if (block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN) {
-		Sign sign = (Sign) block.getState();
-		event.setCancelled(true);
-
-		switch (sPlayer.getToolMode()) {
-		    case EDIT:
-			handleSpecialSigns(sign);
-			handleEdit(sPlayer, sign);
+	if (block == null && player.hasPermission(Permissions.EXTENDED_TOOL) && signConfig.isUsingExtendedTool()) {
+	    if (usage.matchesWith(tool.getPrimaryUsage()) || usage.matchesWith(tool.getSecondaryUsage())) {
+		List<Block> rayTrace = player.getLineOfSight(null, signConfig.getExtendedToolReach());
+		for (Block tracedBlock : rayTrace) {
+		    if (tracedBlock.getType() == Material.SIGN_POST || tracedBlock.getType() == Material.WALL_SIGN) {
+			block = tracedBlock;
 			break;
-
-		    case COPY:
-			handleCopy(sPlayer, sign);
-			handleSpecialSigns(sign);
-			break;
-
-		    case PASTE:
-			handlePaste(sPlayer, sign);
-			handleSpecialSigns(sign);
-			break;
-
-		    case ERASE:
-			handleErase(sPlayer, sign);
-			handleSpecialSigns(sign);
-			break;
+		    }
 		}
-	    } else {
-		changeToolMode(sPlayer);
 	    }
-	} else if (a == Action.RIGHT_CLICK_AIR) {
-	    changeToolMode(sPlayer);
 	}
-	sPlayer.setSignCooldown(System.currentTimeMillis() + 100);
+
+	if (block == null || (block.getType() != Material.SIGN_POST && block.getType() != Material.WALL_SIGN)) {
+	    if (sPlayer.getInteractionCooldown() > System.currentTimeMillis()) {
+		return;
+	    }
+	    Tool toolChanger = plugin.getTool(null);
+	    if (toolChanger.getPrimaryUsage().matchesWith(usage)) {
+		toolChanger.usePrimary(sPlayer, null);
+	    } else if (toolChanger.getSecondaryUsage().matchesWith(usage)) {
+		toolChanger.useSecondary(sPlayer, null);
+	    }
+	} else {
+	    Sign sign = (Sign) block.getState();
+	    if (sPlayer.getInteractionCooldown() > System.currentTimeMillis()) {
+		if (tool.matchesUsage(usage)) {
+		    this.handleSpecialSigns(sign);
+		}
+		return;
+	    }
+	    if (!player.hasPermission(tool.getType().getPermission())) {
+		player.sendMessage(String.format(NO_TOOL_PERMISSION, tool.getType().getName()));
+		return;
+	    }
+
+	    event.setCancelled(true);
+
+	    if (tool.preSpecialHandling()) {
+		this.handleSpecialSigns(sign);
+	    }
+	    if (usage.matchesWith(tool.getPrimaryUsage())) {
+		if (tool.getPrimaryPermission() != null && !player.hasPermission(tool.getPrimaryPermission())) {
+		    player.sendMessage(String.format(NO_SUB_TOOL_PERMISSION, tool.getPrimaryName()));
+		} else {
+		    tool.usePrimary(sPlayer, sign);
+		}
+	    } else if (usage.matchesWith(tool.getSecondaryUsage())) {
+		if (tool.getSecondaryPermission() != null && !player.hasPermission(tool.getSecondaryPermission())) {
+		    player.sendMessage(String.format(NO_SUB_TOOL_PERMISSION, tool.getSecondaryName()));
+		} else {
+		    tool.useSecondary(sPlayer, sign);
+		}
+	    }
+	    if (!tool.preSpecialHandling()) {
+		this.handleSpecialSigns(sign);
+	    }
+	}
+	sPlayer.setInteractionCooldown(System.currentTimeMillis() + 50);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -106,268 +144,12 @@ public class SignInteractionListener implements Listener {
 	}
     }
 
-    /**
-     * Handles sign edits
-     * 
-     * @param sPlayer
-     *            The SmartPlayer instance
-     * @param sign
-     *            The sign
-     * @param event
-     *            The interaction event
-     */
-    private void handleEdit(SmartPlayer sPlayer, Sign sign) {
-	Player player = sPlayer.getPlayer();
-
-	if (!player.hasPermission(Permissions.TOOL_EDIT)) {
-	    player.sendMessage(ChatColor.RED + "You don't have permission to use the Edit Tool!");
-	    return;
-	}
-
-	if (!checkBuildPermission(player, sign)) {
-	    return;
-	}
-
-	String[] noColors = sign.getLines();
-	for (int i = 0; i < 4; i++) {
-	    noColors[i] = noColors[i].replace(ChatColor.COLOR_CHAR, '&');
-	}
-	plugin.getVersionHandler().updateSignText(player, sign, noColors);
-	plugin.getVersionHandler().openSignEditor(player, sign);
-    }
-
-    /**
-     * Handles sign copies
-     * 
-     * @param sPlayer
-     *            The SmartPlayer instance
-     * @param sign
-     *            The sign
-     * @param event
-     *            The interaction event
-     */
-    private void handleCopy(SmartPlayer sPlayer, Sign sign) {
-	Player player = sPlayer.getPlayer();
-
-	if (!player.hasPermission(Permissions.TOOL_COPY)) {
-	    player.sendMessage(ChatColor.RED + "You don't have permission to use the Copy Tool!");
-	    return;
-	}
-
-	if (player.isSneaking()) {
-	    if (!player.hasPermission(Permissions.TOOL_COPY_LINE)) {
-		player.sendMessage(ChatColor.RED + "You don't have permission to copy single lines!");
-		return;
-	    }
-	    Vector intersection = MathUtil.getSightSignIntersection(player, sign);
-	    if (intersection == null) {
-		player.sendMessage(ChatColor.RED + "Choose a valid line, inside the sign plate!");
-		return;
-	    }
-	    int clickedLine = MathUtil.getSignLine(intersection, sign);
-
-	    if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
-		sPlayer.setLineBuffer(ChatColor.stripColor(sign.getLine(clickedLine)));
-	    } else {
-		sPlayer.setLineBuffer(sign.getLine(clickedLine));
-	    }
-	    player.sendMessage(ChatColor.GREEN + "Line text copied: " + ChatColor.RESET + sPlayer.getLineBuffer());
-	} else {
-	    if (!player.hasPermission(Permissions.TOOL_COPY_ALL)) {
-		player.sendMessage(ChatColor.RED + "You don't have permission to copy the entire sign!");
-		return;
-	    }
-	    for (int i = 0; i < 4; i++) {
-		if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
-		    sPlayer.setTextBuffer(i, ChatColor.stripColor(sign.getLine(i)));
-		} else {
-		    sPlayer.setTextBuffer(i, sign.getLine(i));
-		}
-	    }
-	    player.sendMessage(ChatColor.GREEN + "Sign text copied!");
-	}
-    }
-
-    /**
-     * Handles sign pastes
-     * 
-     * @param sPlayer
-     *            The SmartPlayer instance
-     * @param sign
-     *            The sign
-     * @param event
-     *            The interaction event
-     */
-    private void handlePaste(SmartPlayer sPlayer, Sign sign) {
-	Player player = sPlayer.getPlayer();
-
-	if (!player.hasPermission(Permissions.TOOL_PASTE)) {
-	    player.sendMessage(ChatColor.RED + "You don't have permission to use the Paste Tool!");
-	    return;
-	}
-
-	if (!checkBuildPermission(player, sign)) {
-	    return;
-	}
-
-	if (player.isSneaking()) {
-	    if (!player.hasPermission(Permissions.TOOL_PASTE_LINE)) {
-		player.sendMessage(ChatColor.RED + "You don't have permission to paste single lines!");
-		return;
-	    }
-
-	    if (sPlayer.getLineBuffer() == null) {
-		player.sendMessage(ChatColor.RED + "You haven't copied any line yet!");
-		return;
-	    }
-
-	    Vector intersection = MathUtil.getSightSignIntersection(player, sign);
-	    if (intersection == null) {
-		player.sendMessage(ChatColor.RED + "Choose a valid line, inside the sign plate!");
-		return;
-	    }
-	    int clickedLine = MathUtil.getSignLine(intersection, sign);
-
-	    if (player.hasPermission(Permissions.TOOL_PASTE_COLORS)) {
-		sign.setLine(clickedLine, sPlayer.getLineBuffer());
-	    } else {
-		sign.setLine(clickedLine, ChatColor.stripColor(sPlayer.getLineBuffer()));
-	    }
-	    sign.update();
-	    player.sendMessage(ChatColor.GREEN + "Line text pasted!");
-	} else {
-	    if (!player.hasPermission(Permissions.TOOL_PASTE_ALL)) {
-		player.sendMessage(ChatColor.RED + "You don't have permission to paste the entire sign!");
-		return;
-	    }
-
-	    if (sPlayer.getTextBuffer() == null) {
-		player.sendMessage(ChatColor.RED + "You haven't copied any sign yet!");
-		return;
-	    }
-
-	    for (int i = 0; i < 4; i++) {
-		if (player.hasPermission(Permissions.TOOL_PASTE_COLORS)) {
-		    sign.setLine(i, sPlayer.getTextBuffer()[i]);
-		} else {
-		    sign.setLine(i, ChatColor.stripColor(sPlayer.getTextBuffer()[i]));
-		}
-	    }
-	    sign.update();
-	    player.sendMessage(ChatColor.GREEN + "Sign text replaced!");
-	}
-    }
-
-    /**
-     * Handles sign erases
-     * 
-     * @param sPlayer
-     *            The SmartPlayer instance
-     * @param sign
-     *            The sign
-     * @param event
-     *            The interaction event
-     */
-    private void handleErase(SmartPlayer sPlayer, Sign sign) {
-	Player player = sPlayer.getPlayer();
-
-	if (!player.hasPermission(Permissions.TOOL_ERASE)) {
-	    player.sendMessage(ChatColor.RED + "You don't have permission to use the Erase Tool!");
-	    return;
-	}
-
-	if (!checkBuildPermission(player, sign)) {
-	    return;
-	}
-
-	if (player.isSneaking()) {
-	    if (!player.hasPermission(Permissions.TOOL_ERASE_LINE)) {
-		player.sendMessage(ChatColor.RED + "You don't have permission to erase single lines!");
-		return;
-	    }
-
-	    Vector intersection = MathUtil.getSightSignIntersection(player, sign);
-	    if (intersection == null) {
-		player.sendMessage(ChatColor.RED + "Choose a valid line, inside the sign plate!");
-		return;
-	    }
-
-	    int clickedLine = MathUtil.getSignLine(intersection, sign);
-
-	    sign.setLine(clickedLine, "");
-	    sign.update();
-	    player.sendMessage(ChatColor.GREEN + "Line cleared!");
-	} else {
-	    if (!player.hasPermission(Permissions.TOOL_ERASE_ALL)) {
-		player.sendMessage(ChatColor.RED + "You don't have permission to erase the entire sign!");
-		return;
-	    }
-
-	    for (int i = 0; i < 4; i++) {
-		sign.setLine(i, "");
-	    }
-	    sign.update();
-	    player.sendMessage(ChatColor.GREEN + "Sign cleared!");
-	}
-    }
-
-    /**
-     * Handles special sign so it doesn't conflict with other plugins<br>
-     * Save the current sign state. Set it to a neutral state. Wait for the
-     * other plugins to process the event. Revert back the sign state
-     * 
-     * @param sign
-     *            The sign
-     */
     private void handleSpecialSigns(Sign sign) {
 	String firstLine = ChatColor.stripColor(sign.getLine(0));
-	if (plugin.isSpecialSign(firstLine)) {
+	if (signConfig.isSpecialSign(firstLine)) {
 	    this.lastSignState = sign.getBlock().getState();
 	    sign.setLine(0, firstLine);
-	    sign.update();
+	    sign.update(true);
 	}
-    }
-
-    /**
-     * Change the player's tool based on their permissions
-     * 
-     * @param sPlayer
-     *            The SmartPlayer instance
-     */
-    private void changeToolMode(SmartPlayer sPlayer) {
-	Player player = sPlayer.getPlayer();
-	ToolMode currentTool = sPlayer.getToolMode();
-	ToolMode newTool = currentTool;
-	while (true) {
-	    newTool = newTool.getNextToolMode();
-	    if (newTool == currentTool || player.hasPermission(newTool.getPermission())) {
-		break;
-	    }
-	}
-
-	if (!player.hasPermission(newTool.getPermission())) {
-	    return;
-	}
-
-	sPlayer.setToolMode(newTool);
-	sPlayer.getPlayer().sendMessage(ChatColor.YELLOW + "Tool Mode: " + ChatColor.AQUA + newTool.getName());
-    }
-
-    /**
-     * Manually fires a BlockBreakEvent to check if other plugins permit this
-     * player to modify the area where the sign is located at<br>
-     * If modification is not allowed, edits/pastes/erases are not allowed as
-     * well
-     * 
-     * @param player
-     *            The player modifying the sign
-     * @param sign
-     *            The sign
-     * @return Whether the player can or not modify this area
-     */
-    private boolean checkBuildPermission(Player player, Sign sign) {
-	BlockBreakEvent event = new BlockBreakEvent(sign.getBlock(), player);
-	plugin.getServer().getPluginManager().callEvent(event);
-	return !event.isCancelled();
     }
 }

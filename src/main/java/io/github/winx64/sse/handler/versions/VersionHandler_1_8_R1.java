@@ -36,7 +36,7 @@ import net.minecraft.server.v1_8_R1.PacketPlayOutUpdateSign;
 import net.minecraft.server.v1_8_R1.PlayerConnection;
 import net.minecraft.server.v1_8_R1.TileEntitySign;
 
-public class VersionHandler_1_8_R1 extends VersionHandler {
+public final class VersionHandler_1_8_R1 extends VersionHandler {
 
     /**
      * This specific 1.8 build is very odd. It strangely adds color codes for

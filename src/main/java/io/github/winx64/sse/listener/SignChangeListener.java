@@ -24,8 +24,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
-import io.github.winx64.sse.Permissions;
 import io.github.winx64.sse.SmartSignEditor;
+import io.github.winx64.sse.player.Permissions;
 
 public class SignChangeListener implements Listener {
 

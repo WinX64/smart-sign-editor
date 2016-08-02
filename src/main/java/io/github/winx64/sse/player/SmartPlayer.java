@@ -21,29 +21,31 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
+import io.github.winx64.sse.tool.ToolType;
+
 /**
  * Data class to store the player information related to SmartSignEditor
  * 
  * @author Lucas
  *
  */
-public class SmartPlayer {
+public final class SmartPlayer {
 
     private Player player;
 
-    private ToolMode toolMode;
+    private ToolType toolType;
 
     private String lineBuffer;
     private String[] textBuffer;
-    private long signCooldown;
+    private long interactionCooldown;
 
     public SmartPlayer(Player player) {
 	this.player = player;
-	this.toolMode = ToolMode.EDIT;
+	this.toolType = ToolType.EDIT;
 
 	this.lineBuffer = null;
 	this.textBuffer = null;
-	this.signCooldown = 0;
+	this.interactionCooldown = 0;
     }
 
     /**
@@ -74,22 +76,22 @@ public class SmartPlayer {
     }
 
     /**
-     * Gets the current tool mode this player is using
+     * Gets the current tool type this player is using
      * 
      * @return The current tool
      */
-    public ToolMode getToolMode() {
-	return toolMode;
+    public ToolType getToolType() {
+	return toolType;
     }
 
     /**
-     * Sets the current tool mode this player is using
+     * Sets the current tool type this player is using
      * 
      * @param toolMode
      *            The new tool
      */
-    public void setToolMode(ToolMode toolMode) {
-	this.toolMode = toolMode;
+    public void setToolMode(ToolType toolMode) {
+	this.toolType = toolMode;
     }
 
     /**
@@ -121,12 +123,12 @@ public class SmartPlayer {
     }
 
     /**
-     * Gets the sign cooldown
+     * Gets the sign interaction cooldown
      * 
-     * @return The sign cooldown
+     * @return The interaction cooldown
      */
-    public long getSignCooldown() {
-	return signCooldown;
+    public long getInteractionCooldown() {
+	return interactionCooldown;
     }
 
     /**
@@ -155,12 +157,12 @@ public class SmartPlayer {
     }
 
     /**
-     * Sets the cooldown for both line copy/paste/erase actions
+     * Sets the sign interact cooldown
      * 
-     * @param signCooldown
-     *            The new sign cooldown
+     * @param interactionCooldown
+     *            The new interaction cooldown
      */
-    public void setSignCooldown(long signCooldown) {
-	this.signCooldown = signCooldown;
+    public void setInteractionCooldown(long interactionCooldown) {
+	this.interactionCooldown = interactionCooldown;
     }
 }

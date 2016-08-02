@@ -15,9 +15,9 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.winx64.sse.player;
+package io.github.winx64.sse.tool;
 
-import io.github.winx64.sse.Permissions;
+import io.github.winx64.sse.player.Permissions;
 
 /**
  * Represents the diffent kind of tools SmartSignEditor has
@@ -25,7 +25,7 @@ import io.github.winx64.sse.Permissions;
  * @author Lucas
  *
  */
-public enum ToolMode {
+public enum ToolType {
 
     /**
      * Edit Tool. Used to edit signs
@@ -57,7 +57,7 @@ public enum ToolMode {
     private String name;
     private String permission;
 
-    private ToolMode(String name, String permission) {
+    private ToolType(String name, String permission) {
 	this.name = name;
 	this.permission = permission;
     }
@@ -85,14 +85,25 @@ public enum ToolMode {
      * 
      * @return The next tool
      */
-    public ToolMode getNextToolMode() {
+    public ToolType getNextToolMode() {
 	int current = ordinal();
-	ToolMode[] tools = values();
+	ToolType[] tools = values();
 
 	if (current == tools.length - 1) {
 	    return tools[0];
 	} else {
 	    return tools[current + 1];
+	}
+    }
+
+    public ToolType getPreviousToolMode() {
+	int current = ordinal();
+	ToolType[] tools = values();
+
+	if (current == 0) {
+	    return tools[tools.length - 1];
+	} else {
+	    return tools[current - 1];
 	}
     }
 }

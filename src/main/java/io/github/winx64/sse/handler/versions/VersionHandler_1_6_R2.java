@@ -34,7 +34,7 @@ import net.minecraft.server.v1_6_R2.Packet133OpenTileEntity;
 import net.minecraft.server.v1_6_R2.PlayerConnection;
 import net.minecraft.server.v1_6_R2.TileEntitySign;
 
-public class VersionHandler_1_6_R2 extends VersionHandler {
+public final class VersionHandler_1_6_R2 extends VersionHandler {
 
     @Override
     public void updateSignText(Player player, Sign sign, String[] text) {

@@ -9,6 +9,7 @@ permissions:
     sse.*:
         description: Complete access to SmartSignEditor
         children:
+            sse.tool.extended: true
             sse.tool.edit: true
             sse.tool.edit.colors: true
             sse.tool.copy: true
@@ -27,6 +28,7 @@ permissions:
     sse.tool.*:
         description: Complete access to every tool
         children:
+            sse.tool.extended: true
             sse.tool.edit: true
             sse.tool.edit.colors: true
             sse.tool.copy: true

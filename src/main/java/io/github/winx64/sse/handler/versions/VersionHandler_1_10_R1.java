@@ -36,7 +36,7 @@ import net.minecraft.server.v1_10_R1.PacketPlayOutOpenSignEditor;
 import net.minecraft.server.v1_10_R1.PlayerConnection;
 import net.minecraft.server.v1_10_R1.TileEntitySign;
 
-public class VersionHandler_1_10_R1 extends VersionHandler {
+public final class VersionHandler_1_10_R1 extends VersionHandler {
 
     @Override
     public void updateSignText(Player player, Sign sign, String[] text) {

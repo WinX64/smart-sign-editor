@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.winx64.sse;
+package io.github.winx64.sse.player;
 
 /**
  * Helper class to store the permissions currently used
@@ -25,8 +25,12 @@ package io.github.winx64.sse;
  */
 public class Permissions {
 
-    private Permissions() {
-    }
+    private Permissions() {}
+
+    /**
+     * Edit/Copy/Paste/Erase signs without directly interacting with them
+     */
+    public static final String EXTENDED_TOOL = "sse.tool.extended";
 
     /**
      * Use the edit tool

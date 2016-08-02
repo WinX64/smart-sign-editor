@@ -18,15 +18,15 @@
 package io.github.winx64.sse;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.Bukkit;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -35,6 +35,13 @@ import io.github.winx64.sse.listener.PlayerInOutListener;
 import io.github.winx64.sse.listener.SignChangeListener;
 import io.github.winx64.sse.listener.SignInteractionListener;
 import io.github.winx64.sse.player.SmartPlayer;
+import io.github.winx64.sse.tool.Tool;
+import io.github.winx64.sse.tool.ToolType;
+import io.github.winx64.sse.tool.list.CopyTool;
+import io.github.winx64.sse.tool.list.EditTool;
+import io.github.winx64.sse.tool.list.EraseTool;
+import io.github.winx64.sse.tool.list.PasteTool;
+import io.github.winx64.sse.tool.list.ToolChange;
 
 /**
  * SmartSignEditor's main class
@@ -47,15 +54,13 @@ public class SmartSignEditor extends JavaPlugin {
     private Logger logger;
     private Map<UUID, SmartPlayer> smartPlayers;
 
+    private SignConfiguration signConfig;
     private VersionHandler versionHandler;
-
-    private Set<String> specialSigns;
+    private Map<ToolType, Tool> tools;
 
     @Override
     public void onEnable() {
 	this.logger = getLogger();
-	this.smartPlayers = new HashMap<UUID, SmartPlayer>();
-	this.specialSigns = new HashSet<String>();
 
 	this.versionHandler = VersionHandler.hookInternally();
 	if (versionHandler == null) {
@@ -66,8 +71,8 @@ public class SmartSignEditor extends JavaPlugin {
 		logger.severe("Your current version is " + currentVersion
 			+ ". This is an outdaded version that has no support for the plugin. Please, update you server!");
 	    } else {
-		logger.severe(
-			"Your current version is " + currentVersion + ". Ask the author to provide support for it!");
+		logger.severe("Your current version is " + currentVersion
+			+ ". This is a newer version that still not supported. Ask the author to provide support for it!");
 	    }
 	    getServer().getPluginManager().disablePlugin(this);
 	    return;
@@ -75,7 +80,17 @@ public class SmartSignEditor extends JavaPlugin {
 	    logger.info("Hooked internals with success! Using " + versionHandler.getClass().getSimpleName());
 	}
 
-	if (!loadConfiguration()) {
+	this.smartPlayers = new HashMap<UUID, SmartPlayer>();
+
+	this.tools = new HashMap<ToolType, Tool>();
+	this.tools.put(ToolType.EDIT, new EditTool(this));
+	this.tools.put(ToolType.COPY, new CopyTool(this));
+	this.tools.put(ToolType.PASTE, new PasteTool(this));
+	this.tools.put(ToolType.ERASE, new EraseTool(this));
+	this.tools.put(null, new ToolChange(this));
+
+	this.signConfig = new SignConfiguration(this);
+	if (!signConfig.loadConfiguration()) {
 	    logger.severe("Failed to load the configuration. The plugin will be disabled to avoid further damage!");
 	    getServer().getPluginManager().disablePlugin(this);
 	    return;
@@ -91,82 +106,37 @@ public class SmartSignEditor extends JavaPlugin {
 	pm.registerEvents(new SignInteractionListener(this), this);
     }
 
-    /**
-     * Saves and loads the plugin configuration
-     * 
-     * @return Whether something wrong happened or the load was successful
-     */
-    private boolean loadConfiguration() {
-	try {
-	    this.saveDefaultConfig();
-	    FileConfiguration config = this.getConfig();
-
-	    if (config.getInt("config-version") != 1) {
-		logger.severe("Wrong configuration version!");
-		return false;
-	    }
-
-	    List<String> specialSigns = config.getStringList("special-signs");
-	    for (String sign : specialSigns) {
-		this.specialSigns.add(sign.toLowerCase());
-	    }
-
-	    return true;
-	} catch (Exception e) {
-	    logger.severe("An error occurred while trying to load the configuration! Details below:");
-	    e.printStackTrace();
-	}
-	return false;
+    public SignConfiguration getSignConfig() {
+	return signConfig;
     }
 
-    /**
-     * Registers a SmartPlayer for a newly-logged Player
-     * 
-     * @param sPlayer
-     *            The new SmartPlayer
-     */
+    public Tool getTool(ToolType type) {
+	return tools.get(type);
+    }
+
+    public void log(Level level, String format, Object... objects) {
+	logger.log(level, String.format(format, objects));
+    }
+
     public void registerSmartPlayer(SmartPlayer sPlayer) {
 	smartPlayers.put(sPlayer.getUniqueId(), sPlayer);
     }
 
-    /**
-     * Gets the SmartPlayer linked by this UUID
-     * 
-     * @param uniqueId
-     *            The unique id
-     * @return The SmartPlayer instance, or null if none was found
-     */
     public SmartPlayer getSmartPlayer(UUID uniqueId) {
 	return smartPlayers.get(uniqueId);
     }
 
-    /**
-     * Unregisters a SmartPlayer
-     * 
-     * @param uniqueId
-     */
     public void unregisterSmartPlayer(UUID uniqueId) {
 	smartPlayers.remove(uniqueId);
     }
 
-    /**
-     * Gets the current VersionHandler hooked to the internals
-     * 
-     * @return The handler
-     */
     public VersionHandler getVersionHandler() {
 	return versionHandler;
     }
 
-    /**
-     * Checks if the specified text is the header of a special sign, used by
-     * other plugins. Helpful to avoid conflicts
-     * 
-     * @param text
-     *            The sign's first line
-     * @return Whether it is special or not
-     */
-    public boolean isSpecialSign(String text) {
-	return specialSigns.contains(text.toLowerCase());
+    public boolean checkBuildPermission(Player player, Sign sign) {
+	BlockBreakEvent event = new BlockBreakEvent(sign.getBlock(), player);
+	Bukkit.getPluginManager().callEvent(event);
+	return !event.isCancelled();
     }
 }

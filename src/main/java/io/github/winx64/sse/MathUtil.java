@@ -30,7 +30,7 @@ import org.bukkit.util.Vector;
  * @author Lucas
  *
  */
-public class MathUtil {
+public final class MathUtil {
 
     /**
      * The 16 normal vectors for the planes formed by the 16 different rotated
@@ -87,6 +87,8 @@ public class MathUtil {
      * Pairs of Y coordinates for the boundaries of each line in the sign plate
      */
     private static final double SIGN_LINE_Y_OFFSET[] = new double[] { 5.0, 0.36650, 0.26250, 0.15850, 0.0 };
+
+    private MathUtil() {}
 
     /**
      * Gets at which coordinates the player's line of sight intersected a sign
@@ -222,56 +224,56 @@ public class MathUtil {
      */
     private static int getRotationId(BlockFace blockFace) {
 	switch (blockFace) {
-	case SOUTH:
-	    return 0;
+	    case SOUTH:
+		return 0;
 
-	case SOUTH_SOUTH_WEST:
-	    return 1;
+	    case SOUTH_SOUTH_WEST:
+		return 1;
 
-	case SOUTH_WEST:
-	    return 2;
+	    case SOUTH_WEST:
+		return 2;
 
-	case WEST_SOUTH_WEST:
-	    return 3;
+	    case WEST_SOUTH_WEST:
+		return 3;
 
-	case WEST:
-	    return 4;
+	    case WEST:
+		return 4;
 
-	case WEST_NORTH_WEST:
-	    return 5;
+	    case WEST_NORTH_WEST:
+		return 5;
 
-	case NORTH_WEST:
-	    return 6;
+	    case NORTH_WEST:
+		return 6;
 
-	case NORTH_NORTH_WEST:
-	    return 7;
+	    case NORTH_NORTH_WEST:
+		return 7;
 
-	case NORTH:
-	    return 8;
+	    case NORTH:
+		return 8;
 
-	case NORTH_NORTH_EAST:
-	    return 9;
+	    case NORTH_NORTH_EAST:
+		return 9;
 
-	case NORTH_EAST:
-	    return 10;
+	    case NORTH_EAST:
+		return 10;
 
-	case EAST_NORTH_EAST:
-	    return 11;
+	    case EAST_NORTH_EAST:
+		return 11;
 
-	case EAST:
-	    return 12;
+	    case EAST:
+		return 12;
 
-	case EAST_SOUTH_EAST:
-	    return 13;
+	    case EAST_SOUTH_EAST:
+		return 13;
 
-	case SOUTH_EAST:
-	    return 14;
+	    case SOUTH_EAST:
+		return 14;
 
-	case SOUTH_SOUTH_EAST:
-	    return 15;
+	    case SOUTH_SOUTH_EAST:
+		return 15;
 
-	default:
-	    return -1;
+	    default:
+		return -1;
 	}
     }
 }

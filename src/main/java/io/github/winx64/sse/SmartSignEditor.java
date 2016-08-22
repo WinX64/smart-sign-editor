@@ -37,11 +37,11 @@ import io.github.winx64.sse.listener.SignInteractionListener;
 import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolType;
-import io.github.winx64.sse.tool.list.CopyTool;
-import io.github.winx64.sse.tool.list.EditTool;
-import io.github.winx64.sse.tool.list.EraseTool;
-import io.github.winx64.sse.tool.list.PasteTool;
-import io.github.winx64.sse.tool.list.ToolChange;
+import io.github.winx64.sse.tool.tools.CopyTool;
+import io.github.winx64.sse.tool.tools.EditTool;
+import io.github.winx64.sse.tool.tools.EraseTool;
+import io.github.winx64.sse.tool.tools.PasteTool;
+import io.github.winx64.sse.tool.tools.ToolChange;
 
 /**
  * SmartSignEditor's main class
@@ -49,7 +49,7 @@ import io.github.winx64.sse.tool.list.ToolChange;
  * @author Lucas
  *
  */
-public class SmartSignEditor extends JavaPlugin {
+public final class SmartSignEditor extends JavaPlugin {
 
     private Logger logger;
     private Map<UUID, SmartPlayer> smartPlayers;

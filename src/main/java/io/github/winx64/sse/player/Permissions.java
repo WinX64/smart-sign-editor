@@ -23,7 +23,7 @@ package io.github.winx64.sse.player;
  * @author Lucas
  *
  */
-public class Permissions {
+public final class Permissions {
 
     private Permissions() {}
 

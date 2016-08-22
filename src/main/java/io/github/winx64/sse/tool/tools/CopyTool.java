@@ -1,4 +1,4 @@
-package io.github.winx64.sse.tool.list;
+package io.github.winx64.sse.tool.tools;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
@@ -12,41 +12,29 @@ import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolType;
 
-public final class PasteTool extends Tool {
+public final class CopyTool extends Tool {
 
-    public PasteTool(SmartSignEditor plugin) {
-	super(plugin, ToolType.PASTE, "Sign Paste", "Line Paste", Permissions.TOOL_PASTE_ALL,
-		Permissions.TOOL_PASTE_LINE);
+    public CopyTool(SmartSignEditor plugin) {
+	super(plugin, ToolType.COPY, "Sign Copy", "Line Copy", Permissions.TOOL_COPY_ALL, Permissions.TOOL_COPY_LINE);
     }
 
     @Override
     public void usePrimary(SmartPlayer sPlayer, Sign sign) {
 	Player player = sPlayer.getPlayer();
 
-	if (sPlayer.getTextBuffer() == null) {
-	    player.sendMessage(ChatColor.RED + "You haven't copied any sign yet!");
-	    return;
-	}
-
 	for (int i = 0; i < 4; i++) {
-	    if (player.hasPermission(Permissions.TOOL_PASTE_COLORS)) {
-		sign.setLine(i, sPlayer.getTextBuffer()[i]);
+	    if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
+		sPlayer.setTextBuffer(i, ChatColor.stripColor(sign.getLine(i)));
 	    } else {
-		sign.setLine(i, ChatColor.stripColor(sPlayer.getTextBuffer()[i]));
+		sPlayer.setTextBuffer(i, sign.getLine(i));
 	    }
 	}
-	sign.update();
-	player.sendMessage(ChatColor.GREEN + "Sign text replaced!");
+	player.sendMessage(ChatColor.GREEN + "Sign text copied!");
     }
 
     @Override
     public void useSecondary(SmartPlayer sPlayer, Sign sign) {
 	Player player = sPlayer.getPlayer();
-
-	if (sPlayer.getLineBuffer() == null) {
-	    player.sendMessage(ChatColor.RED + "You haven't copied any line yet!");
-	    return;
-	}
 
 	Vector intersection = MathUtil.getSightSignIntersection(player, sign);
 	if (intersection == null) {
@@ -55,13 +43,12 @@ public final class PasteTool extends Tool {
 	}
 	int clickedLine = MathUtil.getSignLine(intersection, sign);
 
-	if (player.hasPermission(Permissions.TOOL_PASTE_COLORS)) {
-	    sign.setLine(clickedLine, sPlayer.getLineBuffer());
+	if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
+	    sPlayer.setLineBuffer(ChatColor.stripColor(sign.getLine(clickedLine)));
 	} else {
-	    sign.setLine(clickedLine, ChatColor.stripColor(sPlayer.getLineBuffer()));
+	    sPlayer.setLineBuffer(sign.getLine(clickedLine));
 	}
-	sign.update();
-	player.sendMessage(ChatColor.GREEN + "Line text pasted!");
+	player.sendMessage(ChatColor.GREEN + "Line text copied: " + ChatColor.RESET + sPlayer.getLineBuffer());
     }
 
     @Override

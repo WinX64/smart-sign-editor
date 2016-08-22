@@ -17,14 +17,15 @@
  */
 package io.github.winx64.sse.listener;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,7 +40,7 @@ import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolUsage;
 
-public class SignInteractionListener implements Listener {
+public final class SignInteractionListener implements Listener {
 
     private static final String NO_TOOL_PERMISSION = ChatColor.RED + "You don't have permission to use the %s Tool!";
     private static final String NO_SUB_TOOL_PERMISSION = ChatColor.RED
@@ -48,12 +49,12 @@ public class SignInteractionListener implements Listener {
     private final SmartSignEditor plugin;
     private final SignConfiguration signConfig;
 
-    private BlockState lastSignState;
+    private Map<PlayerInteractEvent, BlockState> blockStates;
 
     public SignInteractionListener(SmartSignEditor plugin) {
 	this.plugin = plugin;
 	this.signConfig = plugin.getSignConfig();
-	this.lastSignState = null;
+	this.blockStates = new HashMap<PlayerInteractEvent, BlockState>();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -72,9 +73,6 @@ public class SignInteractionListener implements Listener {
 	if (action == Action.PHYSICAL) {
 	    return;
 	}
-	
-	ExperienceOrb orb = player.getWorld().spawn(player.getLocation().add(0, 100, 0), ExperienceOrb.class);
-	orb.setExperience(Integer.MAX_VALUE);
 
 	if (block == null && player.hasPermission(Permissions.EXTENDED_TOOL) && signConfig.isUsingExtendedTool()) {
 	    if (usage.matchesWith(tool.getPrimaryUsage()) || usage.matchesWith(tool.getSecondaryUsage())) {
@@ -87,6 +85,8 @@ public class SignInteractionListener implements Listener {
 		}
 	    }
 	}
+	
+	player.sendMessage(tool.getPrimaryUsage() + ", " + tool.getSecondaryUsage());
 
 	if (block == null || (block.getType() != Material.SIGN_POST && block.getType() != Material.WALL_SIGN)) {
 	    if (sPlayer.getInteractionCooldown() > System.currentTimeMillis()) {
@@ -102,7 +102,7 @@ public class SignInteractionListener implements Listener {
 	    Sign sign = (Sign) block.getState();
 	    if (sPlayer.getInteractionCooldown() > System.currentTimeMillis()) {
 		if (tool.matchesUsage(usage)) {
-		    this.handleSpecialSigns(sign);
+		    this.handleSpecialSigns(event, sign);
 		}
 		return;
 	    }
@@ -114,7 +114,7 @@ public class SignInteractionListener implements Listener {
 	    event.setCancelled(true);
 
 	    if (tool.preSpecialHandling()) {
-		this.handleSpecialSigns(sign);
+		this.handleSpecialSigns(event, sign);
 	    }
 	    if (usage.matchesWith(tool.getPrimaryUsage())) {
 		if (tool.getPrimaryPermission() != null && !player.hasPermission(tool.getPrimaryPermission())) {
@@ -130,7 +130,7 @@ public class SignInteractionListener implements Listener {
 		}
 	    }
 	    if (!tool.preSpecialHandling()) {
-		this.handleSpecialSigns(sign);
+		this.handleSpecialSigns(event, sign);
 	    }
 	}
 	sPlayer.setInteractionCooldown(System.currentTimeMillis() + 50);
@@ -138,16 +138,16 @@ public class SignInteractionListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void postProcess(PlayerInteractEvent event) {
+	BlockState lastSignState = blockStates.remove(event);
 	if (lastSignState != null) {
 	    lastSignState.update();
-	    this.lastSignState = null;
 	}
     }
 
-    private void handleSpecialSigns(Sign sign) {
+    private void handleSpecialSigns(PlayerInteractEvent event, Sign sign) {
 	String firstLine = ChatColor.stripColor(sign.getLine(0));
 	if (signConfig.isSpecialSign(firstLine)) {
-	    this.lastSignState = sign.getBlock().getState();
+	    blockStates.put(event, sign.getBlock().getState());
 	    sign.setLine(0, firstLine);
 	    sign.update(true);
 	}

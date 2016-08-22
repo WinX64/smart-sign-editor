@@ -33,29 +33,22 @@ public enum ToolType {
     EDIT("Edit", Permissions.TOOL_EDIT),
 
     /**
-     * Copy Tool. Used to copy sign text<br>
-     * Right click to copy the entire sign<br>
-     * Shift + Right click to copy the line you're looking at
+     * Copy Tool. Used to copy sign text
      */
     COPY("Copy", Permissions.TOOL_COPY),
 
     /**
-     * Paste Tool. Used to paste yor copied text to a new sign<br>
-     * Right click to paste the entire sign you copied<br>
-     * Shift + Right click to paste the line you copied to the one you're
-     * looking at
+     * Paste Tool. Used to paste your copied text to a new sign
      */
     PASTE("Paste", Permissions.TOOL_PASTE),
 
     /**
-     * Erase Tool. Used to clear the text from signs<br>
-     * Right click to clear the entire sign<br>
-     * Shift + Right click to clear the line you're looking at
+     * Erase Tool. Used to clear the text from signs
      */
     ERASE("Erase", Permissions.TOOL_ERASE);
 
-    private String name;
-    private String permission;
+    private final String name;
+    private final String permission;
 
     private ToolType(String name, String permission) {
 	this.name = name;
@@ -96,6 +89,11 @@ public enum ToolType {
 	}
     }
 
+    /**
+     * Gets the previous tool in the line
+     * 
+     * @return The previous tool
+     */
     public ToolType getPreviousToolMode() {
 	int current = ordinal();
 	ToolType[] tools = values();

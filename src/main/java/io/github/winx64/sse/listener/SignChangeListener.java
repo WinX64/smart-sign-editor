@@ -27,7 +27,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import io.github.winx64.sse.SmartSignEditor;
 import io.github.winx64.sse.player.Permissions;
 
-public class SignChangeListener implements Listener {
+public final class SignChangeListener implements Listener {
 
     @SuppressWarnings("unused")
     private SmartSignEditor plugin;

@@ -32,7 +32,7 @@ import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolType;
 import io.github.winx64.sse.tool.ToolUsage;
 
-public class SignConfiguration {
+public final class SignConfiguration {
 
     private static final int CONFIG_VERSION = 2;
 
@@ -56,6 +56,22 @@ public class SignConfiguration {
 	this.extendedToolReach = 10;
 
 	this.specialSigns = new HashSet<String>();
+    }
+
+    public Material getToolMaterial() {
+	return toolMaterial;
+    }
+
+    public boolean isUsingExtendedTool() {
+	return usingExtendedTool;
+    }
+
+    public int getExtendedToolReach() {
+	return extendedToolReach;
+    }
+
+    public boolean isSpecialSign(String text) {
+	return specialSigns.contains(text.toLowerCase());
     }
 
     public boolean loadConfiguration() {
@@ -88,28 +104,13 @@ public class SignConfiguration {
 		}
 	    }
 
+	    plugin.log(Level.INFO, "[Config] Configuration loaded successfully!");
 	    return true;
 	} catch (Exception e) {
 	    plugin.log(Level.SEVERE, "An error occurred while trying to load the configuration! Details below:");
 	    e.printStackTrace();
 	    return false;
 	}
-    }
-
-    public Material getToolMaterial() {
-	return toolMaterial;
-    }
-
-    public boolean isUsingExtendedTool() {
-	return usingExtendedTool;
-    }
-
-    public int getExtendedToolReach() {
-	return extendedToolReach;
-    }
-
-    public boolean isSpecialSign(String text) {
-	return specialSigns.contains(text.toLowerCase());
     }
 
     private boolean ensureCorrectVersion(boolean saveAndRetry) {
@@ -171,50 +172,22 @@ public class SignConfiguration {
 	    return;
 	}
 
-	ConfigurationSection editSection = config.getConfigurationSection("edit-tool");
-	if (editSection == null || editSection.getKeys(false).isEmpty()) {
-	    plugin.log(Level.WARNING, "[Config] Tool usage section for the %s tool doesn't exist!",
-		    ToolType.EDIT.getName());
-	} else {
-	    loadToolUsage(plugin.getTool(ToolType.EDIT), editSection, "sign-edit-usage", null);
-	}
-
-	ConfigurationSection copySection = config.getConfigurationSection("copy-tool");
-	if (copySection == null || copySection.getKeys(false).isEmpty()) {
-	    plugin.log(Level.WARNING, "[Config] Tool usage section for the %s tool doesn't exist!",
-		    ToolType.COPY.getName());
-	} else {
-	    loadToolUsage(plugin.getTool(ToolType.COPY), copySection, "sign-copy-usage", "line-copy-usage");
-	}
-
-	ConfigurationSection pasteSection = config.getConfigurationSection("paste-tool");
-	if (pasteSection == null || pasteSection.getKeys(false).isEmpty()) {
-	    plugin.log(Level.WARNING, "[Config] Tool usage section for the %s tool doesn't exist!",
-		    ToolType.PASTE.getName());
-	} else {
-	    loadToolUsage(plugin.getTool(ToolType.PASTE), pasteSection, "sign-paste-usage", "line-paste-usage");
-	}
-
-	ConfigurationSection eraseSection = config.getConfigurationSection("erase-tool");
-	if (eraseSection == null || eraseSection.getKeys(false).isEmpty()) {
-	    plugin.log(Level.WARNING, "[Config] Tool usage section for the %s tool doesn't exist!",
-		    ToolType.ERASE.getName());
-	} else {
-	    loadToolUsage(plugin.getTool(ToolType.ERASE), eraseSection, "sign-erase-usage", "line-erase-usage");
-	}
-
-	ConfigurationSection changerSection = config.getConfigurationSection("tool-change");
-	if (changerSection == null || changerSection.getKeys(false).isEmpty()) {
-	    plugin.log(Level.WARNING, "[Config] Tool usage section for the tool changer doesn't exist!");
-	} else {
-	    loadToolUsage(plugin.getTool(null), changerSection, "next-tool-usage", "previous-tool-usage");
+	for (ToolConfiguration toolConfig : ToolConfiguration.values()) {
+	    ConfigurationSection toolSection = config.getConfigurationSection(toolConfig.section);
+	    if (toolSection == null || toolSection.getKeys(false).isEmpty()) {
+		plugin.log(Level.WARNING, "[Config] Tool usage section for the %s tool doesn't exist!",
+			toolConfig.type.getName());
+		continue;
+	    }
+	    loadToolUsage(plugin.getTool(toolConfig.type), toolSection, toolConfig.primaryUsage,
+		    toolConfig.secondaryUsage);
 	}
     }
 
     private void loadToolUsage(Tool tool, ConfigurationSection config, String primaryKey, String secondaryKey) {
 	try {
-	    String primaryUsageValue = config.getString(primaryKey, null);
-	    String secondaryUsageValue = secondaryKey == null ? null : config.getString(secondaryKey, null);
+	    String primaryUsageValue = config.getString(primaryKey);
+	    String secondaryUsageValue = secondaryKey == null ? null : config.getString(secondaryKey);
 
 	    if (primaryUsageValue == null) {
 		plugin.log(Level.WARNING, "[Config] Key \"%s.%s\" not found. Using default value %s",
@@ -250,14 +223,33 @@ public class SignConfiguration {
 	    }
 
 	    tool.setPrimaryUsage(primaryUsage);
-	    if (secondaryKey != null) {
-		tool.setSecondaryUsage(secondaryUsage);
-	    }
+	    tool.setSecondaryUsage(secondaryKey == null ? primaryUsage : secondaryUsage);
 	} catch (Exception e) {
 	    plugin.log(Level.WARNING,
 		    "An error occurred while trying to load the tool usages for the %s Tool! Details below:",
 		    tool.getType().getName());
 	    e.printStackTrace();
+	}
+    }
+
+    private static enum ToolConfiguration {
+
+	EDIT(ToolType.EDIT, "edit-tool", "sign-edit-usage", null),
+	COPY(ToolType.COPY, "copy-tool", "sign-copy-usage", "line-copy-usage"),
+	PASTE(ToolType.PASTE, "paste-tool", "sign-paste-usage", "line-paste-usage"),
+	ERASE(ToolType.ERASE, "erase-tool", "sign-erase-usage", "line-erase-usage"),
+	CHANGE(null, "tool-change", "next-tool-usage", "previous-tool-usage");
+
+	private final ToolType type;
+	private final String section;
+	private final String primaryUsage;
+	private final String secondaryUsage;
+
+	private ToolConfiguration(ToolType type, String section, String primaryUsage, String secondaryUsage) {
+	    this.type = type;
+	    this.section = section;
+	    this.primaryUsage = primaryUsage;
+	    this.secondaryUsage = secondaryUsage;
 	}
     }
 }

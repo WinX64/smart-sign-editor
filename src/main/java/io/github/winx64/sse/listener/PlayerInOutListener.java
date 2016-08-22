@@ -25,7 +25,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import io.github.winx64.sse.SmartSignEditor;
 import io.github.winx64.sse.player.SmartPlayer;
 
-public class PlayerInOutListener implements Listener {
+public final class PlayerInOutListener implements Listener {
 
     private SmartSignEditor plugin;
 

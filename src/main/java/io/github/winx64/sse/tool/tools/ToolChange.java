@@ -1,4 +1,4 @@
-package io.github.winx64.sse.tool.list;
+package io.github.winx64.sse.tool.tools;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;

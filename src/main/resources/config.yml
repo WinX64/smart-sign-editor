@@ -1,13 +1,31 @@
 #Version. Do NOT touch this
 config-version: 2
 
-#The item used to work with the signs
-tool-item: FEATHER
+#Tool item configuriation
+tool-item:
+
+    #The physical item used to handle sign modifications
+    tool:
+        ==: org.bukkit.inventory.ItemStack
+        type: FEATHER
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: '§bThe Great Editing Feather'
+          lore:
+          - '§7Using this tool, you can Edit/Copy/Paste/Erase signs!'
+          
+    #Does the item name have to match the tool item's name? If TRUE, only items with the same type and name will work.
+    match-name: false
+    
+    #Does the item lore have to match the tool item's lore? If TRUE, onlt items with the same type and lore will work.
+    match-lore: false
 
 #Usages for the different tools and options
 #Available options: NO_SHIFT_RIGHT_CLICK, SHIFT_RIGHT_CLICK, RIGHT_CLICK, NO_SHIFT_LEFT_CLICK, SHIFT_LEFT_CLICK, LEFT_CLICK
 #Make sure that usages for a single tool don't conflict with eachother. Eg.: SHIFT_RIGHT_CLICK for line-copy and RIGHT_CLICK for sign-copy
 tool-usages:
+
     #Usages for the edit tool
     edit-tool:
         sign-edit-usage: RIGHT_CLICK
@@ -34,8 +52,10 @@ tool-usages:
         
 #Interact with signs without having to be near them
 extended-tool:
+
     #Should it be enabled?
     enabled: true
+    
     #The maximum distance in blocks to count as an interaction
     reach: 10
 

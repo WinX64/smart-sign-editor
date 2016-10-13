@@ -15,35 +15,31 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.winx64.sse.listener;
+package io.github.winx64.sse.listeners;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import io.github.winx64.sse.SmartSignEditor;
-import io.github.winx64.sse.player.Permissions;
+import io.github.winx64.sse.player.SmartPlayer;
 
-public final class SignChangeListener implements Listener {
+public final class PlayerInOutListener implements Listener {
 
-    @SuppressWarnings("unused")
-    private SmartSignEditor plugin;
+    private final SmartSignEditor plugin;
 
-    public SignChangeListener(SmartSignEditor plugin) {
+    public PlayerInOutListener(SmartSignEditor plugin) {
 	this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onSignChange(SignChangeEvent event) {
-	Player player = event.getPlayer();
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+	plugin.registerSmartPlayer(new SmartPlayer(event.getPlayer()));
+    }
 
-	if (player.hasPermission(Permissions.TOOL_EDIT_COLORS)) {
-	    for (int i = 0; i < 4; i++) {
-		event.setLine(i, ChatColor.translateAlternateColorCodes('&', event.getLine(i)));
-	    }
-	}
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+	plugin.unregisterSmartPlayer(event.getPlayer().getUniqueId());
     }
 }

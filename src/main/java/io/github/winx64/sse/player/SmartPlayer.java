@@ -31,7 +31,7 @@ import io.github.winx64.sse.tool.ToolType;
  */
 public final class SmartPlayer {
 
-    private Player player;
+    private final Player player;
 
     private ToolType toolType;
 

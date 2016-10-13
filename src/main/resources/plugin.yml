@@ -5,10 +5,24 @@ version: ${version}
 author: '123'
 website: 'http://dev.bukkit.org/bukkit-plugins/sse/'
 
+commands:
+    sse:
+        description: Gives yourself the sign handling tool
+        usage: /<command>
+        aliases: [smartsigneditor]
+        permission: sse.command.sse
+    sse-reload:
+        description: Reloads the plugin configuration
+        usage: /<command>
+        aliases: [sreload, ssereload]
+        permission: sse.command.reload
+
 permissions:
     sse.*:
         description: Complete access to SmartSignEditor
         children:
+            sse.command.sse: true
+            sse.command.reload: true
             sse.tool.extended: true
             sse.tool.edit: true
             sse.tool.edit.colors: true
@@ -23,6 +37,13 @@ permissions:
             sse.tool.erase: true
             sse.tool.erase.all: true
             sse.tool.erase.line: true
+        default: op
+        
+    sse.command.*:
+        description: Complete access to every command
+        children:
+            sse.command.sse: true
+            sse.command:reload: true
         default: op
         
     sse.tool.*:

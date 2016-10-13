@@ -30,10 +30,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import io.github.winx64.sse.commands.CommandReload;
+import io.github.winx64.sse.commands.CommandTool;
 import io.github.winx64.sse.handler.VersionHandler;
-import io.github.winx64.sse.listener.PlayerInOutListener;
-import io.github.winx64.sse.listener.SignChangeListener;
-import io.github.winx64.sse.listener.SignInteractionListener;
+import io.github.winx64.sse.listeners.PlayerInOutListener;
+import io.github.winx64.sse.listeners.SignChangeListener;
+import io.github.winx64.sse.listeners.SignInteractionListener;
 import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolType;
@@ -51,17 +53,23 @@ import io.github.winx64.sse.tool.tools.ToolChange;
  */
 public final class SmartSignEditor extends JavaPlugin {
 
-    private Logger logger;
-    private Map<UUID, SmartPlayer> smartPlayers;
+    private final Logger logger;
+    private final Map<UUID, SmartPlayer> smartPlayers;
 
-    private SignConfiguration signConfig;
+    private final SignConfiguration signConfig;
+    private final Map<ToolType, Tool> tools;
+    
     private VersionHandler versionHandler;
-    private Map<ToolType, Tool> tools;
 
+    public SmartSignEditor() {
+	this.logger = this.getLogger();
+	this.smartPlayers = new HashMap<UUID, SmartPlayer>();
+	this.signConfig = new SignConfiguration(this);
+	this.tools = new HashMap<ToolType, Tool>();
+    }
+    
     @Override
     public void onEnable() {
-	this.logger = getLogger();
-
 	this.versionHandler = VersionHandler.hookInternally();
 	if (versionHandler == null) {
 	    String currentVersion = getServer().getClass().getPackage().getName();
@@ -80,16 +88,12 @@ public final class SmartSignEditor extends JavaPlugin {
 	    logger.info("Hooked internals with success! Using " + versionHandler.getClass().getSimpleName());
 	}
 
-	this.smartPlayers = new HashMap<UUID, SmartPlayer>();
-
-	this.tools = new HashMap<ToolType, Tool>();
 	this.tools.put(ToolType.EDIT, new EditTool(this));
 	this.tools.put(ToolType.COPY, new CopyTool(this));
 	this.tools.put(ToolType.PASTE, new PasteTool(this));
 	this.tools.put(ToolType.ERASE, new EraseTool(this));
 	this.tools.put(null, new ToolChange(this));
 
-	this.signConfig = new SignConfiguration(this);
 	if (!signConfig.loadConfiguration()) {
 	    logger.severe("Failed to load the configuration. The plugin will be disabled to avoid further damage!");
 	    getServer().getPluginManager().disablePlugin(this);
@@ -104,6 +108,9 @@ public final class SmartSignEditor extends JavaPlugin {
 	pm.registerEvents(new PlayerInOutListener(this), this);
 	pm.registerEvents(new SignChangeListener(this), this);
 	pm.registerEvents(new SignInteractionListener(this), this);
+	
+	this.getCommand("sse").setExecutor(new CommandTool(this));
+	this.getCommand("sse-reload").setExecutor(new CommandReload(this));
     }
 
     public SignConfiguration getSignConfig() {

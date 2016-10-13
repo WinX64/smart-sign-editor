@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.winx64</groupId>
 	<artifactId>SmartSignEditor</artifactId>
-	<version>2.3.1</version>
+	<version>2.3.2</version>
 	<name>SmartSignEditor</name>
 	<description>Edit your signs with style</description>
 
 	<repositories>
 		<repository>
 			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/content/groups/public/</url>
+			<url>http://repo.mikeprimm.com/</url>
 		</repository>
 	</repositories>
 	<url>https://github.com/WinX64</url>

@@ -17,6 +17,9 @@
  */
 package io.github.winx64.sse;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -33,22 +36,23 @@ import org.bukkit.util.Vector;
 public final class MathUtil {
 
     /**
+     * One eighth of PI
+     */
+    private static final double P8 = Math.PI / 8;
+
+    /**
      * The 16 normal vectors for the planes formed by the 16 different rotated
      * sign posts. From the rotation 0 to 15
      */
-    private static final Vector[] SIGN_POST_PLANE_NORMAL_VECTORS = new Vector[] { new Vector(0, 0, 1),
-	    new Vector(-0.3826834323650897717284599840304, 0, 0.92387953251128675612818318939679),
-	    new Vector(-0.70710678118654752440084436210485, 0, 0.70710678118654752440084436210485),
-	    new Vector(-0.92387953251128675612818318939679, 0, 0.3826834323650897717284599840304), new Vector(-1, 0, 0),
-	    new Vector(-0.92387953251128675612818318939679, 0, -0.3826834323650897717284599840304),
-	    new Vector(-0.70710678118654752440084436210485, 0, -0.70710678118654752440084436210485),
-	    new Vector(-0.3826834323650897717284599840304, 0, -0.92387953251128675612818318939679),
-	    new Vector(0, 0, -1), new Vector(0.3826834323650897717284599840304, 0, -0.92387953251128675612818318939679),
-	    new Vector(0.70710678118654752440084436210485, 0, -0.70710678118654752440084436210485),
-	    new Vector(0.92387953251128675612818318939679, 0, -0.3826834323650897717284599840304), new Vector(1, 0, 0),
-	    new Vector(0.92387953251128675612818318939679, 0, 0.3826834323650897717284599840304),
-	    new Vector(0.70710678118654752440084436210485, 0, 0.70710678118654752440084436210485),
-	    new Vector(0.3826834323650897717284599840304, 0, 0.92387953251128675612818318939679) };
+    private static final Vector[] SIGN_POST_PLANE_NORMAL_VECTORS = new Vector[] {
+	    new Vector(cos(4 * P8), 0, sin(4 * P8)), new Vector(cos(5 * P8), 0, sin(5 * P8)),
+	    new Vector(cos(6 * P8), 0, sin(6 * P8)), new Vector(cos(7 * P8), 0, sin(7 * P8)),
+	    new Vector(cos(8 * P8), 0, sin(8 * P8)), new Vector(cos(9 * P8), 0, sin(9 * P8)),
+	    new Vector(cos(10 * P8), 0, sin(10 * P8)), new Vector(cos(11 * P8), 0, sin(11 * P8)),
+	    new Vector(cos(12 * P8), 0, sin(12 * P8)), new Vector(cos(13 * P8), 0, sin(13 * P8)),
+	    new Vector(cos(14 * P8), 0, sin(14 * P8)), new Vector(cos(15 * P8), 0, sin(15 * P8)),
+	    new Vector(cos(16 * P8), 0, sin(16 * P8)), new Vector(cos(1 * P8), 0, sin(1 * P8)),
+	    new Vector(cos(2 * P8), 0, sin(2 * P8)), new Vector(cos(3 * P8), 0, sin(3 * P8)) };
 
     /**
      * The 4 normal vectors for the planes formed by the 4 different rotated

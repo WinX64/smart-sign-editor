@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.winx64.sse.listener;
+package io.github.winx64.sse.listeners;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +49,7 @@ public final class SignInteractionListener implements Listener {
     private final SmartSignEditor plugin;
     private final SignConfiguration signConfig;
 
-    private Map<PlayerInteractEvent, BlockState> blockStates;
+    private final Map<PlayerInteractEvent, BlockState> blockStates;
 
     public SignInteractionListener(SmartSignEditor plugin) {
 	this.plugin = plugin;
@@ -66,11 +66,11 @@ public final class SignInteractionListener implements Listener {
 	Action action = event.getAction();
 	ToolUsage usage = ToolUsage.getToolUsage(action, player.isSneaking());
 
-	if (player.getItemInHand().getType() != signConfig.getToolMaterial()) {
+	if (action == Action.PHYSICAL) {
 	    return;
 	}
-
-	if (action == Action.PHYSICAL) {
+	
+	if (!this.signConfig.matchesItem(player.getItemInHand())) {
 	    return;
 	}
 
@@ -85,8 +85,6 @@ public final class SignInteractionListener implements Listener {
 		}
 	    }
 	}
-	
-	player.sendMessage(tool.getPrimaryUsage() + ", " + tool.getSecondaryUsage());
 
 	if (block == null || (block.getType() != Material.SIGN_POST && block.getType() != Material.WALL_SIGN)) {
 	    if (sPlayer.getInteractionCooldown() > System.currentTimeMillis()) {

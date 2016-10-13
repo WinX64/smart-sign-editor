@@ -27,6 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolType;
@@ -38,8 +39,11 @@ public final class SignConfiguration {
 
     private final SmartSignEditor plugin;
     private final File configFile;
+    private FileConfiguration config;
 
-    private Material toolMaterial;
+    private ItemStack toolItem;
+    private boolean matchName;
+    private boolean matchLore;
 
     private boolean usingExtendedTool;
     private int extendedToolReach;
@@ -50,7 +54,9 @@ public final class SignConfiguration {
 	this.plugin = plugin;
 	this.configFile = new File(plugin.getDataFolder(), "config.yml");
 
-	this.toolMaterial = Material.FEATHER;
+	this.toolItem = new ItemStack(Material.FEATHER);
+	this.matchName = false;
+	this.matchLore = false;
 
 	this.usingExtendedTool = true;
 	this.extendedToolReach = 10;
@@ -58,8 +64,46 @@ public final class SignConfiguration {
 	this.specialSigns = new HashSet<String>();
     }
 
-    public Material getToolMaterial() {
-	return toolMaterial;
+    public ItemStack getToolItem() {
+	return toolItem;
+    }
+
+    public boolean hasToMatchName() {
+	return matchName;
+    }
+
+    public boolean hasToMatchLore() {
+	return matchLore;
+    }
+
+    public boolean matchesItem(ItemStack target) {
+	if (target.getType() != this.toolItem.getType()) {
+	    return false;
+	}
+
+	if (matchName) {
+	    String targetName = target.getItemMeta().getDisplayName();
+	    String toolItemName = this.toolItem.getItemMeta().getDisplayName();
+
+	    if (targetName != null && toolItemName != null && !targetName.equalsIgnoreCase(toolItemName)) {
+		return false;
+	    }
+	    if ((targetName == null) ^ (toolItemName == null)) {
+		return false;
+	    }
+	}
+	if (matchLore) {
+	    List<String> targetLore = target.getItemMeta().getLore();
+	    List<String> toolItemLore = this.toolItem.getItemMeta().getLore();
+
+	    if ((targetLore != null && toolItemLore != null && !targetLore.equals(toolItemLore))) {
+		return true;
+	    }
+	    if ((targetLore == null) ^ (toolItemLore == null)) {
+		return false;
+	    }
+	}
+	return true;
     }
 
     public boolean isUsingExtendedTool() {
@@ -77,19 +121,18 @@ public final class SignConfiguration {
     public boolean loadConfiguration() {
 	try {
 	    plugin.saveDefaultConfig();
+	    this.config = YamlConfiguration.loadConfiguration(configFile);
+	    if (config.getKeys(false).size() == 0) {
+		plugin.log(Level.SEVERE, "[Config] Empty configuration! Did any error happen while parsing it?");
+		return false;
+	    }
+	    
 	    if (!ensureCorrectVersion(true)) {
 		plugin.log(Level.SEVERE, "[Config] Could not load the correct version configuration!", CONFIG_VERSION);
 		return false;
 	    }
-	    FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
-	    Material toolMaterial = Material.getMaterial(config.getString("tool-item", null));
-	    if (toolMaterial == null) {
-		plugin.log(Level.WARNING,
-			"[Config] The specified material for the tools is not valid. Using default FEATHER");
-	    } else {
-		this.toolMaterial = toolMaterial;
-	    }
+	    loadToolItem(config.getConfigurationSection("tool-item"));
 
 	    loadToolUsages(config.getConfigurationSection("tool-usages"));
 
@@ -114,12 +157,12 @@ public final class SignConfiguration {
     }
 
     private boolean ensureCorrectVersion(boolean saveAndRetry) {
-	int currentVersion = plugin.getConfig().getInt("config-version", -1);
+	int currentVersion = config.getInt("config-version", -1);
 	if (currentVersion == -1 && saveAndRetry) {
 	    plugin.log(Level.WARNING, "[Config] The configuration version is missing. Did you erase it by accident?");
 	    plugin.log(Level.INFO, "[Config] Creating an up to date one...");
 	    plugin.saveResource("config.yml", true);
-	    plugin.reloadConfig();
+	    this.config = YamlConfiguration.loadConfiguration(configFile);
 	    return ensureCorrectVersion(false);
 	}
 
@@ -130,7 +173,7 @@ public final class SignConfiguration {
 		    plugin.log(Level.WARNING, "[Config] Failed to move old configuration. Overwritting it...");
 		}
 		plugin.saveResource("config.yml", true);
-		plugin.reloadConfig();
+		this.config = YamlConfiguration.loadConfiguration(configFile);
 		return ensureCorrectVersion(false);
 	    } else {
 		return false;
@@ -150,6 +193,25 @@ public final class SignConfiguration {
 	} catch (Exception e) {
 	    return false;
 	}
+    }
+
+    private void loadToolItem(ConfigurationSection config) {
+	if (config == null) {
+	    plugin.log(Level.WARNING, "[Config] Tool item section does not exist!");
+	    return;
+	}
+
+	ItemStack toolItem = config.getItemStack("tool", null);
+	if (toolItem == null) {
+	    plugin.log(Level.WARNING, "[Config] Couldn't find or parse the tool item. Using default FEATHER");
+	} else if (toolItem.getType() == Material.AIR) {
+	    plugin.log(Level.WARNING, "[Config] AIR is not a valid item for the tool item. Using default FEATHER");
+	} else {
+	    this.toolItem = toolItem;
+	}
+
+	this.matchName = config.getBoolean("match-name", false);
+	this.matchLore = config.getBoolean("match-lore", false);
     }
 
     private void loadExtendedTool(ConfigurationSection config) {

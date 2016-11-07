@@ -97,7 +97,7 @@ public final class SignConfiguration {
 	    List<String> toolItemLore = this.toolItem.getItemMeta().getLore();
 
 	    if ((targetLore != null && toolItemLore != null && !targetLore.equals(toolItemLore))) {
-		return true;
+		return false;
 	    }
 	    if ((targetLore == null) ^ (toolItemLore == null)) {
 		return false;

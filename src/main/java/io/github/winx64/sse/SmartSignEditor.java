@@ -53,16 +53,15 @@ import io.github.winx64.sse.tool.tools.ToolChange;
  */
 public final class SmartSignEditor extends JavaPlugin {
 
-    private final Logger logger;
     private final Map<UUID, SmartPlayer> smartPlayers;
 
     private final SignConfiguration signConfig;
     private final Map<ToolType, Tool> tools;
     
+    private Logger logger;
     private VersionHandler versionHandler;
 
     public SmartSignEditor() {
-	this.logger = this.getLogger();
 	this.smartPlayers = new HashMap<UUID, SmartPlayer>();
 	this.signConfig = new SignConfiguration(this);
 	this.tools = new HashMap<ToolType, Tool>();
@@ -70,6 +69,7 @@ public final class SmartSignEditor extends JavaPlugin {
     
     @Override
     public void onEnable() {
+	this.logger = this.getLogger();
 	this.versionHandler = VersionHandler.hookInternally();
 	if (versionHandler == null) {
 	    String currentVersion = getServer().getClass().getPackage().getName();

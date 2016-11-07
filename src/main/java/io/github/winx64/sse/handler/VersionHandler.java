@@ -28,8 +28,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import io.github.winx64.sse.handler.versions.VersionHandler_1_10_R1;
-import io.github.winx64.sse.handler.versions.VersionHandler_1_6_R2;
-import io.github.winx64.sse.handler.versions.VersionHandler_1_6_R3;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_7_R1;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_7_R2;
 import io.github.winx64.sse.handler.versions.VersionHandler_1_7_R3;
@@ -55,8 +53,6 @@ public abstract class VersionHandler {
     private static final Map<String, Class<? extends VersionHandler>> SUPPORTED_VERSIONS = new LinkedHashMap<String, Class<? extends VersionHandler>>();
 
     static {
-	SUPPORTED_VERSIONS.put("v1_6_R2", VersionHandler_1_6_R2.class);
-	SUPPORTED_VERSIONS.put("v1_6_R3", VersionHandler_1_6_R3.class);
 	SUPPORTED_VERSIONS.put("v1_7_R1", VersionHandler_1_7_R1.class);
 	SUPPORTED_VERSIONS.put("v1_7_R2", VersionHandler_1_7_R2.class);
 	SUPPORTED_VERSIONS.put("v1_7_R3", VersionHandler_1_7_R3.class);
@@ -128,6 +124,13 @@ public abstract class VersionHandler {
      *            The sign
      */
     public abstract void openSignEditor(Player player, Sign sign);
+    
+    /**
+     * Checks if the specified sign is currently being edited by a player or not
+     * @param sign The sign
+     * @return Whether the sign is being edited or not
+     */
+    public abstract boolean isSignBeingEdited(Sign sign);
 
     /**
      * Older builds don't have the new method, and newer builds don't have the

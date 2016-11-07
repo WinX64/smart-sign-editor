@@ -23,11 +23,13 @@ import java.util.Collection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
+import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_7_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import io.github.winx64.sse.handler.VersionHandler;
+import net.minecraft.server.v1_7_R2.World;
 import net.minecraft.server.v1_7_R2.EntityPlayer;
 import net.minecraft.server.v1_7_R2.PacketPlayOutOpenSignEditor;
 import net.minecraft.server.v1_7_R2.PacketPlayOutUpdateSign;
@@ -54,6 +56,16 @@ public final class VersionHandler_1_7_R2 extends VersionHandler {
 	tileEntitySign.isEditable = true;
 	tileEntitySign.a(nmsPlayer);
 	conn.sendPacket(new PacketPlayOutOpenSignEditor(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+    }
+    
+    @Override
+    public boolean isSignBeingEdited(Sign sign) {
+	Location loc = sign.getLocation();
+	World world = ((CraftWorld)sign.getWorld()).getHandle();
+	TileEntitySign tileEntitySign = (TileEntitySign) world.getTileEntity(loc.getBlockX(), loc.getBlockY(),
+		loc.getBlockZ());
+	
+	return tileEntitySign.isEditable;
     }
 
     @Override

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.winx64</groupId>
 	<artifactId>SmartSignEditor</artifactId>
-	<version>2.3.2</version>
+	<version>2.3.3</version>
 	<name>SmartSignEditor</name>
 	<description>Edit your signs with style</description>
 
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.6.2-R0.1</version>
+			<version>1.6.2-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
@@ -34,4 +34,8 @@
 			</resource>
 		</resources>
 	</build>
+	<properties>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+	</properties>
 </project>

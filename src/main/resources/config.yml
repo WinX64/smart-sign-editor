@@ -11,9 +11,9 @@ tool-item:
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
-          display-name: '§bThe Great Editing Feather'
+          display-name: "\u00A7bThe Great Editing Feather"
           lore:
-          - '§7Using this tool, you can Edit/Copy/Paste/Erase signs!'
+          - "\u00A77Using this tool, you can Edit/Copy/Paste/Erase signs!"
           
     #Does the item name have to match the tool item's name? If TRUE, only items with the same type and name will work.
     match-name: false

@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 import io.github.winx64.sse.handler.VersionHandler;
 import net.minecraft.server.v1_9_R2.ChatComponentText;
 import net.minecraft.server.v1_9_R2.IChatBaseComponent;
+import net.minecraft.server.v1_9_R2.World;
 import net.minecraft.server.v1_9_R2.BlockPosition;
 import net.minecraft.server.v1_9_R2.EntityPlayer;
 import net.minecraft.server.v1_9_R2.PacketPlayOutOpenSignEditor;
@@ -42,8 +43,9 @@ public final class VersionHandler_1_9_R2 extends VersionHandler {
     public void updateSignText(Player player, Sign sign, String[] text) {
 	Location loc = sign.getLocation();
 	BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
-	TileEntitySign tileEntitySign = (TileEntitySign) ((CraftWorld) sign.getWorld()).getHandle().getTileEntity(pos);
-	PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
+	EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+	TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
+	PlayerConnection conn = nmsPlayer.playerConnection;
 	IChatBaseComponent[] oldSignText = new IChatBaseComponent[4];
 
 	for (int i = 0; i < 4; i++) {
@@ -67,6 +69,16 @@ public final class VersionHandler_1_9_R2 extends VersionHandler {
 	tileEntitySign.isEditable = true;
 	tileEntitySign.a(nmsPlayer);
 	conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
+    }
+    
+    @Override
+    public boolean isSignBeingEdited(Sign sign) {
+	Location loc = sign.getLocation();
+	BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
+	World world = ((CraftWorld)sign.getWorld()).getHandle();
+	TileEntitySign tileEntitySign = (TileEntitySign) world.getTileEntity(pos);
+	
+	return tileEntitySign.isEditable;
     }
 
     @Override

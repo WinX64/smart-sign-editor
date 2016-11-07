@@ -31,6 +31,11 @@ public final class Permissions {
      * Edit/Copy/Paste/Erase signs without directly interacting with them
      */
     public static final String EXTENDED_TOOL = "sse.tool.extended";
+    
+    /**
+     * Modify signs that are currently being edited by others
+     */
+    public static final String TOOL_EDIT_OVERRIDE = "sse.tool.override";
 
     /**
      * Use the edit tool

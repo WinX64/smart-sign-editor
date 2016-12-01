@@ -1,0 +1,30 @@
+#Version. Do NOT touch this
+messages-version: 2
+
+command:
+    no-console-allowed: '&cThis command cannot be used via console!'
+    reload:
+        success: '&aConfiguration & Messages reloaded with success!'
+        failure: '&cFailed to reload the configuration/messages! Check the console for more information!'
+        
+tool:
+    no-tool-permission: '&cYou don''t have permission to use the {tool} Tool!'
+    no-sub-tool-permission: '&cYou don''t have permission to use the {sub-tool} Tool Option!'
+    invalid-sign-line: '&cChoose a valid line, inside the sign''s plate!'
+    override-no-permission: '&cSomeone is already editing this sign!'
+    tool-changed: '&eTool Mode: &b{tool}'
+    
+    copy:
+        sign-copied: '&aSign text copied!'
+        line-copied: '&aLine text copied: &r{line}'
+        
+    paste:
+        sign-replaced: '&aSign text replaced!'
+        line-replaced: '&aLine text replaced: &r{line}'
+        no-line-copied: '&cYou haven''t copied any line yet!'
+        no-sign-copied: '&cYou haven''t copied any sign yet!'
+        
+    erase:
+        sign-cleared: '&aSign text cleared!'
+        line-cleared: '&aLine text cleared!'
+    

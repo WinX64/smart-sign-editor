@@ -1,0 +1,81 @@
+#Version. Do NOT touch this
+config-version: 2
+
+#Tool item configuriation
+tool-item:
+
+    #The physical item used to handle sign modifications
+    tool:
+        ==: org.bukkit.inventory.ItemStack
+        type: FEATHER
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "\u00A7bThe Great Editing Feather"
+          lore:
+          - "\u00A77Using this tool, you can Edit/Copy/Paste/Erase signs!"
+          
+    #Does the item name have to match the tool item's name? If TRUE, only items with the same type and name will work.
+    match-name: false
+    
+    #Does the item lore have to match the tool item's lore? If TRUE, onlt items with the same type and lore will work.
+    match-lore: false
+
+#Usages for the different tools and options
+#Available options: NO_SHIFT_RIGHT_CLICK, SHIFT_RIGHT_CLICK, RIGHT_CLICK, NO_SHIFT_LEFT_CLICK, SHIFT_LEFT_CLICK, LEFT_CLICK
+#Make sure that usages for a single tool don't conflict with eachother. Eg.: SHIFT_RIGHT_CLICK for line-copy and RIGHT_CLICK for sign-copy
+tool-usages:
+
+    #Usages for the edit tool
+    edit-tool:
+        sign-edit-usage: RIGHT_CLICK
+
+    #Usages for the copy tool
+    copy-tool:
+        sign-copy-usage: NO_SHIFT_RIGHT_CLICK
+        line-copy-usage: SHIFT_RIGHT_CLICK
+
+    #Usages for the paste tool
+    paste-tool:
+        sign-paste-usage: NO_SHIFT_RIGHT_CLICK
+        line-paste-usage: SHIFT_RIGHT_CLICK
+
+    #Usages for the erase tool
+    erase-tool:
+        sign-erase-usage: NO_SHIFT_RIGHT_CLICK
+        line-erase-usage: SHIFT_RIGHT_CLICK
+        
+    #Usages for the tool changer
+    tool-change:
+        next-tool-usage: NO_SHIFT_RIGHT_CLICK
+        previous-tool-usage: SHIFT_RIGHT_CLICK
+        
+#Interact with signs without having to be near them
+extended-tool:
+
+    #Should it be enabled?
+    enabled: true
+    
+    #The maximum distance in blocks to count as an interaction
+    reach: 10
+
+#Special types of signs. These ones will be handled differently to avoid conflicts
+special-signs:
+    - '[color]'
+    - '[balance]'
+    - '[buy]'
+    - '[sell]'
+    - '[trade]'
+    - '[free]'
+    - '[disposal]'
+    - '[warp]'
+    - '[kit]'
+    - '[mail]'
+    - '[enchant]'
+    - '[gamemode]'
+    - '[heal]'
+    - '[info]'
+    - '[spawnmob]'
+    - '[repair]'
+    - '[time]'
+    - '[weather]'

@@ -1,0 +1,22 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.github.winx64</groupId>
+		<artifactId>SmartSignEditor</artifactId>
+		<version>2.4.0</version>
+	</parent>
+	<artifactId>SmartSignEditor-1_8_R3</artifactId>
+	<dependencies>
+		<dependency>
+			<groupId>io.github.winx64</groupId>
+			<artifactId>SmartSignEditor-Version</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

@@ -38,7 +38,7 @@ public final class EditTool extends Tool {
     public void usePrimary(SmartPlayer sPlayer, Sign sign) {
 	Player player = sPlayer.getPlayer();
 
-	if (plugin.getVersionHandler().isSignBeingEdited(sign)
+	if (plugin.getVersionAdapter().isSignBeingEdited(sign)
 		&& !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
 	    player.sendMessage(signMessages.get(Message.OVERRIDE_NO_PERMISSION));
 	    return;
@@ -48,8 +48,8 @@ public final class EditTool extends Tool {
 	for (int i = 0; i < 4; i++) {
 	    noColors[i] = noColors[i].replace(ChatColor.COLOR_CHAR, '&');
 	}
-	plugin.getVersionHandler().updateSignText(player, sign, noColors);
-	plugin.getVersionHandler().openSignEditor(player, sign);
+	plugin.getVersionAdapter().updateSignText(player, sign, noColors);
+	plugin.getVersionAdapter().openSignEditor(player, sign);
     }
 
     @Override

@@ -40,7 +40,7 @@ public final class EraseTool extends Tool {
     public void usePrimary(SmartPlayer sPlayer, Sign sign) {
 	Player player = sPlayer.getPlayer();
 
-	if (plugin.getVersionHandler().isSignBeingEdited(sign)
+	if (plugin.getVersionAdapter().isSignBeingEdited(sign)
 		&& !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
 	    player.sendMessage(signMessages.get(Message.OVERRIDE_NO_PERMISSION));
 	    return;
@@ -57,7 +57,7 @@ public final class EraseTool extends Tool {
     public void useSecondary(SmartPlayer sPlayer, Sign sign) {
 	Player player = sPlayer.getPlayer();
 
-	if (plugin.getVersionHandler().isSignBeingEdited(sign)
+	if (plugin.getVersionAdapter().isSignBeingEdited(sign)
 		&& !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
 	    player.sendMessage(signMessages.get(Message.OVERRIDE_NO_PERMISSION));
 	    return;

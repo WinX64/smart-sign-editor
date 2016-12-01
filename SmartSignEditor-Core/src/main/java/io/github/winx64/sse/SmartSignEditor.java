@@ -69,6 +69,8 @@ public final class SmartSignEditor extends JavaPlugin {
 	this.signConfig = new SignConfiguration(this);
 	this.signMessages = new SignMessages(this);
 	this.tools = new HashMap<ToolType, Tool>();
+
+	new Metrics(this);
     }
 
     @Override
@@ -150,7 +152,7 @@ public final class SmartSignEditor extends JavaPlugin {
 	smartPlayers.remove(uniqueId);
     }
 
-    public VersionAdapter getVersionHandler() {
+    public VersionAdapter getVersionAdapter() {
 	return versionAdapter;
     }
 

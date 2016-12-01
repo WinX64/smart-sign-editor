@@ -46,7 +46,7 @@ public final class PasteTool extends Tool {
 	    return;
 	}
 
-	if (plugin.getVersionHandler().isSignBeingEdited(sign)
+	if (plugin.getVersionAdapter().isSignBeingEdited(sign)
 		&& !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
 	    player.sendMessage(signMessages.get(Message.OVERRIDE_NO_PERMISSION));
 	    return;
@@ -72,7 +72,7 @@ public final class PasteTool extends Tool {
 	    return;
 	}
 
-	if (plugin.getVersionHandler().isSignBeingEdited(sign)
+	if (plugin.getVersionAdapter().isSignBeingEdited(sign)
 		&& !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
 	    player.sendMessage(signMessages.get(Message.OVERRIDE_NO_PERMISSION));
 	    return;

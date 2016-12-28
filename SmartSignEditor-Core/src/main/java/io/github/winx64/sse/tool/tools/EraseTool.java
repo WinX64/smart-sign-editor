@@ -31,53 +31,53 @@ import io.github.winx64.sse.tool.ToolType;
 
 public final class EraseTool extends Tool {
 
-    public EraseTool(SmartSignEditor plugin) {
-	super(plugin, ToolType.ERASE, "Sign Erase", "Line Erase", Permissions.TOOL_ERASE_ALL,
-		Permissions.TOOL_ERASE_LINE);
-    }
-
-    @Override
-    public void usePrimary(SmartPlayer sPlayer, Sign sign) {
-	Player player = sPlayer.getPlayer();
-
-	if (plugin.getVersionAdapter().isSignBeingEdited(sign)
-		&& !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
-	    player.sendMessage(signMessages.get(Message.OVERRIDE_NO_PERMISSION));
-	    return;
+	public EraseTool(SmartSignEditor plugin) {
+		super(plugin, ToolType.ERASE, "Sign Erase", "Line Erase", Permissions.TOOL_ERASE_ALL,
+				Permissions.TOOL_ERASE_LINE);
 	}
 
-	for (int i = 0; i < 4; i++) {
-	    sign.setLine(i, "");
-	}
-	sign.update();
-	player.sendMessage(signMessages.get(Message.TOOL_SIGN_CLEARED));
-    }
+	@Override
+	public void usePrimary(SmartPlayer sPlayer, Sign sign) {
+		Player player = sPlayer.getPlayer();
 
-    @Override
-    public void useSecondary(SmartPlayer sPlayer, Sign sign) {
-	Player player = sPlayer.getPlayer();
+		if (plugin.getVersionAdapter().isSignBeingEdited(sign)
+				&& !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
+			player.sendMessage(signMessages.get(Message.OVERRIDE_NO_PERMISSION));
+			return;
+		}
 
-	if (plugin.getVersionAdapter().isSignBeingEdited(sign)
-		&& !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
-	    player.sendMessage(signMessages.get(Message.OVERRIDE_NO_PERMISSION));
-	    return;
-	}
-
-	Vector intersection = MathUtil.getSightSignIntersection(player, sign);
-	if (intersection == null) {
-	    player.sendMessage(signMessages.get(Message.INVALID_LINE));
-	    return;
+		for (int i = 0; i < 4; i++) {
+			sign.setLine(i, "");
+		}
+		sign.update();
+		player.sendMessage(signMessages.get(Message.TOOL_SIGN_CLEARED));
 	}
 
-	int clickedLine = MathUtil.getSignLine(intersection, sign);
+	@Override
+	public void useSecondary(SmartPlayer sPlayer, Sign sign) {
+		Player player = sPlayer.getPlayer();
 
-	sign.setLine(clickedLine, "");
-	sign.update();
-	player.sendMessage(signMessages.get(Message.TOOL_LINE_CLEARED));
-    }
+		if (plugin.getVersionAdapter().isSignBeingEdited(sign)
+				&& !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
+			player.sendMessage(signMessages.get(Message.OVERRIDE_NO_PERMISSION));
+			return;
+		}
 
-    @Override
-    public boolean preSpecialHandling() {
-	return false;
-    }
+		Vector intersection = MathUtil.getSightSignIntersection(player, sign);
+		if (intersection == null) {
+			player.sendMessage(signMessages.get(Message.INVALID_LINE));
+			return;
+		}
+
+		int clickedLine = MathUtil.getSignLine(intersection, sign);
+
+		sign.setLine(clickedLine, "");
+		sign.update();
+		player.sendMessage(signMessages.get(Message.TOOL_LINE_CLEARED));
+	}
+
+	@Override
+	public boolean preSpecialHandling() {
+		return false;
+	}
 }

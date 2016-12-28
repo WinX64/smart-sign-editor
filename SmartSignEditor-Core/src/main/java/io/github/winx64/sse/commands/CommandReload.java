@@ -27,21 +27,21 @@ import io.github.winx64.sse.SmartSignEditor;
 
 public final class CommandReload implements CommandExecutor {
 
-    private final SmartSignEditor plugin;
-    private final SignMessages signMessages;
+	private final SmartSignEditor plugin;
+	private final SignMessages signMessages;
 
-    public CommandReload(SmartSignEditor plugin) {
-	this.plugin = plugin;
-	this.signMessages = plugin.getSignMessages();
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
-	if (plugin.getSignConfig().loadConfiguration() && plugin.getSignMessages().loadMessages()) {
-	    sender.sendMessage(signMessages.get(Message.COMMAND_RELOAD_SUCCESS));
-	} else {
-	    sender.sendMessage(signMessages.get(Message.COMMAND_RELOAD_FAILURE));
+	public CommandReload(SmartSignEditor plugin) {
+		this.plugin = plugin;
+		this.signMessages = plugin.getSignMessages();
 	}
-	return true;
-    }
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
+		if (plugin.getSignConfig().loadConfiguration() && plugin.getSignMessages().loadMessages()) {
+			sender.sendMessage(signMessages.get(Message.COMMAND_RELOAD_SUCCESS));
+		} else {
+			sender.sendMessage(signMessages.get(Message.COMMAND_RELOAD_FAILURE));
+		}
+		return true;
+	}
 }

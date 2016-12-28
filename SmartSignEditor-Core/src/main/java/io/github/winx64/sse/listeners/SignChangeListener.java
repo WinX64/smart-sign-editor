@@ -29,17 +29,16 @@ import io.github.winx64.sse.player.Permissions;
 
 public final class SignChangeListener implements Listener {
 
-    public SignChangeListener(SmartSignEditor plugin) {
-    }
+	public SignChangeListener(SmartSignEditor plugin) {}
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onSignChange(SignChangeEvent event) {
-	Player player = event.getPlayer();
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onSignChange(SignChangeEvent event) {
+		Player player = event.getPlayer();
 
-	if (player.hasPermission(Permissions.TOOL_EDIT_COLORS)) {
-	    for (int i = 0; i < 4; i++) {
-		event.setLine(i, ChatColor.translateAlternateColorCodes('&', event.getLine(i)));
-	    }
+		if (player.hasPermission(Permissions.TOOL_EDIT_COLORS)) {
+			for (int i = 0; i < 4; i++) {
+				event.setLine(i, ChatColor.translateAlternateColorCodes('&', event.getLine(i)));
+			}
+		}
 	}
-    }
 }

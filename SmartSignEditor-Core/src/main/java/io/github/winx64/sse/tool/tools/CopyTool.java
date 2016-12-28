@@ -32,45 +32,45 @@ import io.github.winx64.sse.tool.ToolType;
 
 public final class CopyTool extends Tool {
 
-    public CopyTool(SmartSignEditor plugin) {
-	super(plugin, ToolType.COPY, "Sign Copy", "Line Copy", Permissions.TOOL_COPY_ALL, Permissions.TOOL_COPY_LINE);
-    }
-
-    @Override
-    public void usePrimary(SmartPlayer sPlayer, Sign sign) {
-	Player player = sPlayer.getPlayer();
-
-	for (int i = 0; i < 4; i++) {
-	    if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
-		sPlayer.setSignBuffer(i, ChatColor.stripColor(sign.getLine(i)));
-	    } else {
-		sPlayer.setSignBuffer(i, sign.getLine(i));
-	    }
+	public CopyTool(SmartSignEditor plugin) {
+		super(plugin, ToolType.COPY, "Sign Copy", "Line Copy", Permissions.TOOL_COPY_ALL, Permissions.TOOL_COPY_LINE);
 	}
-	player.sendMessage(signMessages.get(Message.TOOL_SIGN_COPIED));
-    }
 
-    @Override
-    public void useSecondary(SmartPlayer sPlayer, Sign sign) {
-	Player player = sPlayer.getPlayer();
+	@Override
+	public void usePrimary(SmartPlayer sPlayer, Sign sign) {
+		Player player = sPlayer.getPlayer();
 
-	Vector intersection = MathUtil.getSightSignIntersection(player, sign);
-	if (intersection == null) {
-	    player.sendMessage(signMessages.get(Message.INVALID_LINE));
-	    return;
+		for (int i = 0; i < 4; i++) {
+			if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
+				sPlayer.setSignBuffer(i, ChatColor.stripColor(sign.getLine(i)));
+			} else {
+				sPlayer.setSignBuffer(i, sign.getLine(i));
+			}
+		}
+		player.sendMessage(signMessages.get(Message.TOOL_SIGN_COPIED));
 	}
-	int clickedLine = MathUtil.getSignLine(intersection, sign);
 
-	if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
-	    sPlayer.setLineBuffer(ChatColor.stripColor(sign.getLine(clickedLine)));
-	} else {
-	    sPlayer.setLineBuffer(sign.getLine(clickedLine));
+	@Override
+	public void useSecondary(SmartPlayer sPlayer, Sign sign) {
+		Player player = sPlayer.getPlayer();
+
+		Vector intersection = MathUtil.getSightSignIntersection(player, sign);
+		if (intersection == null) {
+			player.sendMessage(signMessages.get(Message.INVALID_LINE));
+			return;
+		}
+		int clickedLine = MathUtil.getSignLine(intersection, sign);
+
+		if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
+			sPlayer.setLineBuffer(ChatColor.stripColor(sign.getLine(clickedLine)));
+		} else {
+			sPlayer.setLineBuffer(sign.getLine(clickedLine));
+		}
+		player.sendMessage(signMessages.get(Message.TOOL_LINE_COPIED, sPlayer.getLineBuffer()));
 	}
-	player.sendMessage(signMessages.get(Message.TOOL_LINE_COPIED, sPlayer.getLineBuffer()));
-    }
 
-    @Override
-    public boolean preSpecialHandling() {
-	return false;
-    }
+	@Override
+	public boolean preSpecialHandling() {
+		return false;
+	}
 }

@@ -26,6 +26,8 @@ import org.bukkit.craftbukkit.v1_11_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import io.github.winx64.sse.handler.VersionAdapter;
 import net.minecraft.server.v1_11_R1.BlockPosition;
@@ -39,50 +41,55 @@ import net.minecraft.server.v1_11_R1.World;
 
 public final class VersionAdapter_1_11_R1 implements VersionAdapter {
 
-    @Override
-    public void updateSignText(Player player, Sign sign, String[] text) {
-	Location loc = sign.getLocation();
-	BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
-	EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-	TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
-	PlayerConnection conn = nmsPlayer.playerConnection;
-	IChatBaseComponent[] oldSignText = new IChatBaseComponent[4];
+	@Override
+	public void updateSignText(Player player, Sign sign, String[] text) {
+		Location loc = sign.getLocation();
+		BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
+		EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+		TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
+		PlayerConnection conn = nmsPlayer.playerConnection;
+		IChatBaseComponent[] oldSignText = new IChatBaseComponent[4];
 
-	for (int i = 0; i < 4; i++) {
-	    oldSignText[i] = tileEntitySign.lines[i];
-	    tileEntitySign.lines[i] = new ChatComponentText(text[i]);
+		for (int i = 0; i < 4; i++) {
+			oldSignText[i] = tileEntitySign.lines[i];
+			tileEntitySign.lines[i] = new ChatComponentText(text[i]);
+		}
+		conn.sendPacket(tileEntitySign.getUpdatePacket());
+		for (int i = 0; i < 4; i++) {
+			tileEntitySign.lines[i] = oldSignText[i];
+		}
 	}
-	conn.sendPacket(tileEntitySign.getUpdatePacket());
-	for (int i = 0; i < 4; i++) {
-	    tileEntitySign.lines[i] = oldSignText[i];
+
+	@Override
+	public void openSignEditor(Player player, Sign sign) {
+		Location loc = sign.getLocation();
+		BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
+		EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+		TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
+		PlayerConnection conn = nmsPlayer.playerConnection;
+
+		tileEntitySign.isEditable = true;
+		tileEntitySign.a(nmsPlayer);
+		conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
 	}
-    }
 
-    @Override
-    public void openSignEditor(Player player, Sign sign) {
-	Location loc = sign.getLocation();
-	BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
-	EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-	TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
-	PlayerConnection conn = nmsPlayer.playerConnection;
+	@Override
+	public boolean isSignBeingEdited(Sign sign) {
+		Location loc = sign.getLocation();
+		BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
+		World world = ((CraftWorld) sign.getWorld()).getHandle();
+		TileEntitySign tileEntitySign = (TileEntitySign) world.getTileEntity(pos);
 
-	tileEntitySign.isEditable = true;
-	tileEntitySign.a(nmsPlayer);
-	conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
-    }
-    
-    @Override
-    public boolean isSignBeingEdited(Sign sign) {
-	Location loc = sign.getLocation();
-	BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
-	World world = ((CraftWorld)sign.getWorld()).getHandle();
-	TileEntitySign tileEntitySign = (TileEntitySign) world.getTileEntity(pos);
-	
-	return tileEntitySign.isEditable;
-    }
+		return tileEntitySign.isEditable;
+	}
 
-    @Override
-    public Collection<? extends Player> getOnlinePlayers() {
-	return ((CraftServer) Bukkit.getServer()).getOnlinePlayers();
-    }
+	@Override
+	public boolean shouldProcessEvent(PlayerInteractEvent event) {
+		return event.getHand() == EquipmentSlot.HAND;
+	}
+
+	@Override
+	public Collection<? extends Player> getOnlinePlayers() {
+		return ((CraftServer) Bukkit.getServer()).getOnlinePlayers();
+	}
 }

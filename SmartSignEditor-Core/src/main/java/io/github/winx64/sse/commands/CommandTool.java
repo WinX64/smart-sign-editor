@@ -27,25 +27,25 @@ import io.github.winx64.sse.SignMessages.Message;
 import io.github.winx64.sse.SmartSignEditor;
 
 public final class CommandTool implements CommandExecutor {
-    
-    private final SmartSignEditor plugin;
-    private final SignMessages signMessages;
-    
-    public CommandTool(SmartSignEditor plugin) {
-	this.plugin = plugin;
-	this.signMessages = plugin.getSignMessages();
-    }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
-	if (!(sender instanceof Player)) {
-	    sender.sendMessage(signMessages.get(Message.COMMAND_NO_CONSOLE));
-	    return true;
+	private final SmartSignEditor plugin;
+	private final SignMessages signMessages;
+
+	public CommandTool(SmartSignEditor plugin) {
+		this.plugin = plugin;
+		this.signMessages = plugin.getSignMessages();
 	}
-	
-	Player player = (Player)sender;
-	player.getInventory().addItem(plugin.getSignConfig().getToolItem());
-	return true;
-    }
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
+		if (!(sender instanceof Player)) {
+			sender.sendMessage(signMessages.get(Message.COMMAND_NO_CONSOLE));
+			return true;
+		}
+
+		Player player = (Player) sender;
+		player.getInventory().addItem(plugin.getSignConfig().getToolItem());
+		return true;
+	}
 
 }

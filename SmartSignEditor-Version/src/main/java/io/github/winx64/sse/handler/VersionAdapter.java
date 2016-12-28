@@ -21,46 +21,57 @@ import java.util.Collection;
 
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public interface VersionAdapter {
 
-    /**
-     * Updates a the text of a sign for a specific player
-     * 
-     * @param player
-     *            The player
-     * @param sign
-     *            The sign
-     * @param text
-     *            The new lines of text
-     */
-    public void updateSignText(Player player, Sign sign, String[] text);
+	/**
+	 * Updates a the text of a sign for a specific player
+	 * 
+	 * @param player
+	 *            The player
+	 * @param sign
+	 *            The sign
+	 * @param text
+	 *            The new lines of text
+	 */
+	public void updateSignText(Player player, Sign sign, String[] text);
 
-    /**
-     * Set the player as the one editing the sign and opens the sign editor for
-     * them
-     * 
-     * @param player
-     *            The player
-     * @param sign
-     *            The sign
-     */
-    public void openSignEditor(Player player, Sign sign);
+	/**
+	 * Set the player as the one editing the sign and opens the sign editor for
+	 * them
+	 * 
+	 * @param player
+	 *            The player
+	 * @param sign
+	 *            The sign
+	 */
+	public void openSignEditor(Player player, Sign sign);
 
-    /**
-     * Checks if the specified sign is currently being edited by a player or not
-     * 
-     * @param sign
-     *            The sign
-     * @return Whether the sign is being edited or not
-     */
-    public boolean isSignBeingEdited(Sign sign);
+	/**
+	 * Checks if the specified sign is currently being edited by a player or not
+	 * 
+	 * @param sign
+	 *            The sign
+	 * @return Whether the sign is being edited or not
+	 */
+	public boolean isSignBeingEdited(Sign sign);
 
-    /**
-     * Older builds don't have the new method, and newer builds don't have the
-     * old method. This one should work for all of them.
-     * 
-     * @return The online players
-     */
-    public Collection<? extends Player> getOnlinePlayers();
+	/**
+	 * Checks if the plugin should continue processing this event. Mainly to
+	 * avoid calling interact events twice due to the dual wielding in newer
+	 * versions
+	 * 
+	 * @param event The interact event
+	 * @return If it should continue
+	 */
+	public boolean shouldProcessEvent(PlayerInteractEvent event);
+
+	/**
+	 * Older builds don't have the new method, and newer builds don't have the
+	 * old method. This one should work for all of them.
+	 * 
+	 * @return The online players
+	 */
+	public Collection<? extends Player> getOnlinePlayers();
 }

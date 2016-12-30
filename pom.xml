@@ -2,26 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.winx64</groupId>
-	<artifactId>SmartSignEditor</artifactId>
-	<version>2.4.0</version>
+	<artifactId>smartsigneditor-parent</artifactId>
+	<version>2.4.1</version>
 	<packaging>pom</packaging>
-	<name>SmartSignEditor</name>
-	<description>Edit your signs with style</description>
-	<modules>
-		<module>SmartSignEditor-Version</module>
-		<module>SmartSignEditor-1_7_R1</module>
-		<module>SmartSignEditor-1_7_R2</module>
-		<module>SmartSignEditor-1_7_R3</module>
-		<module>SmartSignEditor-1_7_R4</module>
-		<module>SmartSignEditor-1_8_R1</module>
-        <module>SmartSignEditor-1_8_R2</module>
-        <module>SmartSignEditor-1_8_R3</module>
-        <module>SmartSignEditor-1_9_R1</module>
-        <module>SmartSignEditor-1_9_R2</module>
-        <module>SmartSignEditor-1_10_R1</module>
-        <module>SmartSignEditor-1_11_R1</module>
-		<module>SmartSignEditor-Core</module>
-	</modules>
+	<name>SmartSignEditor-Parent</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.bukkit</groupId>
@@ -29,4 +13,24 @@
 			<version>1.7.2-R0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+	<modules>
+		<module>SmartSignEditor</module>
+		<module>Versions/1_10_R1</module>
+		<module>Versions/1_11_R1</module>
+		<module>Versions/1_7_R1</module>
+		<module>Versions/1_7_R2</module>
+		<module>Versions/1_7_R3</module>
+		<module>Versions/1_7_R4</module>
+		<module>Versions/1_8_R1</module>
+		<module>Versions/1_8_R2</module>
+		<module>Versions/1_8_R3</module>
+		<module>Versions/1_9_R1</module>
+		<module>Versions/1_9_R2</module>
+		<module>Versions/Adapter</module>
+	</modules>
+	<description>Parent module of the entire SmartSignEditor project</description>
+	<issueManagement>
+		<url>https://github.com/WinX64/SmartSignEditor/issues</url>
+		<system>GitHub</system>
+	</issueManagement>
 </project>

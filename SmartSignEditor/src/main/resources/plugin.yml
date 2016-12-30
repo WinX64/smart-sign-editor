@@ -1,9 +1,9 @@
 main: io.github.winx64.sse.SmartSignEditor
-name: SmartSignEditor
-description: Edit your signs with style
-version: ${version}
+name: ${project.name}
+description: ${project.description}
+version: ${project.version}
 author: '123'
-website: 'http://dev.bukkit.org/bukkit-plugins/sse/'
+website: ${project.url}
 
 commands:
     sse:

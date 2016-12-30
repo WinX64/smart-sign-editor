@@ -3,20 +3,23 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.github.winx64</groupId>
-		<artifactId>SmartSignEditor</artifactId>
-		<version>2.4.0</version>
+		<artifactId>smartsigneditor-parent</artifactId>
+		<version>2.4.1</version>
+		<relativePath>../..</relativePath>
 	</parent>
-	<artifactId>SmartSignEditor-1_8_R2</artifactId>
+	<artifactId>smartsigneditor-1_7_R1</artifactId>
 	<dependencies>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>1.8.3-R0.1-SNAPSHOT</version>
+			<version>1.7.2-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.winx64</groupId>
-			<artifactId>SmartSignEditor-Version</artifactId>
-			<version>2.4.0</version>
+			<artifactId>smartsigneditor-adapter</artifactId>
+			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>
+	<name>SmartSignEditor-1_7_R1</name>
+	<description>Version adapter implementation for v1_7_R1</description>
 </project>

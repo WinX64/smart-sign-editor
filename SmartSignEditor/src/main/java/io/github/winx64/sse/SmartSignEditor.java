@@ -30,6 +30,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import io.github.winx64.sse.Metrics.SimplePie;
 import io.github.winx64.sse.commands.CommandReload;
 import io.github.winx64.sse.commands.CommandTool;
 import io.github.winx64.sse.handler.VersionAdapter;
@@ -69,8 +70,6 @@ public final class SmartSignEditor extends JavaPlugin {
 		this.signConfig = new SignConfiguration(this);
 		this.signMessages = new SignMessages(this);
 		this.tools = new HashMap<ToolType, Tool>();
-
-		new Metrics(this);
 	}
 
 	@Override
@@ -122,6 +121,16 @@ public final class SmartSignEditor extends JavaPlugin {
 
 		this.getCommand("sse").setExecutor(new CommandTool(this));
 		this.getCommand("sse-reload").setExecutor(new CommandReload(this));
+
+		Metrics metrics = new Metrics(this);
+		metrics.addCustomChart(new SimplePie("mostUsedTool") {
+
+			@Override
+			public String getValue() {
+				Tool mostUsedTool = getMostUsedTool();
+				return mostUsedTool.getType().getName();
+			}
+		});
 	}
 
 	public SignConfiguration getSignConfig() {
@@ -134,6 +143,19 @@ public final class SmartSignEditor extends JavaPlugin {
 
 	public Tool getTool(ToolType type) {
 		return tools.get(type);
+	}
+
+	public Tool getMostUsedTool() {
+		Tool mostUsed = null;
+		for (Tool tool : tools.values()) {
+			if (tool.getType() == null) {
+				continue;
+			}
+			if (mostUsed == null || tool.getTimesUsed() > mostUsed.getTimesUsed()) {
+				mostUsed = tool;
+			}
+		}
+		return mostUsed;
 	}
 
 	public void log(Level level, String format, Object... objects) {

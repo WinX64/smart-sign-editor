@@ -50,6 +50,7 @@ public final class EditTool extends Tool {
 		}
 		plugin.getVersionAdapter().updateSignText(player, sign, noColors);
 		plugin.getVersionAdapter().openSignEditor(player, sign);
+		this.timesUsed++;
 	}
 
 	@Override

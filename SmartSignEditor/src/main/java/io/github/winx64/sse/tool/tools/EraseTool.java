@@ -51,6 +51,7 @@ public final class EraseTool extends Tool {
 		}
 		sign.update();
 		player.sendMessage(signMessages.get(Message.TOOL_SIGN_CLEARED));
+		this.timesUsed++;
 	}
 
 	@Override
@@ -74,6 +75,7 @@ public final class EraseTool extends Tool {
 		sign.setLine(clickedLine, "");
 		sign.update();
 		player.sendMessage(signMessages.get(Message.TOOL_LINE_CLEARED));
+		this.timesUsed++;
 	}
 
 	@Override

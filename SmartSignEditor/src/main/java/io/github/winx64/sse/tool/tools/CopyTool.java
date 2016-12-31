@@ -48,6 +48,7 @@ public final class CopyTool extends Tool {
 			}
 		}
 		player.sendMessage(signMessages.get(Message.TOOL_SIGN_COPIED));
+		this.timesUsed++;
 	}
 
 	@Override
@@ -67,6 +68,7 @@ public final class CopyTool extends Tool {
 			sPlayer.setLineBuffer(sign.getLine(clickedLine));
 		}
 		player.sendMessage(signMessages.get(Message.TOOL_LINE_COPIED, sPlayer.getLineBuffer()));
+		this.timesUsed++;
 	}
 
 	@Override

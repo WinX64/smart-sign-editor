@@ -61,6 +61,7 @@ public final class PasteTool extends Tool {
 		}
 		sign.update();
 		player.sendMessage(signMessages.get(Message.TOOL_SIGN_REPLACED));
+		this.timesUsed++;
 	}
 
 	@Override
@@ -92,6 +93,7 @@ public final class PasteTool extends Tool {
 		}
 		sign.update();
 		player.sendMessage(signMessages.get(Message.TOOL_LINE_REPLACED, sPlayer.getLineBuffer()));
+		this.timesUsed++;
 	}
 
 	@Override

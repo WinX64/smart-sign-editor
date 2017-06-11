@@ -1,6 +1,6 @@
 /*
  *   SmartSignEditor - Edit your signs with style
- *   Copyright (C) WinX64 2013-2016
+ *   Copyright (C) WinX64 2013-2017
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,12 +17,15 @@
  */
 package io.github.winx64.sse.handler.versions;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_7_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R2.entity.CraftPlayer;
@@ -77,5 +80,10 @@ public final class VersionAdapter_1_7_R2 implements VersionAdapter {
 	@Override
 	public Collection<? extends Player> getOnlinePlayers() {
 		return Arrays.asList(((CraftServer) Bukkit.getServer()).getOnlinePlayers());
+	}
+	
+	@Override
+	public YamlConfiguration loadFromResource(InputStream input) throws IOException {
+		return YamlConfiguration.loadConfiguration(input);
 	}
 }

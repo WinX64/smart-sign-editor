@@ -1,6 +1,6 @@
 /*
  *   SmartSignEditor - Edit your signs with style
- *   Copyright (C) WinX64 2013-2016
+ *   Copyright (C) WinX64 2013-2017
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -66,10 +66,10 @@ public final class SmartSignEditor extends JavaPlugin {
 
 	public SmartSignEditor() {
 		this.logger = getLogger();
-		this.smartPlayers = new HashMap<UUID, SmartPlayer>();
+		this.smartPlayers = new HashMap<>();
 		this.signConfig = new SignConfiguration(this);
 		this.signMessages = new SignMessages(this);
-		this.tools = new HashMap<ToolType, Tool>();
+		this.tools = new HashMap<>();
 	}
 
 	@Override

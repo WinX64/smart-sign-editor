@@ -1,6 +1,6 @@
 /*
  *   SmartSignEditor - Edit your signs with style
- *   Copyright (C) WinX64 2013-2016
+ *   Copyright (C) WinX64 2013-2017
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,9 +17,12 @@
  */
 package io.github.winx64.sse.handler;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -62,7 +65,8 @@ public interface VersionAdapter {
 	 * avoid calling interact events twice due to the dual wielding in newer
 	 * versions
 	 * 
-	 * @param event The interact event
+	 * @param event
+	 *            The interact event
 	 * @return If it should continue
 	 */
 	public boolean shouldProcessEvent(PlayerInteractEvent event);
@@ -74,4 +78,13 @@ public interface VersionAdapter {
 	 * @return The online players
 	 */
 	public Collection<? extends Player> getOnlinePlayers();
+
+	/**
+	 * You can no longer read directly from an input stream on 1.12 or above.
+	 * 
+	 * @param input
+	 *            The resource input stream
+	 * @return The parsed yaml configuration
+	 */
+	public YamlConfiguration loadFromResource(InputStream input) throws IOException;
 }

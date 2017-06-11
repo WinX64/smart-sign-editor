@@ -1,6 +1,6 @@
 /*
  *   SmartSignEditor - Edit your signs with style
- *   Copyright (C) WinX64 2013-2016
+ *   Copyright (C) WinX64 2013-2017
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@ import io.github.winx64.sse.tool.ToolUsage;
 
 public final class SignConfiguration {
 
+	private static final String CONFIG_FILE_NAME = "config.yml";
+	private static final String CONFIG_VERSION_KEY = "config-version";
 	private static final int CONFIG_VERSION = 2;
 
 	private final SmartSignEditor plugin;
@@ -52,7 +54,7 @@ public final class SignConfiguration {
 
 	public SignConfiguration(SmartSignEditor plugin) {
 		this.plugin = plugin;
-		this.configFile = new File(plugin.getDataFolder(), "config.yml");
+		this.configFile = new File(plugin.getDataFolder(), CONFIG_FILE_NAME);
 
 		this.toolItem = new ItemStack(Material.FEATHER);
 		this.matchName = false;
@@ -61,7 +63,7 @@ public final class SignConfiguration {
 		this.usingExtendedTool = true;
 		this.extendedToolReach = 10;
 
-		this.specialSigns = new HashSet<String>();
+		this.specialSigns = new HashSet<>();
 	}
 
 	public ItemStack getToolItem() {
@@ -122,7 +124,7 @@ public final class SignConfiguration {
 		try {
 			if (!configFile.exists()) {
 				plugin.log(Level.INFO, "[Config] Config file not found. Creating a new one...");
-				plugin.saveResource("config.yml", true);
+				plugin.saveResource(CONFIG_FILE_NAME, true);
 			}
 			this.config = YamlConfiguration.loadConfiguration(configFile);
 			if (config.getKeys(false).size() == 0) {
@@ -160,11 +162,11 @@ public final class SignConfiguration {
 	}
 
 	private boolean ensureCorrectVersion(boolean saveAndRetry) {
-		int currentVersion = config.getInt("config-version", -1);
+		int currentVersion = config.getInt(CONFIG_VERSION_KEY, -1);
 		if (currentVersion == -1 && saveAndRetry) {
 			plugin.log(Level.WARNING, "[Config] The configuration version is missing. Did you erase it by accident?");
 			plugin.log(Level.INFO, "[Config] Creating an up to date one...");
-			plugin.saveResource("config.yml", true);
+			plugin.saveResource(CONFIG_FILE_NAME, true);
 			this.config = YamlConfiguration.loadConfiguration(configFile);
 			return ensureCorrectVersion(false);
 		}
@@ -175,7 +177,7 @@ public final class SignConfiguration {
 				if (!moveOldConfiguration()) {
 					plugin.log(Level.WARNING, "[Config] Failed to move old configuration. Overwritting it...");
 				}
-				plugin.saveResource("config.yml", true);
+				plugin.saveResource(CONFIG_FILE_NAME, true);
 				this.config = YamlConfiguration.loadConfiguration(configFile);
 				return ensureCorrectVersion(false);
 			} else {
@@ -190,7 +192,7 @@ public final class SignConfiguration {
 		try {
 			String newFileName = "config-old-" + System.currentTimeMillis() + ".yml";
 			File newFile = new File(plugin.getDataFolder(), newFileName);
-			plugin.log(Level.INFO, "[Config] The old config.yml is now \"%s\"", newFileName);
+			plugin.log(Level.INFO, "[Config] The old %s is now \"%s\"", CONFIG_FILE_NAME, newFileName);
 			configFile.renameTo(newFile);
 			return true;
 		} catch (Exception e) {

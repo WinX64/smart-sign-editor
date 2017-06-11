@@ -1,6 +1,6 @@
 /*
  *   SmartSignEditor - Edit your signs with style
- *   Copyright (C) WinX64 2013-2016
+ *   Copyright (C) WinX64 2013-2017
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,8 +17,9 @@
  */
 package io.github.winx64.sse.tool;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.event.block.Action;
 
@@ -30,14 +31,9 @@ import org.bukkit.event.block.Action;
  */
 public enum ToolUsage {
 
-	SHIFT_RIGHT_CLICK,
-	NO_SHIFT_RIGHT_CLICK,
-	SHIFT_LEFT_CLICK,
-	NO_SHIFT_LEFT_CLICK,
-	RIGHT_CLICK,
-	LEFT_CLICK;
+	SHIFT_RIGHT_CLICK, NO_SHIFT_RIGHT_CLICK, SHIFT_LEFT_CLICK, NO_SHIFT_LEFT_CLICK, RIGHT_CLICK, LEFT_CLICK;
 
-	private static final List<List<ToolUsage>> USAGES = new ArrayList<List<ToolUsage>>();
+	private static final Map<Boolean, Map<Boolean, ToolUsage>> USAGES;
 
 	static {
 		SHIFT_RIGHT_CLICK.parent = RIGHT_CLICK;
@@ -45,16 +41,18 @@ public enum ToolUsage {
 		SHIFT_LEFT_CLICK.parent = LEFT_CLICK;
 		NO_SHIFT_LEFT_CLICK.parent = LEFT_CLICK;
 
-		List<ToolUsage> rightUsage = new ArrayList<ToolUsage>();
-		rightUsage.add(NO_SHIFT_RIGHT_CLICK);
-		rightUsage.add(SHIFT_RIGHT_CLICK);
+		Map<Boolean, ToolUsage> rightClick = new HashMap<>();
+		rightClick.put(true, SHIFT_RIGHT_CLICK);
+		rightClick.put(false, NO_SHIFT_RIGHT_CLICK);
 
-		List<ToolUsage> leftUsage = new ArrayList<ToolUsage>();
-		leftUsage.add(NO_SHIFT_LEFT_CLICK);
-		leftUsage.add(SHIFT_LEFT_CLICK);
+		Map<Boolean, ToolUsage> leftClick = new HashMap<>();
+		leftClick.put(true, SHIFT_LEFT_CLICK);
+		leftClick.put(false, NO_SHIFT_LEFT_CLICK);
 
-		USAGES.add(rightUsage);
-		USAGES.add(leftUsage);
+		Map<Boolean, Map<Boolean, ToolUsage>> usages = new HashMap<>();
+		usages.put(true, Collections.unmodifiableMap(rightClick));
+		usages.put(false, Collections.unmodifiableMap(leftClick));
+		USAGES = Collections.unmodifiableMap(usages);
 	}
 
 	private ToolUsage parent;
@@ -76,13 +74,13 @@ public enum ToolUsage {
 	}
 
 	public static ToolUsage getToolUsage(Action action, boolean isSneaking) {
-		return values()[(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK ? 0 : 2)
-				+ (isSneaking ? 0 : 1)];
+		boolean isRightClick = action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
+		return USAGES.get(isRightClick).get(isSneaking);
 	}
 
 	public static ToolUsage getToolUsage(String name) {
 		try {
-			return valueOf(name);
+			return valueOf(name.toUpperCase());
 		} catch (Exception e) {
 			return null;
 		}

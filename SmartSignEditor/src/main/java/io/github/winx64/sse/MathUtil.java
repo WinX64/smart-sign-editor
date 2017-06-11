@@ -1,6 +1,6 @@
 /*
  *   SmartSignEditor - Edit your signs with style
- *   Copyright (C) WinX64 2013-2016
+ *   Copyright (C) WinX64 2013-2017
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -92,7 +92,8 @@ public final class MathUtil {
 	 */
 	private static final double SIGN_LINE_Y_OFFSET[] = new double[] { 5.0, 0.36650, 0.26250, 0.15850, 0.0 };
 
-	private MathUtil() {}
+	private MathUtil() {
+	}
 
 	/**
 	 * Gets at which coordinates the player's line of sight intersected a sign

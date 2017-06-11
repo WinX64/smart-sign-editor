@@ -1,6 +1,6 @@
 /*
  *   SmartSignEditor - Edit your signs with style
- *   Copyright (C) WinX64 2013-2016
+ *   Copyright (C) WinX64 2013-2017
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 package io.github.winx64.sse;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.EnumMap;
 import java.util.Map;
@@ -30,6 +29,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public final class SignMessages {
 
+	private static final String MESSAGES_FILE_NAME = "messages.yml";
+	private static final String MESSAGES_VERSION_KEY = "messages-version";
 	private static final int MESSAGES_VERSION = 2;
 
 	private final SmartSignEditor plugin;
@@ -41,9 +42,9 @@ public final class SignMessages {
 
 	public SignMessages(SmartSignEditor plugin) {
 		this.plugin = plugin;
-		this.messagesFile = new File(plugin.getDataFolder(), "messages.yml");
+		this.messagesFile = new File(plugin.getDataFolder(), MESSAGES_FILE_NAME);
 
-		this.loadedMessages = new EnumMap<Message, String>(Message.class);
+		this.loadedMessages = new EnumMap<>(Message.class);
 	}
 
 	public String get(Message messageType) {
@@ -62,7 +63,7 @@ public final class SignMessages {
 		try {
 			if (!messagesFile.exists()) {
 				plugin.log(Level.INFO, "[Messages] Messages file not found. Creating a new one...");
-				plugin.saveResource("messages.yml", true);
+				plugin.saveResource(MESSAGES_FILE_NAME, true);
 			}
 			this.messages = YamlConfiguration.loadConfiguration(messagesFile);
 			if (messages.getKeys(false).size() == 0) {
@@ -76,7 +77,8 @@ public final class SignMessages {
 			}
 
 			if (!loadDefaultMessages()) {
-				plugin.log(Level.SEVERE, "[Messages] The default messages.yml is missing from the plugin's jar!");
+				plugin.log(Level.SEVERE, "[Messages] The default %s is missing from the plugin's jar!",
+						MESSAGES_FILE_NAME);
 				return false;
 			}
 
@@ -114,29 +116,20 @@ public final class SignMessages {
 	}
 
 	private boolean loadDefaultMessages() {
-		InputStream input = null;
-
-		try {
-			input = plugin.getResource("messages.yml");
-			this.defaultMessages = YamlConfiguration.loadConfiguration(input);
+		try (InputStream input = plugin.getResource(MESSAGES_FILE_NAME)) {
+			this.defaultMessages = this.plugin.getVersionAdapter().loadFromResource(input);
 			return true;
 		} catch (Exception e) {
 			return false;
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (IOException e) {}
-			}
 		}
 	}
 
 	private boolean ensureCorrectVersion(boolean saveAndRetry) {
-		int currentVersion = messages.getInt("messages-version", -1);
+		int currentVersion = messages.getInt(MESSAGES_VERSION_KEY, -1);
 		if (currentVersion == -1 && saveAndRetry) {
 			plugin.log(Level.WARNING, "[Messages] The messages version is missing. Did you erase it by accident?");
 			plugin.log(Level.INFO, "[Messages] Creating an up to date one...");
-			plugin.saveResource("messages.yml", true);
+			plugin.saveResource(MESSAGES_FILE_NAME, true);
 			this.messages = YamlConfiguration.loadConfiguration(messagesFile);
 			return ensureCorrectVersion(false);
 		}
@@ -147,7 +140,7 @@ public final class SignMessages {
 				if (!moveOldMessages()) {
 					plugin.log(Level.WARNING, "[Messages] Failed to move old Messages. Overwritting it...");
 				}
-				plugin.saveResource("messages.yml", true);
+				plugin.saveResource(MESSAGES_FILE_NAME, true);
 				this.messages = YamlConfiguration.loadConfiguration(messagesFile);
 				return ensureCorrectVersion(false);
 			} else {
@@ -162,7 +155,7 @@ public final class SignMessages {
 		try {
 			String newFileName = "messages-old-" + System.currentTimeMillis() + ".yml";
 			File newFile = new File(plugin.getDataFolder(), newFileName);
-			plugin.log(Level.INFO, "[Messages] The old messages.yml is now \"%s\"", newFileName);
+			plugin.log(Level.INFO, "[Messages] The old %s is now \"%s\"", MESSAGES_FILE_NAME, newFileName);
 			messagesFile.renameTo(newFile);
 			return true;
 		} catch (Exception e) {

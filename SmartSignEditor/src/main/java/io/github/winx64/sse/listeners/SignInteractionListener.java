@@ -104,6 +104,10 @@ public final class SignInteractionListener implements Listener {
 			}
 		} else {
 			Sign sign = (Sign) block.getState();
+			if (tool.modifiesWorld() && !plugin.checkBuildPermission(player, sign)) {
+				return;
+			}
+
 			if (!player.hasPermission(tool.getType().getPermission())) {
 				player.sendMessage(signMessages.get(Message.TOOL_NO_PERMISSION, tool.getType().getName()));
 				return;

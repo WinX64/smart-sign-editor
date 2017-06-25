@@ -33,7 +33,8 @@ import io.github.winx64.sse.tool.ToolType;
 public final class CopyTool extends Tool {
 
 	public CopyTool(SmartSignEditor plugin) {
-		super(plugin, ToolType.COPY, "Sign Copy", "Line Copy", Permissions.TOOL_COPY_ALL, Permissions.TOOL_COPY_LINE);
+		super(plugin, ToolType.COPY, "Sign Copy", "Line Copy", Permissions.TOOL_COPY_ALL, Permissions.TOOL_COPY_LINE,
+				false);
 	}
 
 	@Override

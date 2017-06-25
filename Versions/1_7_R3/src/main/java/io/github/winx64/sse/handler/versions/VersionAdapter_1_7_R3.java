@@ -26,7 +26,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_7_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -79,9 +78,9 @@ public final class VersionAdapter_1_7_R3 implements VersionAdapter {
 
 	@Override
 	public Collection<? extends Player> getOnlinePlayers() {
-		return Arrays.asList(((CraftServer) Bukkit.getServer()).getOnlinePlayers());
+		return Arrays.asList(Bukkit.getOnlinePlayers());
 	}
-	
+
 	@Override
 	public YamlConfiguration loadFromResource(InputStream input) throws IOException {
 		return YamlConfiguration.loadConfiguration(input);

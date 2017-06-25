@@ -72,15 +72,16 @@ public interface VersionAdapter {
 	public boolean shouldProcessEvent(PlayerInteractEvent event);
 
 	/**
-	 * Older builds don't have the new method, and newer builds don't have the
-	 * old method. This one should work for all of them.
+	 * The API method now returns a collection rather than an array.
 	 * 
 	 * @return The online players
 	 */
 	public Collection<? extends Player> getOnlinePlayers();
 
 	/**
-	 * You can no longer read directly from an input stream on 1.12 or above.
+	 * Reading directly from a stream is no longer possible in 1.12, and the
+	 * preferred way is reading from a reader with the correct file encoding
+	 * specified to maintain consistency.
 	 * 
 	 * @param input
 	 *            The resource input stream

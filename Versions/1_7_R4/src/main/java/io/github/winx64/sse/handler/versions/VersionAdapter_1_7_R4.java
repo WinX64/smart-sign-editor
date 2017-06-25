@@ -27,11 +27,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_7_R4.CraftServer;
 import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import com.google.common.base.Charsets;
 
 import io.github.winx64.sse.handler.VersionAdapter;
 import net.minecraft.server.v1_7_R4.EntityPlayer;
@@ -81,12 +82,12 @@ public final class VersionAdapter_1_7_R4 implements VersionAdapter {
 	@SuppressWarnings("deprecation")
 	@Override
 	public Collection<? extends Player> getOnlinePlayers() {
-		return Arrays.asList(((CraftServer) Bukkit.getServer()).getOnlinePlayers());
+		return Arrays.asList(Bukkit.getOnlinePlayers());
 	}
 
 	@Override
 	public YamlConfiguration loadFromResource(InputStream input) throws IOException {
-		try (InputStreamReader reader = new InputStreamReader(input)) {
+		try (InputStreamReader reader = new InputStreamReader(input, Charsets.UTF_8)) {
 			return YamlConfiguration.loadConfiguration(reader);
 		}
 	}

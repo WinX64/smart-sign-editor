@@ -126,6 +126,7 @@ public final class SignConfiguration {
 				plugin.log(Level.INFO, "[Config] Config file not found. Creating a new one...");
 				plugin.saveResource(CONFIG_FILE_NAME, true);
 			}
+
 			this.config = YamlConfiguration.loadConfiguration(configFile);
 			if (config.getKeys(false).size() == 0) {
 				plugin.log(Level.SEVERE, "[Config] Empty configuration! Did any error happen while parsing it?");
@@ -133,7 +134,8 @@ public final class SignConfiguration {
 			}
 
 			if (!ensureCorrectVersion(true)) {
-				plugin.log(Level.SEVERE, "[Config] Could not load the correct version configuration!", CONFIG_VERSION);
+				plugin.log(Level.SEVERE, "[Config] Could not load the correct version of the configuration!",
+						CONFIG_VERSION);
 				return false;
 			}
 
@@ -283,7 +285,7 @@ public final class SignConfiguration {
 
 			if (secondaryKey != null && primaryUsage.conflictsWith(secondaryUsage)) {
 				plugin.log(Level.WARNING,
-						"[Config] Tool usages %s and %s conflicts with eachother. Using default values %s and %s",
+						"[Config] Tool usages \"%s\" and \"%s\" conflicts with eachother. Using default values \"%s\" and \"%s\"",
 						primaryUsage, secondaryUsage, ToolUsage.NO_SHIFT_RIGHT_CLICK, ToolUsage.SHIFT_RIGHT_CLICK);
 				primaryUsage = ToolUsage.NO_SHIFT_RIGHT_CLICK;
 				secondaryUsage = ToolUsage.SHIFT_RIGHT_CLICK;

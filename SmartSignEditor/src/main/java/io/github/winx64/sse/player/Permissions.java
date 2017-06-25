@@ -18,16 +18,14 @@
 package io.github.winx64.sse.player;
 
 /**
- * Helper class to store the permissions currently used TODO: Work on a better
- * approach
+ * Helper class to store the permissions currently used
  * 
  * @author Lucas
  *
  */
 public final class Permissions {
 
-	private Permissions() {
-	}
+	private Permissions() {}
 
 	/**
 	 * Edit/Copy/Paste/Erase signs without directly interacting with them
@@ -35,14 +33,14 @@ public final class Permissions {
 	public static final String EXTENDED_TOOL = "sse.tool.extended";
 
 	/**
-	 * Modify signs that are currently being edited by others
-	 */
-	public static final String TOOL_EDIT_OVERRIDE = "sse.tool.override";
-
-	/**
 	 * Use the edit tool
 	 */
 	public static final String TOOL_EDIT = "sse.tool.edit";
+
+	/**
+	 * Modify signs that are currently being edited by others
+	 */
+	public static final String TOOL_EDIT_OVERRIDE = "sse.tool.edit.override";
 
 	/**
 	 * Use colors with the edit tool

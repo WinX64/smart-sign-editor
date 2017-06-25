@@ -37,11 +37,13 @@ public abstract class Tool {
 
 	protected ToolUsage primaryUsage;
 	protected ToolUsage secondaryUsage;
+	
+	protected final boolean modifiesWorld;
 
 	protected int timesUsed;
 
 	public Tool(SmartSignEditor plugin, ToolType type, String primaryName, String secondaryName,
-			String primaryPermission, String secondaryPermission) {
+			String primaryPermission, String secondaryPermission, boolean modifiesWorld) {
 		this.plugin = plugin;
 		this.signMessages = plugin.getSignMessages();
 		this.type = type;
@@ -54,6 +56,8 @@ public abstract class Tool {
 
 		this.primaryUsage = ToolUsage.NO_SHIFT_RIGHT_CLICK;
 		this.secondaryUsage = ToolUsage.SHIFT_RIGHT_CLICK;
+		
+		this.modifiesWorld = modifiesWorld;
 
 		this.timesUsed = 0;
 	}
@@ -76,6 +80,10 @@ public abstract class Tool {
 
 	public final void setSecondaryUsage(ToolUsage secondaryUsage) {
 		this.secondaryUsage = secondaryUsage;
+	}
+	
+	public final boolean modifiesWorld() {
+		return modifiesWorld;
 	}
 
 	public final int getTimesUsed() {

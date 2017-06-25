@@ -15,10 +15,10 @@ tool-item:
           lore:
           - "\u00A77Using this tool, you can Edit/Copy/Paste/Erase signs!"
           
-    #Does the item name have to match the tool item's name? If TRUE, only items with the same type and name will work.
+    #Does the item name have to match the tool item's name? If TRUE, only items with the same type and name will work
     match-name: false
     
-    #Does the item lore have to match the tool item's lore? If TRUE, onlt items with the same type and lore will work.
+    #Does the item lore have to match the tool item's lore? If TRUE, onlt items with the same type and lore will work
     match-lore: false
 
 #Usages for the different tools and options

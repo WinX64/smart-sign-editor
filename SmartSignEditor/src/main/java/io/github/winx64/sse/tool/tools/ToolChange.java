@@ -29,7 +29,7 @@ import io.github.winx64.sse.tool.ToolType;
 public final class ToolChange extends Tool {
 
 	public ToolChange(SmartSignEditor plugin) {
-		super(plugin, null, "Next Tool", "Previous Tool", null, null);
+		super(plugin, null, "Next Tool", "Previous Tool", null, null, false);
 	}
 
 	@Override

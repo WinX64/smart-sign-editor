@@ -30,6 +30,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public final class SignMessages {
 
 	private static final String MESSAGES_FILE_NAME = "messages.yml";
+	private static final String OLD_MESSAGES_FILE_NAME = "messages-old-%d.yml";
 	private static final String MESSAGES_VERSION_KEY = "messages-version";
 	private static final int MESSAGES_VERSION = 2;
 
@@ -72,7 +73,8 @@ public final class SignMessages {
 			}
 
 			if (!ensureCorrectVersion(true)) {
-				plugin.log(Level.SEVERE, "[Messages] Could not load the correct version messages!", MESSAGES_VERSION);
+				plugin.log(Level.SEVERE, "[Messages] Could not load the correct version of the messages!",
+						MESSAGES_VERSION);
 				return false;
 			}
 
@@ -118,6 +120,9 @@ public final class SignMessages {
 	private boolean loadDefaultMessages() {
 		try (InputStream input = plugin.getResource(MESSAGES_FILE_NAME)) {
 			this.defaultMessages = this.plugin.getVersionAdapter().loadFromResource(input);
+			if (defaultMessages.getInt(MESSAGES_VERSION_KEY) != MESSAGES_VERSION) {
+				return false;
+			}
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -153,7 +158,7 @@ public final class SignMessages {
 
 	private boolean moveOldMessages() {
 		try {
-			String newFileName = "messages-old-" + System.currentTimeMillis() + ".yml";
+			String newFileName = String.format(OLD_MESSAGES_FILE_NAME, System.currentTimeMillis());
 			File newFile = new File(plugin.getDataFolder(), newFileName);
 			plugin.log(Level.INFO, "[Messages] The old %s is now \"%s\"", MESSAGES_FILE_NAME, newFileName);
 			messagesFile.renameTo(newFile);

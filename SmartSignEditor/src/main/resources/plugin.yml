@@ -24,8 +24,8 @@ permissions:
             sse.command.sse: true
             sse.command.reload: true
             sse.tool.extended: true
-            sse.tool.override: true
             sse.tool.edit: true
+            sse.tool.edit.override: true
             sse.tool.edit.colors: true
             sse.tool.copy: true
             sse.tool.copy.all: true
@@ -51,8 +51,8 @@ permissions:
         description: Complete access to every tool
         children:
             sse.tool.extended: true
-            sse.tool.override: true
             sse.tool.edit: true
+            sse.tool.edit.override: true
             sse.tool.edit.colors: true
             sse.tool.copy: true
             sse.tool.copy.all: true

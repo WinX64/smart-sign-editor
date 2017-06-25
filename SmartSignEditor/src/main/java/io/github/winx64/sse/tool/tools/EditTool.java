@@ -31,7 +31,7 @@ import io.github.winx64.sse.tool.ToolType;
 public final class EditTool extends Tool {
 
 	public EditTool(SmartSignEditor plugin) {
-		super(plugin, ToolType.EDIT, null, null, null, null);
+		super(plugin, ToolType.EDIT, null, null, null, null, true);
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public final class EraseTool extends Tool {
 
 	public EraseTool(SmartSignEditor plugin) {
 		super(plugin, ToolType.ERASE, "Sign Erase", "Line Erase", Permissions.TOOL_ERASE_ALL,
-				Permissions.TOOL_ERASE_LINE);
+				Permissions.TOOL_ERASE_LINE, true);
 	}
 
 	@Override

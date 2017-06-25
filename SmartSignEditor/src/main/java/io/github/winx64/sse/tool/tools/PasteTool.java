@@ -34,7 +34,7 @@ public final class PasteTool extends Tool {
 
 	public PasteTool(SmartSignEditor plugin) {
 		super(plugin, ToolType.PASTE, "Sign Paste", "Line Paste", Permissions.TOOL_PASTE_ALL,
-				Permissions.TOOL_PASTE_LINE);
+				Permissions.TOOL_PASTE_LINE, true);
 	}
 
 	@Override

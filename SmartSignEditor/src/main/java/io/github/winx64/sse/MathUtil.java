@@ -40,16 +40,9 @@ import org.bukkit.util.Vector;
 public final class MathUtil {
 
 	/**
-	 * The 16 normal vectors for the planes formed by the 16 different rotated
-	 * sign posts. From the rotation 0 to 15
+	 * Normal vectors for each sign rotation
 	 */
-	private static final Map<BlockFace, Vector> SIGN_POST_PLANE_NORMAL_VECTORS;
-
-	/**
-	 * The 4 normal vectors for the planes formed by the 4 different rotated
-	 * wall signs. Rotations 0, 4, 8 and 12
-	 */
-	private static final Map<BlockFace, Vector> WALL_SIGN_PLANE_NORMAL_VECTORS;
+	private static final Map<BlockFace, Vector> SIGN_NORMAL_VECTORS;
 
 	/**
 	 * Distance between the block below and the base of the sign post
@@ -80,38 +73,31 @@ public final class MathUtil {
 	/**
 	 * Pairs of Y coordinates for the boundaries of each line in the sign plate
 	 */
-	private static final double SIGN_LINE_Y_OFFSET[] = new double[] { 5.0, 0.36650, 0.26250, 0.15850, 0.0 };
+	private static final double SIGN_LINE_Y_OFFSET[] = new double[] { 0.5, 0.36650, 0.26250, 0.15850, 0.0 };
 
 	static {
-		Map<BlockFace, Vector> signPostVectors = new HashMap<BlockFace, Vector>();
-		Map<BlockFace, Vector> wallSignVectors = new HashMap<BlockFace, Vector>();
+		Map<BlockFace, Vector> normalVectors = new HashMap<BlockFace, Vector>();
 
 		double p8 = Math.PI / 8;
 
-		signPostVectors.put(BlockFace.SOUTH, new Vector(cos(4 * p8), 0, sin(4 * p8)));
-		signPostVectors.put(BlockFace.SOUTH_SOUTH_WEST, new Vector(cos(5 * p8), 0, sin(5 * p8)));
-		signPostVectors.put(BlockFace.SOUTH_WEST, new Vector(cos(6 * p8), 0, sin(6 * p8)));
-		signPostVectors.put(BlockFace.WEST_SOUTH_WEST, new Vector(cos(7 * p8), 0, sin(7 * p8)));
-		signPostVectors.put(BlockFace.WEST, new Vector(cos(8 * p8), 0, sin(8 * p8)));
-		signPostVectors.put(BlockFace.WEST_NORTH_WEST, new Vector(cos(9 * p8), 0, sin(9 * p8)));
-		signPostVectors.put(BlockFace.NORTH_WEST, new Vector(cos(10 * p8), 0, sin(10 * p8)));
-		signPostVectors.put(BlockFace.NORTH_NORTH_WEST, new Vector(cos(11 * p8), 0, sin(11 * p8)));
-		signPostVectors.put(BlockFace.NORTH, new Vector(cos(12 * p8), 0, sin(12 * p8)));
-		signPostVectors.put(BlockFace.NORTH_NORTH_EAST, new Vector(cos(13 * p8), 0, sin(13 * p8)));
-		signPostVectors.put(BlockFace.NORTH_EAST, new Vector(cos(14 * p8), 0, sin(14 * p8)));
-		signPostVectors.put(BlockFace.EAST_NORTH_EAST, new Vector(cos(15 * p8), 0, sin(15 * p8)));
-		signPostVectors.put(BlockFace.EAST, new Vector(cos(16 * p8), 0, sin(16 * p8)));
-		signPostVectors.put(BlockFace.EAST_SOUTH_EAST, new Vector(cos(1 * p8), 0, sin(1 * p8)));
-		signPostVectors.put(BlockFace.SOUTH_EAST, new Vector(cos(2 * p8), 0, sin(2 * p8)));
-		signPostVectors.put(BlockFace.SOUTH_SOUTH_EAST, new Vector(cos(3 * p8), 0, sin(3 * p8)));
+		normalVectors.put(BlockFace.SOUTH, new Vector(cos(4 * p8), 0, sin(4 * p8)));
+		normalVectors.put(BlockFace.SOUTH_SOUTH_WEST, new Vector(cos(5 * p8), 0, sin(5 * p8)));
+		normalVectors.put(BlockFace.SOUTH_WEST, new Vector(cos(6 * p8), 0, sin(6 * p8)));
+		normalVectors.put(BlockFace.WEST_SOUTH_WEST, new Vector(cos(7 * p8), 0, sin(7 * p8)));
+		normalVectors.put(BlockFace.WEST, new Vector(cos(8 * p8), 0, sin(8 * p8)));
+		normalVectors.put(BlockFace.WEST_NORTH_WEST, new Vector(cos(9 * p8), 0, sin(9 * p8)));
+		normalVectors.put(BlockFace.NORTH_WEST, new Vector(cos(10 * p8), 0, sin(10 * p8)));
+		normalVectors.put(BlockFace.NORTH_NORTH_WEST, new Vector(cos(11 * p8), 0, sin(11 * p8)));
+		normalVectors.put(BlockFace.NORTH, new Vector(cos(12 * p8), 0, sin(12 * p8)));
+		normalVectors.put(BlockFace.NORTH_NORTH_EAST, new Vector(cos(13 * p8), 0, sin(13 * p8)));
+		normalVectors.put(BlockFace.NORTH_EAST, new Vector(cos(14 * p8), 0, sin(14 * p8)));
+		normalVectors.put(BlockFace.EAST_NORTH_EAST, new Vector(cos(15 * p8), 0, sin(15 * p8)));
+		normalVectors.put(BlockFace.EAST, new Vector(cos(16 * p8), 0, sin(16 * p8)));
+		normalVectors.put(BlockFace.EAST_SOUTH_EAST, new Vector(cos(1 * p8), 0, sin(1 * p8)));
+		normalVectors.put(BlockFace.SOUTH_EAST, new Vector(cos(2 * p8), 0, sin(2 * p8)));
+		normalVectors.put(BlockFace.SOUTH_SOUTH_EAST, new Vector(cos(3 * p8), 0, sin(3 * p8)));
 
-		wallSignVectors.put(BlockFace.SOUTH, signPostVectors.get(BlockFace.SOUTH));
-		wallSignVectors.put(BlockFace.WEST, signPostVectors.get(BlockFace.WEST));
-		wallSignVectors.put(BlockFace.NORTH, signPostVectors.get(BlockFace.NORTH));
-		wallSignVectors.put(BlockFace.EAST, signPostVectors.get(BlockFace.EAST));
-
-		SIGN_POST_PLANE_NORMAL_VECTORS = Collections.unmodifiableMap(signPostVectors);
-		WALL_SIGN_PLANE_NORMAL_VECTORS = Collections.unmodifiableMap(wallSignVectors);
+		SIGN_NORMAL_VECTORS = Collections.unmodifiableMap(normalVectors);
 	}
 
 	private MathUtil() {}
@@ -134,8 +120,7 @@ public final class MathUtil {
 
 		Vector linePoint = loc.toVector();
 		Vector lineDirection = loc.getDirection();
-		Vector planeNormal = materialData.isWallSign() ? WALL_SIGN_PLANE_NORMAL_VECTORS.get(face)
-				: SIGN_POST_PLANE_NORMAL_VECTORS.get(face);
+		Vector planeNormal = SIGN_NORMAL_VECTORS.get(face);
 		Vector planePoint = materialData.isWallSign()
 				? sign.getLocation().add(0.5, (SIGN_HEIGHT / 2) + WALL_SIGN_WALL_HEIGHT_OFFSET, 0.5)
 						.add(planeNormal.clone().multiply(-1)
@@ -188,7 +173,7 @@ public final class MathUtil {
 	 *            A normal vector of the plane
 	 * @return The t value
 	 */
-	public static double getParametricIntersectionValue(Vector linePoint, Vector lineDirection, Vector planePoint,
+	private static double getParametricIntersectionValue(Vector linePoint, Vector lineDirection, Vector planePoint,
 			Vector planeNormal) {
 		double d = planePoint.dot(planeNormal);
 
@@ -209,8 +194,8 @@ public final class MathUtil {
 		double distY = intersection.getY() - planePoint.getY();
 		double distZ = intersection.getZ() - planePoint.getZ();
 
-		return (distX * distX) + (distZ * distZ) <= (SIGN_WIDTH / 2) * (SIGN_WIDTH / 2)
-				&& Math.abs(distY) <= (SIGN_HEIGHT / 2);
+		return Math.pow(distX, 2) + Math.pow(distZ, 2) <= Math.pow(SIGN_WIDTH / 2, 2)
+				&& Math.abs(distY) <= SIGN_HEIGHT / 2;
 	}
 
 	/**

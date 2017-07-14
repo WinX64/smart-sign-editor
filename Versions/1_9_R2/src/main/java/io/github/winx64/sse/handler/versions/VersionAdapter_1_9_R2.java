@@ -26,8 +26,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -35,14 +35,14 @@ import org.bukkit.inventory.EquipmentSlot;
 import com.google.common.base.Charsets;
 
 import io.github.winx64.sse.handler.VersionAdapter;
-import net.minecraft.server.v1_9_R1.BlockPosition;
-import net.minecraft.server.v1_9_R1.ChatComponentText;
-import net.minecraft.server.v1_9_R1.EntityPlayer;
-import net.minecraft.server.v1_9_R1.IChatBaseComponent;
-import net.minecraft.server.v1_9_R1.PacketPlayOutOpenSignEditor;
-import net.minecraft.server.v1_9_R1.PlayerConnection;
-import net.minecraft.server.v1_9_R1.TileEntitySign;
-import net.minecraft.server.v1_9_R1.World;
+import net.minecraft.server.v1_9_R2.BlockPosition;
+import net.minecraft.server.v1_9_R2.ChatComponentText;
+import net.minecraft.server.v1_9_R2.EntityPlayer;
+import net.minecraft.server.v1_9_R2.IChatBaseComponent;
+import net.minecraft.server.v1_9_R2.PacketPlayOutOpenSignEditor;
+import net.minecraft.server.v1_9_R2.PlayerConnection;
+import net.minecraft.server.v1_9_R2.TileEntitySign;
+import net.minecraft.server.v1_9_R2.World;
 
 public final class VersionAdapter_1_9_R2 implements VersionAdapter {
 

@@ -20,6 +20,10 @@ package io.github.winx64.sse;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -36,30 +40,16 @@ import org.bukkit.util.Vector;
 public final class MathUtil {
 
 	/**
-	 * One eighth of PI
-	 */
-	private static final double P8 = Math.PI / 8;
-
-	/**
 	 * The 16 normal vectors for the planes formed by the 16 different rotated
 	 * sign posts. From the rotation 0 to 15
 	 */
-	private static final Vector[] SIGN_POST_PLANE_NORMAL_VECTORS = new Vector[] {
-			new Vector(cos(4 * P8), 0, sin(4 * P8)), new Vector(cos(5 * P8), 0, sin(5 * P8)),
-			new Vector(cos(6 * P8), 0, sin(6 * P8)), new Vector(cos(7 * P8), 0, sin(7 * P8)),
-			new Vector(cos(8 * P8), 0, sin(8 * P8)), new Vector(cos(9 * P8), 0, sin(9 * P8)),
-			new Vector(cos(10 * P8), 0, sin(10 * P8)), new Vector(cos(11 * P8), 0, sin(11 * P8)),
-			new Vector(cos(12 * P8), 0, sin(12 * P8)), new Vector(cos(13 * P8), 0, sin(13 * P8)),
-			new Vector(cos(14 * P8), 0, sin(14 * P8)), new Vector(cos(15 * P8), 0, sin(15 * P8)),
-			new Vector(cos(16 * P8), 0, sin(16 * P8)), new Vector(cos(1 * P8), 0, sin(1 * P8)),
-			new Vector(cos(2 * P8), 0, sin(2 * P8)), new Vector(cos(3 * P8), 0, sin(3 * P8)) };
+	private static final Map<BlockFace, Vector> SIGN_POST_PLANE_NORMAL_VECTORS;
 
 	/**
 	 * The 4 normal vectors for the planes formed by the 4 different rotated
 	 * wall signs. Rotations 0, 4, 8 and 12
 	 */
-	private static final Vector[] WALL_SIGN_PLANE_NORMAL_VECTORS = new Vector[] { new Vector(0, 0, 1),
-			new Vector(-1, 0, 0), new Vector(0, 0, -1), new Vector(1, 0, 0) };
+	private static final Map<BlockFace, Vector> WALL_SIGN_PLANE_NORMAL_VECTORS;
 
 	/**
 	 * Distance between the block below and the base of the sign post
@@ -92,8 +82,39 @@ public final class MathUtil {
 	 */
 	private static final double SIGN_LINE_Y_OFFSET[] = new double[] { 5.0, 0.36650, 0.26250, 0.15850, 0.0 };
 
-	private MathUtil() {
+	static {
+		Map<BlockFace, Vector> signPostVectors = new HashMap<BlockFace, Vector>();
+		Map<BlockFace, Vector> wallSignVectors = new HashMap<BlockFace, Vector>();
+
+		double p8 = Math.PI / 8;
+
+		signPostVectors.put(BlockFace.SOUTH, new Vector(cos(4 * p8), 0, sin(4 * p8)));
+		signPostVectors.put(BlockFace.SOUTH_SOUTH_WEST, new Vector(cos(5 * p8), 0, sin(5 * p8)));
+		signPostVectors.put(BlockFace.SOUTH_WEST, new Vector(cos(6 * p8), 0, sin(6 * p8)));
+		signPostVectors.put(BlockFace.WEST_SOUTH_WEST, new Vector(cos(7 * p8), 0, sin(7 * p8)));
+		signPostVectors.put(BlockFace.WEST, new Vector(cos(8 * p8), 0, sin(8 * p8)));
+		signPostVectors.put(BlockFace.WEST_NORTH_WEST, new Vector(cos(9 * p8), 0, sin(9 * p8)));
+		signPostVectors.put(BlockFace.NORTH_WEST, new Vector(cos(10 * p8), 0, sin(10 * p8)));
+		signPostVectors.put(BlockFace.NORTH_NORTH_WEST, new Vector(cos(11 * p8), 0, sin(11 * p8)));
+		signPostVectors.put(BlockFace.NORTH, new Vector(cos(12 * p8), 0, sin(12 * p8)));
+		signPostVectors.put(BlockFace.NORTH_NORTH_EAST, new Vector(cos(13 * p8), 0, sin(13 * p8)));
+		signPostVectors.put(BlockFace.NORTH_EAST, new Vector(cos(14 * p8), 0, sin(14 * p8)));
+		signPostVectors.put(BlockFace.EAST_NORTH_EAST, new Vector(cos(15 * p8), 0, sin(15 * p8)));
+		signPostVectors.put(BlockFace.EAST, new Vector(cos(16 * p8), 0, sin(16 * p8)));
+		signPostVectors.put(BlockFace.EAST_SOUTH_EAST, new Vector(cos(1 * p8), 0, sin(1 * p8)));
+		signPostVectors.put(BlockFace.SOUTH_EAST, new Vector(cos(2 * p8), 0, sin(2 * p8)));
+		signPostVectors.put(BlockFace.SOUTH_SOUTH_EAST, new Vector(cos(3 * p8), 0, sin(3 * p8)));
+
+		wallSignVectors.put(BlockFace.SOUTH, signPostVectors.get(BlockFace.SOUTH));
+		wallSignVectors.put(BlockFace.WEST, signPostVectors.get(BlockFace.WEST));
+		wallSignVectors.put(BlockFace.NORTH, signPostVectors.get(BlockFace.NORTH));
+		wallSignVectors.put(BlockFace.EAST, signPostVectors.get(BlockFace.EAST));
+
+		SIGN_POST_PLANE_NORMAL_VECTORS = Collections.unmodifiableMap(signPostVectors);
+		WALL_SIGN_PLANE_NORMAL_VECTORS = Collections.unmodifiableMap(wallSignVectors);
 	}
+
+	private MathUtil() {}
 
 	/**
 	 * Gets at which coordinates the player's line of sight intersected a sign
@@ -109,12 +130,12 @@ public final class MathUtil {
 		org.bukkit.material.Sign materialData = (org.bukkit.material.Sign) sign.getData();
 
 		Location loc = player.getEyeLocation();
-		int rotation = getRotationId(materialData.getFacing());
+		BlockFace face = materialData.getFacing();
 
 		Vector linePoint = loc.toVector();
 		Vector lineDirection = loc.getDirection();
-		Vector planeNormal = materialData.isWallSign() ? WALL_SIGN_PLANE_NORMAL_VECTORS[rotation / 4]
-				: SIGN_POST_PLANE_NORMAL_VECTORS[rotation];
+		Vector planeNormal = materialData.isWallSign() ? WALL_SIGN_PLANE_NORMAL_VECTORS.get(face)
+				: SIGN_POST_PLANE_NORMAL_VECTORS.get(face);
 		Vector planePoint = materialData.isWallSign()
 				? sign.getLocation().add(0.5, (SIGN_HEIGHT / 2) + WALL_SIGN_WALL_HEIGHT_OFFSET, 0.5)
 						.add(planeNormal.clone().multiply(-1)
@@ -218,67 +239,5 @@ public final class MathUtil {
 		double z = linePoint.getZ() + lineDirection.getZ() * t;
 
 		return new Vector(x, y, z);
-	}
-
-	/**
-	 * Converts a specified BlockFace to an ID
-	 * 
-	 * @param blockFace
-	 *            The block face
-	 * @return The representing ID
-	 */
-	private static int getRotationId(BlockFace blockFace) {
-		switch (blockFace) {
-			case SOUTH:
-				return 0;
-
-			case SOUTH_SOUTH_WEST:
-				return 1;
-
-			case SOUTH_WEST:
-				return 2;
-
-			case WEST_SOUTH_WEST:
-				return 3;
-
-			case WEST:
-				return 4;
-
-			case WEST_NORTH_WEST:
-				return 5;
-
-			case NORTH_WEST:
-				return 6;
-
-			case NORTH_NORTH_WEST:
-				return 7;
-
-			case NORTH:
-				return 8;
-
-			case NORTH_NORTH_EAST:
-				return 9;
-
-			case NORTH_EAST:
-				return 10;
-
-			case EAST_NORTH_EAST:
-				return 11;
-
-			case EAST:
-				return 12;
-
-			case EAST_SOUTH_EAST:
-				return 13;
-
-			case SOUTH_EAST:
-				return 14;
-
-			case SOUTH_SOUTH_EAST:
-				return 15;
-
-			default:
-				return -1;
-		}
 	}
 }

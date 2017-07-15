@@ -1,13 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>smartsigneditor-1_7_R4</artifactId>
+	<description>Version adapter implementation for v1_7_R4</description>
+	<name>SmartSignEditor-1_7_R4</name>
+
 	<parent>
 		<groupId>io.github.winx64</groupId>
 		<artifactId>smartsigneditor-parent</artifactId>
 		<version>2.5.1</version>
 		<relativePath>../..</relativePath>
 	</parent>
-	<artifactId>smartsigneditor-1_7_R4</artifactId>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.bukkit</groupId>
@@ -20,6 +25,4 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>
-	<description>Version adapter implementation for v1_7_R4</description>
-	<name>SmartSignEditor-1_7_R4</name>
 </project>

@@ -19,10 +19,9 @@ package io.github.winx64.sse.handler;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import io.github.winx64.sse.handler.versions.VersionAdapter_1_10_R1;
 import io.github.winx64.sse.handler.versions.VersionAdapter_1_11_R1;
@@ -39,14 +38,12 @@ import io.github.winx64.sse.handler.versions.VersionAdapter_1_9_R2;
 
 public final class VersionHandler {
 
-	private static final String NMS = "net.minecraft.server.";
-
 	private static final List<String> UNSUPPORTED_VERSIONS;
 
 	private static final Map<String, Class<? extends VersionAdapter>> SUPPORTED_VERSIONS;
 
 	static {
-		Map<String, Class<? extends VersionAdapter>> supportedVersions = new LinkedHashMap<>();
+		Map<String, Class<? extends VersionAdapter>> supportedVersions = new HashMap<>();
 		List<String> unsupportedVersions = Arrays.asList("v1_4", "v1_5", "v1_6");
 
 		supportedVersions.put("v1_7_R1", VersionAdapter_1_7_R1.class);
@@ -66,8 +63,7 @@ public final class VersionHandler {
 		SUPPORTED_VERSIONS = Collections.unmodifiableMap(supportedVersions);
 	}
 
-	private VersionHandler() {
-	}
+	private VersionHandler() {}
 
 	/**
 	 * Checks if this version will receive support anytime soon
@@ -91,17 +87,12 @@ public final class VersionHandler {
 	 * @return The hooked version handler, or null if the current version is not
 	 *         supported
 	 */
-	public static VersionAdapter registerAdapter() {
-		for (Entry<String, Class<? extends VersionAdapter>> entry : SUPPORTED_VERSIONS.entrySet()) {
+	public static VersionAdapter getAdapter(String version) {
+		Class<? extends VersionAdapter> adapterClass = SUPPORTED_VERSIONS.get(version);
+		if (adapterClass != null) {
 			try {
-				if (Package.getPackage(NMS + entry.getKey()) == null) {
-					continue;
-				}
-				VersionAdapter signHandler = entry.getValue().newInstance();
-				return signHandler;
-			} catch (Exception e) {
-				continue;
-			}
+				return adapterClass.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {}
 		}
 		return null;
 	}

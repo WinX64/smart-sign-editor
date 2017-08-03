@@ -74,10 +74,11 @@ public final class SmartSignEditor extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		this.versionAdapter = VersionHandler.registerAdapter();
+		String currentVersion = getServer().getClass().getPackage().getName();
+		currentVersion = currentVersion.substring(currentVersion.lastIndexOf('.') + 1);
+
+		this.versionAdapter = VersionHandler.getAdapter(currentVersion);
 		if (versionAdapter == null) {
-			String currentVersion = getServer().getClass().getPackage().getName();
-			currentVersion = currentVersion.substring(currentVersion.lastIndexOf('.') + 1);
 			logger.severe("The current server version is not supported!");
 			if (currentVersion.charAt(0) != 'v' || VersionHandler.isVersionUnsupported(currentVersion)) {
 				logger.severe("Your current version is " + currentVersion

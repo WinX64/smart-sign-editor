@@ -17,9 +17,6 @@
  */
 package io.github.winx64.sse;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,27 +72,24 @@ public final class MathUtil {
 	 */
 	private static final double SIGN_LINE_Y_OFFSET[] = new double[] { 0.5, 0.36650, 0.26250, 0.15850, 0.0 };
 
+	/**
+	 * One eighth of PI
+	 */
+	private static final double EIGHTH_PI = Math.PI / 8;
+
 	static {
 		Map<BlockFace, Vector> normalVectors = new HashMap<BlockFace, Vector>();
 
-		double p8 = Math.PI / 8;
+		for (BlockFace face : BlockFace.values()) {
+			if (face == BlockFace.UP || face == BlockFace.DOWN || face == BlockFace.SELF) {
+				continue;
+			}
 
-		normalVectors.put(BlockFace.SOUTH, new Vector(cos(4 * p8), 0, sin(4 * p8)));
-		normalVectors.put(BlockFace.SOUTH_SOUTH_WEST, new Vector(cos(5 * p8), 0, sin(5 * p8)));
-		normalVectors.put(BlockFace.SOUTH_WEST, new Vector(cos(6 * p8), 0, sin(6 * p8)));
-		normalVectors.put(BlockFace.WEST_SOUTH_WEST, new Vector(cos(7 * p8), 0, sin(7 * p8)));
-		normalVectors.put(BlockFace.WEST, new Vector(cos(8 * p8), 0, sin(8 * p8)));
-		normalVectors.put(BlockFace.WEST_NORTH_WEST, new Vector(cos(9 * p8), 0, sin(9 * p8)));
-		normalVectors.put(BlockFace.NORTH_WEST, new Vector(cos(10 * p8), 0, sin(10 * p8)));
-		normalVectors.put(BlockFace.NORTH_NORTH_WEST, new Vector(cos(11 * p8), 0, sin(11 * p8)));
-		normalVectors.put(BlockFace.NORTH, new Vector(cos(12 * p8), 0, sin(12 * p8)));
-		normalVectors.put(BlockFace.NORTH_NORTH_EAST, new Vector(cos(13 * p8), 0, sin(13 * p8)));
-		normalVectors.put(BlockFace.NORTH_EAST, new Vector(cos(14 * p8), 0, sin(14 * p8)));
-		normalVectors.put(BlockFace.EAST_NORTH_EAST, new Vector(cos(15 * p8), 0, sin(15 * p8)));
-		normalVectors.put(BlockFace.EAST, new Vector(cos(16 * p8), 0, sin(16 * p8)));
-		normalVectors.put(BlockFace.EAST_SOUTH_EAST, new Vector(cos(1 * p8), 0, sin(1 * p8)));
-		normalVectors.put(BlockFace.SOUTH_EAST, new Vector(cos(2 * p8), 0, sin(2 * p8)));
-		normalVectors.put(BlockFace.SOUTH_SOUTH_EAST, new Vector(cos(3 * p8), 0, sin(3 * p8)));
+			double angle = Math.atan2(face.getModZ(), face.getModX());
+			angle = Math.round(angle / EIGHTH_PI) * EIGHTH_PI;
+
+			normalVectors.put(face, new Vector(Math.cos(angle), 0, Math.sin(angle)));
+		}
 
 		SIGN_NORMAL_VECTORS = Collections.unmodifiableMap(normalVectors);
 	}

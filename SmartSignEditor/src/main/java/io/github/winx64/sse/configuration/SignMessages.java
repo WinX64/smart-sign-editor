@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.winx64.sse;
+package io.github.winx64.sse.configuration;
 
 import java.io.File;
 import java.io.InputStream;
@@ -26,6 +26,8 @@ import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import io.github.winx64.sse.SmartSignEditor;
 
 public final class SignMessages {
 

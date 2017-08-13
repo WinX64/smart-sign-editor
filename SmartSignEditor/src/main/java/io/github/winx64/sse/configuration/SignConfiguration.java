@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.winx64.sse;
+package io.github.winx64.sse.configuration;
 
 import java.io.File;
 import java.util.HashSet;
@@ -29,6 +29,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import io.github.winx64.sse.SmartSignEditor;
 import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolType;
 import io.github.winx64.sse.tool.ToolUsage;

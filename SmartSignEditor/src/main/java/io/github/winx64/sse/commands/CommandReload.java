@@ -21,9 +21,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import io.github.winx64.sse.SignMessages;
-import io.github.winx64.sse.SignMessages.Message;
 import io.github.winx64.sse.SmartSignEditor;
+import io.github.winx64.sse.configuration.SignMessages;
+import io.github.winx64.sse.configuration.SignMessages.Message;
 
 public final class CommandReload implements CommandExecutor {
 

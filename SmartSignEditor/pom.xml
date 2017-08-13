@@ -10,8 +10,15 @@
 	<parent>
 		<groupId>io.github.winx64</groupId>
 		<artifactId>smartsigneditor-parent</artifactId>
-		<version>2.5.1</version>
+		<version>2.5.2.1</version>
 	</parent>
+
+	<repositories>
+		<repository>
+			<id>bstats-repo</id>
+			<url>http://repo.bstats.org/content/repositories/releases/</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -79,6 +86,11 @@
 			<artifactId>smartsigneditor-1_12_R1</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.bstats</groupId>
+			<artifactId>bstats-bukkit</artifactId>
+			<version>1.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -118,8 +130,15 @@
 									<include>io.github.winx64:smartsigneditor-1_10_R1</include>
 									<include>io.github.winx64:smartsigneditor-1_11_R1</include>
 									<include>io.github.winx64:smartsigneditor-1_12_R1</include>
+									<include>org.bstats:bstats-bukkit</include>
 								</includes>
 							</artifactSet>
+							<relocations>
+								<relocation>
+									<pattern>org.bstats.bukkit</pattern>
+									<shadedPattern>io.github.winx64.sse.metrics</shadedPattern>
+								</relocation>
+							</relocations>
 						</configuration>
 					</execution>
 				</executions>

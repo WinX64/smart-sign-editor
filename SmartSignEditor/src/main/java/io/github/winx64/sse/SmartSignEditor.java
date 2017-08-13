@@ -23,16 +23,15 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
-import org.bukkit.block.Sign;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import io.github.winx64.sse.Metrics.SimplePie;
 import io.github.winx64.sse.commands.CommandReload;
 import io.github.winx64.sse.commands.CommandTool;
+import io.github.winx64.sse.configuration.SignConfiguration;
+import io.github.winx64.sse.configuration.SignMessages;
 import io.github.winx64.sse.handler.VersionAdapter;
 import io.github.winx64.sse.handler.VersionHandler;
 import io.github.winx64.sse.listeners.PlayerInOutListener;
@@ -123,15 +122,7 @@ public final class SmartSignEditor extends JavaPlugin {
 		this.getCommand("sse").setExecutor(new CommandTool(this));
 		this.getCommand("sse-reload").setExecutor(new CommandReload(this));
 
-		Metrics metrics = new Metrics(this);
-		metrics.addCustomChart(new SimplePie("mostUsedTool") {
-
-			@Override
-			public String getValue() {
-				Tool mostUsedTool = getMostUsedTool();
-				return mostUsedTool.getType().getName();
-			}
-		});
+		new Metrics(this);
 	}
 
 	public SignConfiguration getSignConfig() {
@@ -177,11 +168,5 @@ public final class SmartSignEditor extends JavaPlugin {
 
 	public VersionAdapter getVersionAdapter() {
 		return versionAdapter;
-	}
-
-	public boolean checkBuildPermission(Player player, Sign sign) {
-		BlockBreakEvent event = new BlockBreakEvent(sign.getBlock(), player);
-		Bukkit.getPluginManager().callEvent(event);
-		return !event.isCancelled();
 	}
 }

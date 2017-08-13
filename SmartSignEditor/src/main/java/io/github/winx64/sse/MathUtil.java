@@ -45,10 +45,12 @@ public final class MathUtil {
 	 * Distance between the block below and the base of the sign post
 	 */
 	private static final double SIGN_POST_POLE_HEIGHT_OFFSET = 0.58250;
+
 	/**
 	 * Distance between the block below and the base of the wall sign
 	 */
 	private static final double WALL_SIGN_WALL_HEIGHT_OFFSET = 0.27050;
+
 	/**
 	 * Distance between the block and the back of the wall sign
 	 */
@@ -58,10 +60,12 @@ public final class MathUtil {
 	 * Thickness of the sign plate
 	 */
 	private static final double SIGN_THICKNESS = 0.084;
+
 	/**
 	 * Height of the sign plate
 	 */
 	private static final double SIGN_HEIGHT = 0.5;
+
 	/**
 	 * Width of the sign plate
 	 */
@@ -124,7 +128,8 @@ public final class MathUtil {
 						.add(planeNormal.clone().multiply(SIGN_THICKNESS / 2)).toVector();
 
 		Vector intersection = getLinePlaneIntersection(linePoint, lineDirection, planePoint, planeNormal);
-		if (!isInsidePostSignBoundaries(intersection, planePoint)) {
+		if (intersection == null || !isInsidePostSignBoundaries(intersection, planePoint)
+				|| !isPointInFrontOfPlane(linePoint, planePoint, planeNormal)) {
 			return null;
 		}
 
@@ -190,6 +195,23 @@ public final class MathUtil {
 
 		return Math.pow(distX, 2) + Math.pow(distZ, 2) <= Math.pow(SIGN_WIDTH / 2, 2)
 				&& Math.abs(distY) <= SIGN_HEIGHT / 2;
+	}
+
+	/**
+	 * Checks if a given point is in front of a given plane
+	 * 
+	 * @param linePoint
+	 *            The given point
+	 * @param planePoint
+	 *            A point of the plane
+	 * @param planeNormal
+	 *            The plane's normal vector
+	 * @return
+	 */
+	private static boolean isPointInFrontOfPlane(Vector linePoint, Vector planePoint, Vector planeNormal) {
+		Vector directionVector = linePoint.clone().subtract(planePoint);
+
+		return directionVector.dot(planeNormal) > 0;
 	}
 
 	/**

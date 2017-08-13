@@ -20,8 +20,8 @@ package io.github.winx64.sse.tool.tools;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
-import io.github.winx64.sse.SignMessages.Message;
 import io.github.winx64.sse.SmartSignEditor;
+import io.github.winx64.sse.configuration.SignMessages.Message;
 import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolType;

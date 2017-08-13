@@ -22,8 +22,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import io.github.winx64.sse.MathUtil;
-import io.github.winx64.sse.SignMessages.Message;
 import io.github.winx64.sse.SmartSignEditor;
+import io.github.winx64.sse.configuration.SignMessages.Message;
 import io.github.winx64.sse.player.Permissions;
 import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.tool.Tool;

@@ -19,8 +19,8 @@ package io.github.winx64.sse.tool;
 
 import org.bukkit.block.Sign;
 
-import io.github.winx64.sse.SignMessages;
 import io.github.winx64.sse.SmartSignEditor;
+import io.github.winx64.sse.configuration.SignMessages;
 import io.github.winx64.sse.player.SmartPlayer;
 
 public abstract class Tool {

@@ -20,6 +20,7 @@ package io.github.winx64.sse.listeners;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,13 +31,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.BlockIterator;
 
-import io.github.winx64.sse.SignConfiguration;
-import io.github.winx64.sse.SignMessages;
-import io.github.winx64.sse.SignMessages.Message;
 import io.github.winx64.sse.SmartSignEditor;
+import io.github.winx64.sse.configuration.SignConfiguration;
+import io.github.winx64.sse.configuration.SignMessages;
+import io.github.winx64.sse.configuration.SignMessages.Message;
 import io.github.winx64.sse.player.Permissions;
 import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.tool.Tool;
@@ -104,7 +106,7 @@ public final class SignInteractionListener implements Listener {
 			}
 		} else {
 			Sign sign = (Sign) block.getState();
-			if (tool.modifiesWorld() && !plugin.checkBuildPermission(player, sign)) {
+			if (tool.modifiesWorld() && !checkBuildPermission(player, sign)) {
 				return;
 			}
 
@@ -152,5 +154,11 @@ public final class SignInteractionListener implements Listener {
 			sign.setLine(0, firstLine);
 			sign.update(true);
 		}
+	}
+
+	private boolean checkBuildPermission(Player player, Sign sign) {
+		BlockBreakEvent event = new BlockBreakEvent(sign.getBlock(), player);
+		Bukkit.getPluginManager().callEvent(event);
+		return !event.isCancelled();
 	}
 }

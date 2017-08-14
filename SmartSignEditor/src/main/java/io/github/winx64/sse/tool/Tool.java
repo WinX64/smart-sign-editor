@@ -27,43 +27,44 @@ public abstract class Tool {
 
 	protected final SmartSignEditor plugin;
 	protected final SignMessages signMessages;
-	protected final ToolType type;
-
-	protected final String primaryName;
-	protected final String secondaryName;
-
-	protected final String primaryPermission;
-	protected final String secondaryPermission;
 
 	protected ToolUsage primaryUsage;
 	protected ToolUsage secondaryUsage;
-	
-	protected final boolean modifiesWorld;
 
-	protected int timesUsed;
+	protected int primaryUseCount;
+	protected int secondaryUseCount;
 
-	public Tool(SmartSignEditor plugin, ToolType type, String primaryName, String secondaryName,
-			String primaryPermission, String secondaryPermission, boolean modifiesWorld) {
+	public Tool(SmartSignEditor plugin) {
 		this.plugin = plugin;
 		this.signMessages = plugin.getSignMessages();
-		this.type = type;
-
-		this.primaryName = primaryName;
-		this.secondaryName = secondaryName;
-
-		this.primaryPermission = primaryPermission;
-		this.secondaryPermission = secondaryPermission;
 
 		this.primaryUsage = ToolUsage.NO_SHIFT_RIGHT_CLICK;
 		this.secondaryUsage = ToolUsage.SHIFT_RIGHT_CLICK;
-		
-		this.modifiesWorld = modifiesWorld;
 
-		this.timesUsed = 0;
+		this.primaryUseCount = 0;
+		this.secondaryUseCount = 0;
 	}
 
-	public final ToolType getType() {
-		return type;
+	public abstract ToolType getType();
+
+	public abstract boolean modifiesWorld();
+
+	public abstract String getPrimaryName();
+
+	public abstract String getSecondaryName();
+
+	public abstract String getPrimaryPermission();
+
+	public abstract String getSecondaryPermission();
+
+	public abstract void usePrimary(SmartPlayer sPlayer, Sign sign);
+
+	public abstract void useSecondary(SmartPlayer sPlayer, Sign sign);
+
+	public abstract boolean preSpecialHandling();
+
+	public final boolean matchesUsage(ToolUsage usage) {
+		return primaryUsage.matchesWith(usage) || secondaryUsage.matchesWith(usage);
 	}
 
 	public final ToolUsage getPrimaryUsage() {
@@ -81,38 +82,16 @@ public abstract class Tool {
 	public final void setSecondaryUsage(ToolUsage secondaryUsage) {
 		this.secondaryUsage = secondaryUsage;
 	}
-	
-	public final boolean modifiesWorld() {
-		return modifiesWorld;
+
+	public final int getPrimaryUseCount() {
+		return primaryUseCount;
 	}
 
-	public final int getTimesUsed() {
-		return timesUsed;
+	public final int getSecondaryUseCount() {
+		return secondaryUseCount;
 	}
 
-	public final String getPrimaryName() {
-		return primaryName;
+	public final int getTotalUseCount() {
+		return primaryUseCount + secondaryUseCount;
 	}
-
-	public final String getSecondaryName() {
-		return secondaryName;
-	}
-
-	public final String getPrimaryPermission() {
-		return primaryPermission;
-	}
-
-	public final String getSecondaryPermission() {
-		return secondaryPermission;
-	}
-
-	public final boolean matchesUsage(ToolUsage usage) {
-		return primaryUsage.matchesWith(usage) || secondaryUsage.matchesWith(usage);
-	}
-
-	public abstract void usePrimary(SmartPlayer sPlayer, Sign sign);
-
-	public abstract void useSecondary(SmartPlayer sPlayer, Sign sign);
-
-	public abstract boolean preSpecialHandling();
 }

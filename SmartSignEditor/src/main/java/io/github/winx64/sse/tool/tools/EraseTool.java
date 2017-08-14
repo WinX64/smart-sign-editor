@@ -32,8 +32,42 @@ import io.github.winx64.sse.tool.ToolType;
 public final class EraseTool extends Tool {
 
 	public EraseTool(SmartSignEditor plugin) {
-		super(plugin, ToolType.ERASE, "Sign Erase", "Line Erase", Permissions.TOOL_ERASE_ALL,
-				Permissions.TOOL_ERASE_LINE, true);
+		super(plugin);
+	}
+
+	@Override
+	public ToolType getType() {
+		return ToolType.ERASE;
+	}
+
+	@Override
+	public boolean modifiesWorld() {
+		return true;
+	}
+
+	@Override
+	public String getPrimaryName() {
+		return "Sign Erase";
+	}
+
+	@Override
+	public String getSecondaryName() {
+		return "Line Erase";
+	}
+
+	@Override
+	public String getPrimaryPermission() {
+		return Permissions.TOOL_ERASE_ALL;
+	}
+
+	@Override
+	public String getSecondaryPermission() {
+		return Permissions.TOOL_ERASE_LINE;
+	}
+
+	@Override
+	public boolean preSpecialHandling() {
+		return false;
 	}
 
 	@Override
@@ -51,7 +85,7 @@ public final class EraseTool extends Tool {
 		}
 		sign.update();
 		player.sendMessage(signMessages.get(Message.TOOL_SIGN_CLEARED));
-		this.timesUsed++;
+		this.primaryUseCount++;
 	}
 
 	@Override
@@ -75,11 +109,6 @@ public final class EraseTool extends Tool {
 		sign.setLine(clickedLine, "");
 		sign.update();
 		player.sendMessage(signMessages.get(Message.TOOL_LINE_CLEARED));
-		this.timesUsed++;
-	}
-
-	@Override
-	public boolean preSpecialHandling() {
-		return false;
+		this.secondaryUseCount++;
 	}
 }

@@ -158,8 +158,7 @@ public final class SignConfiguration {
 			plugin.log(Level.INFO, "[Config] Configuration loaded successfully!");
 			return true;
 		} catch (Exception e) {
-			plugin.log(Level.SEVERE, "An error occurred while trying to load the configuration! Details below:");
-			e.printStackTrace();
+			plugin.log(Level.SEVERE, e, "An error occurred while trying to load the configuration! Details below:");
 			return false;
 		}
 	}
@@ -295,10 +294,9 @@ public final class SignConfiguration {
 			tool.setPrimaryUsage(primaryUsage);
 			tool.setSecondaryUsage(secondaryKey == null ? primaryUsage : secondaryUsage);
 		} catch (Exception e) {
-			plugin.log(Level.WARNING,
+			plugin.log(Level.WARNING, e,
 					"An error occurred while trying to load the tool usages for the %s Tool! Details below:",
 					tool.getType().getName());
-			e.printStackTrace();
 		}
 	}
 

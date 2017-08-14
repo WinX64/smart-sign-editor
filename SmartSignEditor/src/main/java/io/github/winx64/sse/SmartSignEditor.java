@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bstats.bukkit.Metrics;
+import org.bstats.bukkit.Metrics.DrilldownPie;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -37,6 +38,8 @@ import io.github.winx64.sse.handler.VersionHandler;
 import io.github.winx64.sse.listeners.PlayerInOutListener;
 import io.github.winx64.sse.listeners.SignChangeListener;
 import io.github.winx64.sse.listeners.SignInteractionListener;
+import io.github.winx64.sse.metrics.MostUsedToolCallable;
+import io.github.winx64.sse.metrics.ToolUseCountCallable;
 import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolType;
@@ -53,6 +56,9 @@ import io.github.winx64.sse.tool.tools.ToolChange;
  *
  */
 public final class SmartSignEditor extends JavaPlugin {
+
+	private static final String MOST_USED_TOOL_CHART_NAME = "mostUsedTool";
+	private static final String TOOL_USE_COUNT_CHART_NAME = "toolUseCount";
 
 	private final Map<UUID, SmartPlayer> smartPlayers;
 
@@ -122,7 +128,9 @@ public final class SmartSignEditor extends JavaPlugin {
 		this.getCommand("sse").setExecutor(new CommandTool(this));
 		this.getCommand("sse-reload").setExecutor(new CommandReload(this));
 
-		new Metrics(this);
+		Metrics metrics = new Metrics(this);
+		metrics.addCustomChart(new DrilldownPie(MOST_USED_TOOL_CHART_NAME, new MostUsedToolCallable(this)));
+		metrics.addCustomChart(new DrilldownPie(TOOL_USE_COUNT_CHART_NAME, new ToolUseCountCallable(this)));
 	}
 
 	public SignConfiguration getSignConfig() {
@@ -143,7 +151,7 @@ public final class SmartSignEditor extends JavaPlugin {
 			if (tool.getType() == null) {
 				continue;
 			}
-			if (mostUsed == null || tool.getTimesUsed() > mostUsed.getTimesUsed()) {
+			if (mostUsed == null || (tool.getTotalUseCount()) > mostUsed.getTotalUseCount()) {
 				mostUsed = tool;
 			}
 		}
@@ -151,7 +159,11 @@ public final class SmartSignEditor extends JavaPlugin {
 	}
 
 	public void log(Level level, String format, Object... objects) {
-		logger.log(level, String.format(format, objects));
+		log(level, null, format, objects);
+	}
+
+	public void log(Level level, Exception e, String format, Object... objects) {
+		logger.log(level, String.format(format, objects), e);
 	}
 
 	public void registerSmartPlayer(SmartPlayer sPlayer) {

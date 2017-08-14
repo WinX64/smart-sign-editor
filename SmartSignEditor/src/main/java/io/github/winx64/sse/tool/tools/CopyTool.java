@@ -33,8 +33,42 @@ import io.github.winx64.sse.tool.ToolType;
 public final class CopyTool extends Tool {
 
 	public CopyTool(SmartSignEditor plugin) {
-		super(plugin, ToolType.COPY, "Sign Copy", "Line Copy", Permissions.TOOL_COPY_ALL, Permissions.TOOL_COPY_LINE,
-				false);
+		super(plugin);
+	}
+
+	@Override
+	public ToolType getType() {
+		return ToolType.COPY;
+	}
+
+	@Override
+	public boolean modifiesWorld() {
+		return false;
+	}
+
+	@Override
+	public String getPrimaryName() {
+		return "Sign Copy";
+	}
+
+	@Override
+	public String getSecondaryName() {
+		return "Line Copy";
+	}
+
+	@Override
+	public String getPrimaryPermission() {
+		return Permissions.TOOL_COPY_ALL;
+	}
+
+	@Override
+	public String getSecondaryPermission() {
+		return Permissions.TOOL_COPY_LINE;
+	}
+
+	@Override
+	public boolean preSpecialHandling() {
+		return false;
 	}
 
 	@Override
@@ -49,7 +83,7 @@ public final class CopyTool extends Tool {
 			}
 		}
 		player.sendMessage(signMessages.get(Message.TOOL_SIGN_COPIED));
-		this.timesUsed++;
+		this.primaryUseCount++;
 	}
 
 	@Override
@@ -69,11 +103,6 @@ public final class CopyTool extends Tool {
 			sPlayer.setLineBuffer(sign.getLine(clickedLine));
 		}
 		player.sendMessage(signMessages.get(Message.TOOL_LINE_COPIED, sPlayer.getLineBuffer()));
-		this.timesUsed++;
-	}
-
-	@Override
-	public boolean preSpecialHandling() {
-		return false;
+		this.secondaryUseCount++;
 	}
 }

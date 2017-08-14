@@ -31,7 +31,42 @@ import io.github.winx64.sse.tool.ToolType;
 public final class EditTool extends Tool {
 
 	public EditTool(SmartSignEditor plugin) {
-		super(plugin, ToolType.EDIT, null, null, null, null, true);
+		super(plugin);
+	}
+
+	@Override
+	public ToolType getType() {
+		return ToolType.EDIT;
+	}
+
+	@Override
+	public boolean modifiesWorld() {
+		return true;
+	}
+
+	@Override
+	public String getPrimaryName() {
+		return "Edit Tool";
+	}
+
+	@Override
+	public String getSecondaryName() {
+		return null;
+	}
+
+	@Override
+	public String getPrimaryPermission() {
+		return null;
+	}
+
+	@Override
+	public String getSecondaryPermission() {
+		return null;
+	}
+
+	@Override
+	public boolean preSpecialHandling() {
+		return true;
 	}
 
 	@Override
@@ -50,16 +85,11 @@ public final class EditTool extends Tool {
 		}
 		plugin.getVersionAdapter().updateSignText(player, sign, noColors);
 		plugin.getVersionAdapter().openSignEditor(player, sign);
-		this.timesUsed++;
+		this.primaryUseCount++;
 	}
 
 	@Override
 	public void useSecondary(SmartPlayer sPlayer, Sign sign) {
 		this.usePrimary(sPlayer, sign);
-	}
-
-	@Override
-	public boolean preSpecialHandling() {
-		return true;
 	}
 }

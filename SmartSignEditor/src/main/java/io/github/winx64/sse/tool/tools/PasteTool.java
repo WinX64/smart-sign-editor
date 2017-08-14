@@ -33,8 +33,42 @@ import io.github.winx64.sse.tool.ToolType;
 public final class PasteTool extends Tool {
 
 	public PasteTool(SmartSignEditor plugin) {
-		super(plugin, ToolType.PASTE, "Sign Paste", "Line Paste", Permissions.TOOL_PASTE_ALL,
-				Permissions.TOOL_PASTE_LINE, true);
+		super(plugin);
+	}
+
+	@Override
+	public ToolType getType() {
+		return ToolType.PASTE;
+	}
+
+	@Override
+	public boolean modifiesWorld() {
+		return true;
+	}
+
+	@Override
+	public String getPrimaryName() {
+		return "Sign Paste";
+	}
+
+	@Override
+	public String getSecondaryName() {
+		return "Line Paste";
+	}
+
+	@Override
+	public String getPrimaryPermission() {
+		return Permissions.TOOL_PASTE_ALL;
+	}
+
+	@Override
+	public String getSecondaryPermission() {
+		return Permissions.TOOL_PASTE_LINE;
+	}
+
+	@Override
+	public boolean preSpecialHandling() {
+		return false;
 	}
 
 	@Override
@@ -61,7 +95,7 @@ public final class PasteTool extends Tool {
 		}
 		sign.update();
 		player.sendMessage(signMessages.get(Message.TOOL_SIGN_REPLACED));
-		this.timesUsed++;
+		this.primaryUseCount++;
 	}
 
 	@Override
@@ -93,11 +127,6 @@ public final class PasteTool extends Tool {
 		}
 		sign.update();
 		player.sendMessage(signMessages.get(Message.TOOL_LINE_REPLACED, sPlayer.getLineBuffer()));
-		this.timesUsed++;
-	}
-
-	@Override
-	public boolean preSpecialHandling() {
-		return false;
+		this.secondaryUseCount++;
 	}
 }

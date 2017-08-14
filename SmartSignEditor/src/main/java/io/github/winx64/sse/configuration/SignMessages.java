@@ -113,8 +113,7 @@ public final class SignMessages {
 			plugin.log(Level.INFO, "[Messages] Messages loaded successfully!");
 			return true;
 		} catch (Exception e) {
-			plugin.log(Level.SEVERE, "An error occurred while trying to load the messages! Details below:");
-			e.printStackTrace();
+			plugin.log(Level.SEVERE, e, "An error occurred while trying to load the messages! Details below:");
 			return false;
 		}
 	}

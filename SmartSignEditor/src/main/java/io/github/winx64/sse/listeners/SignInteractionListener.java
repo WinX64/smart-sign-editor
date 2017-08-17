@@ -117,7 +117,7 @@ public final class SignInteractionListener implements Listener {
 
 			event.setCancelled(true);
 
-			if (tool.preSpecialHandling()) {
+			if (tool.requiresPreSpecialHandling()) {
 				this.handleSpecialSigns(event, sign);
 			}
 			if (usage.matchesWith(tool.getPrimaryUsage())) {
@@ -133,7 +133,7 @@ public final class SignInteractionListener implements Listener {
 					tool.useSecondary(sPlayer, sign);
 				}
 			}
-			if (!tool.preSpecialHandling()) {
+			if (!tool.requiresPreSpecialHandling()) {
 				this.handleSpecialSigns(event, sign);
 			}
 		}

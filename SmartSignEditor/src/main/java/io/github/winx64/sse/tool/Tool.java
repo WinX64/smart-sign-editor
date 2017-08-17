@@ -27,6 +27,16 @@ public abstract class Tool {
 
 	protected final SmartSignEditor plugin;
 	protected final SignMessages signMessages;
+	protected final ToolType type;
+
+	protected final String primaryName;
+	protected final String secondaryName;
+
+	protected final String primaryPermission;
+	protected final String secondaryPermission;
+
+	protected final boolean modifiesWorld;
+	protected final boolean preSpecialHandling;
 
 	protected ToolUsage primaryUsage;
 	protected ToolUsage secondaryUsage;
@@ -34,9 +44,20 @@ public abstract class Tool {
 	protected int primaryUseCount;
 	protected int secondaryUseCount;
 
-	public Tool(SmartSignEditor plugin) {
+	public Tool(SmartSignEditor plugin, ToolType type, String primaryName, String secondaryName,
+			String primaryPermission, String secondaryPermission, boolean modifiesWorld, boolean preSpecialHandling) {
 		this.plugin = plugin;
 		this.signMessages = plugin.getSignMessages();
+		this.type = type;
+
+		this.primaryName = primaryName;
+		this.secondaryName = secondaryName;
+
+		this.primaryPermission = primaryPermission;
+		this.secondaryPermission = secondaryPermission;
+
+		this.modifiesWorld = modifiesWorld;
+		this.preSpecialHandling = preSpecialHandling;
 
 		this.primaryUsage = ToolUsage.NO_SHIFT_RIGHT_CLICK;
 		this.secondaryUsage = ToolUsage.SHIFT_RIGHT_CLICK;
@@ -45,23 +66,33 @@ public abstract class Tool {
 		this.secondaryUseCount = 0;
 	}
 
-	public abstract ToolType getType();
+	public final ToolType getType() {
+		return type;
+	}
 
-	public abstract boolean modifiesWorld();
+	public final String getPrimaryName() {
+		return primaryName;
+	}
 
-	public abstract String getPrimaryName();
+	public final String getSecondaryName() {
+		return secondaryName;
+	}
 
-	public abstract String getSecondaryName();
+	public final String getPrimaryPermission() {
+		return primaryPermission;
+	}
 
-	public abstract String getPrimaryPermission();
+	public final String getSecondaryPermission() {
+		return secondaryPermission;
+	}
 
-	public abstract String getSecondaryPermission();
+	public final boolean modifiesWorld() {
+		return modifiesWorld;
+	}
 
-	public abstract void usePrimary(SmartPlayer sPlayer, Sign sign);
-
-	public abstract void useSecondary(SmartPlayer sPlayer, Sign sign);
-
-	public abstract boolean preSpecialHandling();
+	public final boolean requiresPreSpecialHandling() {
+		return preSpecialHandling;
+	}
 
 	public final boolean matchesUsage(ToolUsage usage) {
 		return primaryUsage.matchesWith(usage) || secondaryUsage.matchesWith(usage);
@@ -94,4 +125,8 @@ public abstract class Tool {
 	public final int getTotalUseCount() {
 		return primaryUseCount + secondaryUseCount;
 	}
+
+	public abstract void usePrimary(SmartPlayer sPlayer, Sign sign);
+
+	public abstract void useSecondary(SmartPlayer sPlayer, Sign sign);
 }

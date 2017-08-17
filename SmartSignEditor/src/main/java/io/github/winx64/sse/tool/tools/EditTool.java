@@ -31,42 +31,7 @@ import io.github.winx64.sse.tool.ToolType;
 public final class EditTool extends Tool {
 
 	public EditTool(SmartSignEditor plugin) {
-		super(plugin);
-	}
-
-	@Override
-	public ToolType getType() {
-		return ToolType.EDIT;
-	}
-
-	@Override
-	public boolean modifiesWorld() {
-		return true;
-	}
-
-	@Override
-	public String getPrimaryName() {
-		return "Edit Tool";
-	}
-
-	@Override
-	public String getSecondaryName() {
-		return null;
-	}
-
-	@Override
-	public String getPrimaryPermission() {
-		return null;
-	}
-
-	@Override
-	public String getSecondaryPermission() {
-		return null;
-	}
-
-	@Override
-	public boolean preSpecialHandling() {
-		return true;
+		super(plugin, ToolType.EDIT, "Sign Edit", null, Permissions.TOOL_EDIT, null, true, true);
 	}
 
 	@Override

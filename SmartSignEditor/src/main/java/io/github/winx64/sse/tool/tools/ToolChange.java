@@ -29,42 +29,7 @@ import io.github.winx64.sse.tool.ToolType;
 public final class ToolChange extends Tool {
 
 	public ToolChange(SmartSignEditor plugin) {
-		super(plugin);
-	}
-
-	@Override
-	public ToolType getType() {
-		return null;
-	}
-
-	@Override
-	public boolean modifiesWorld() {
-		return false;
-	}
-
-	@Override
-	public String getPrimaryName() {
-		return "Next Tool";
-	}
-
-	@Override
-	public String getSecondaryName() {
-		return "Previous Tool";
-	}
-
-	@Override
-	public String getPrimaryPermission() {
-		return null;
-	}
-
-	@Override
-	public String getSecondaryPermission() {
-		return null;
-	}
-
-	@Override
-	public boolean preSpecialHandling() {
-		return false;
+		super(plugin, null, "Next Tool", "Previous Tool", null, null, false, false);
 	}
 
 	@Override

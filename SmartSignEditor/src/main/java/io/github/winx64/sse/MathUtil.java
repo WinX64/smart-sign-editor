@@ -31,7 +31,7 @@ import org.bukkit.util.Vector;
  * Class with some useful trigonometric methods to help calculate player's line
  * of sight and sign intersection
  * 
- * @author Lucas
+ * @author WinX64
  *
  */
 public final class MathUtil {

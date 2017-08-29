@@ -52,7 +52,7 @@ import io.github.winx64.sse.tool.tools.ToolChange;
 /**
  * SmartSignEditor's main class
  * 
- * @author Lucas
+ * @author WinX64
  *
  */
 public final class SmartSignEditor extends JavaPlugin {

@@ -20,7 +20,7 @@ package io.github.winx64.sse.player;
 /**
  * Helper class to store the permissions currently used
  * 
- * @author Lucas
+ * @author WinX64
  *
  */
 public final class Permissions {

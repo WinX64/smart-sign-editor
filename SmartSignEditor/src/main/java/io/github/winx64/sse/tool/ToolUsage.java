@@ -26,7 +26,7 @@ import org.bukkit.event.block.Action;
 /**
  * Represents the diffent ways to use a certain tool
  * 
- * @author Lucas
+ * @author WinX64
  *
  */
 public enum ToolUsage {

@@ -38,6 +38,12 @@ import io.github.winx64.sse.handler.versions.VersionAdapter_1_8_R3;
 import io.github.winx64.sse.handler.versions.VersionAdapter_1_9_R1;
 import io.github.winx64.sse.handler.versions.VersionAdapter_1_9_R2;
 
+/**
+ * Helper class to handle the implementation's adapter and version checking
+ * 
+ * @author WinX64
+ *
+ */
 public final class VersionHandler {
 
 	private static final List<String> UNSUPPORTED_VERSIONS;

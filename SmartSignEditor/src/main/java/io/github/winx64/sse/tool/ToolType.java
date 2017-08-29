@@ -22,7 +22,7 @@ import io.github.winx64.sse.player.Permissions;
 /**
  * Represents the diffent kind of tools SmartSignEditor has
  * 
- * @author Lucas
+ * @author WinX64
  *
  */
 public enum ToolType {

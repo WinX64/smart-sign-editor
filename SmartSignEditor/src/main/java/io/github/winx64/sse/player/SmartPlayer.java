@@ -26,7 +26,7 @@ import io.github.winx64.sse.tool.ToolType;
 /**
  * Data class to store the player information related to SmartSignEditor
  * 
- * @author Lucas
+ * @author WinX64
  *
  */
 public final class SmartPlayer {

@@ -1,6 +1,5 @@
 *.classpath
 *.project
-.settings
-*.versionsBackup
+
+.settings/
 target/
-dependency-reduced-pom.xml

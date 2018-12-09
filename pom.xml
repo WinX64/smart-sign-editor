@@ -1,47 +1,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.github.winx64</groupId>
-	<artifactId>smartsigneditor-parent</artifactId>
-	<version>2.5.2.3</version>
-	<packaging>pom</packaging>
-	<name>SmartSignEditor-Parent</name>
-	<description>Parent module of the entire SmartSignEditor project</description>
+    <groupId>io.github.winx64</groupId>
+    <artifactId>smart-sign-editor-parent</artifactId>
+    <version>2.6.0</version>
+    <packaging>pom</packaging>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.7.2-R0.1-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+    <name>SmartSignEditor-Parent</name>
+    <description>Parent module of the entire SmartSignEditor project</description>
 
-	<modules>
-		<module>Versions/Adapter</module>
-		<module>Versions/1_7_R1</module>
-		<module>Versions/1_7_R2</module>
-		<module>Versions/1_7_R3</module>
-		<module>Versions/1_7_R4</module>
-		<module>Versions/1_8_R1</module>
-		<module>Versions/1_8_R2</module>
-		<module>Versions/1_8_R3</module>
-		<module>Versions/1_9_R1</module>
-		<module>Versions/1_9_R2</module>
-		<module>Versions/1_10_R1</module>
-		<module>Versions/1_11_R1</module>
-		<module>Versions/1_12_R1</module>
-		<module>SmartSignEditor</module>
-	</modules>
+    <modules>
+        <module>version/Adapter</module>
+        <module>version/1_8_R1</module>
+        <module>version/1_8_R2</module>
+        <module>version/1_8_R3</module>
+        <module>version/1_9_R1</module>
+        <module>version/1_9_R2</module>
+        <module>version/1_10_R1</module>
+        <module>version/1_11_R1</module>
+        <module>version/1_12_R1</module>
+        <module>version/1_13_R1</module>
+        <module>version/1_13_R2</module>
+        <module>core</module>
+    </modules>
 
-	<issueManagement>
-		<url>https://github.com/WinX64/SmartSignEditor/issues</url>
-		<system>GitHub</system>
-	</issueManagement>
+    <issueManagement>
+        <url>https://github.com/WinX64/smart-sign-editor/issues</url>
+        <system>GitHub</system>
+    </issueManagement>
 
-	<properties>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 </project>

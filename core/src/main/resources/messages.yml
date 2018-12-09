@@ -1,0 +1,46 @@
+#Version. Do NOT touch this
+messages-version: 3
+
+command:
+  no-console-allowed: '&cThis command cannot be used via console!'
+  reload:
+    success: '&aConfiguration & Messages reloaded with success!'
+    failure: '&cFailed to reload the configuration/messages! Check the console for more information!'
+
+tool:
+  no-tool-permission: '&cYou don''t have permission to use the {tool} SubTool!'
+  no-sub-tool-permission: '&cYou don''t have permission to use the {sub-tool} SubTool Option!'
+  invalid-sign-line: '&cChoose a valid line, inside the sign''s plate!'
+  override-no-permission: '&cSomeone is already editing this sign!'
+  tool-changed: '&eTool Mode: &b{tool}'
+
+  edit:
+    name: 'Edit Tool'
+
+  copy:
+    name: 'Copy Tool'
+    subtool:
+      sign-copy: 'Sign Copy Subtool'
+      line-copy: 'Line Copy Subtool'
+    sign-copied: '&aSign text copied!'
+    line-copied: '&aLine text copied: &r{line}'
+
+
+  paste:
+    name: 'Paste Tool'
+    subtool:
+      sign-paste: 'Sign Paste Subtool'
+      line-paste: 'Line Paste Subtool'
+    sign-replaced: '&aSign text replaced!'
+    line-replaced: '&aLine text replaced: &r{line}'
+    no-line-copied: '&cYou haven''t copied any line yet!'
+    no-sign-copied: '&cYou haven''t copied any sign yet!'
+
+  erase:
+    name: 'Erase Tool'
+    subtool:
+      sign-erase: 'Sign Erase Subtool'
+      line-erase: 'Line Erase Subtool'
+    sign-cleared: '&aSign text cleared!'
+    line-cleared: '&aLine text cleared!'
+    

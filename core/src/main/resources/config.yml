@@ -1,0 +1,76 @@
+#Version. Do NOT touch this
+config-version: 3
+
+#SubTool item configuration
+tool-item:
+
+  #The physical item used to handle sign modifications
+  tool:
+    ==: org.bukkit.inventory.ItemStack
+    type: FEATHER
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: "\u00A7bThe Great Editing Feather"
+      lore:
+      - "\u00A77Using this tool, you can Edit/Copy/Paste/Erase signs!"
+
+  #Does the item name have to match the tool item's name? If TRUE, only items with the same type and name will work
+  match-name: false
+
+  #Does the item lore have to match the tool item's lore? If TRUE, only items with the same type and lore will work
+  match-lore: false
+
+#Usages for the different subtool and options
+#Available options: NO_SHIFT_RIGHT_CLICK, SHIFT_RIGHT_CLICK, RIGHT_CLICK, NO_SHIFT_LEFT_CLICK, SHIFT_LEFT_CLICK, LEFT_CLICK
+#Make sure that usages for a single tool don't conflict with each other. Eg.: SHIFT_RIGHT_CLICK for line-copy and RIGHT_CLICK for sign-copy
+tool-usages:
+
+  #Usages for the edit tool
+  edit:
+    sign-edit: RIGHT_CLICK
+
+  #Usages for the copy tool
+  copy:
+    sign-copy: NO_SHIFT_RIGHT_CLICK
+    line-copy: SHIFT_RIGHT_CLICK
+
+  #Usages for the paste tool
+  paste:
+    sign-paste: NO_SHIFT_RIGHT_CLICK
+    line-paste: SHIFT_RIGHT_CLICK
+
+  #Usages for the erase tool
+  erase:
+    sign-erase: NO_SHIFT_RIGHT_CLICK
+    line-erase: SHIFT_RIGHT_CLICK
+
+#Interact with signs without having to be near them
+extended-tool:
+
+  #Should it be enabled?
+  enabled: true
+
+  #The maximum distance in blocks to count as an interaction
+  reach: 10
+
+#Special types of signs. These ones will be handled differently to avoid conflicts
+special-signs:
+- '[color]'
+- '[balance]'
+- '[buy]'
+- '[sell]'
+- '[trade]'
+- '[free]'
+- '[disposal]'
+- '[warp]'
+- '[kit]'
+- '[mail]'
+- '[enchant]'
+- '[gamemode]'
+- '[heal]'
+- '[info]'
+- '[spawnmob]'
+- '[repair]'
+- '[time]'
+- '[weather]'

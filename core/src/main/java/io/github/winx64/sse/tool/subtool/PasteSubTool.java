@@ -74,12 +74,13 @@ public final class PasteSubTool {
                 return;
             }
 
-            Vector intersection = MathUtil.getSightSignIntersection(player, sign);
+            org.bukkit.material.Sign signData = plugin.getVersionAdapter().buildSignMaterialData(sign);
+            Vector intersection = MathUtil.getSightSignIntersection(player, sign.getLocation(), signData);
             if (intersection == null) {
                 player.sendMessage(plugin.getSignMessage().get(NameKey.INVALID_LINE));
                 return;
             }
-            int clickedLine = MathUtil.getSignLine(intersection, sign);
+            int clickedLine = MathUtil.getSignLine(intersection, sign.getLocation(), signData);
 
             if (player.hasPermission(Permissions.TOOL_PASTE_COLORS)) {
                 sign.setLine(clickedLine, sPlayer.getLineBuffer());

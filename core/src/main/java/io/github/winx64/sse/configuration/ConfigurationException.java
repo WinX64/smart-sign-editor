@@ -1,6 +1,6 @@
 package io.github.winx64.sse.configuration;
 
-final class ConfigurationException extends RuntimeException {
+final class ConfigurationException extends Exception {
 
     private static final long serialVersionUID = -793672320756754240L;
 
@@ -8,7 +8,7 @@ final class ConfigurationException extends RuntimeException {
         super(message);
     }
 
-    ConfigurationException(String format, Object... args) {
-        super(String.format(format, args));
+    ConfigurationException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

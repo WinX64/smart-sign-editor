@@ -38,11 +38,12 @@ public final class SignMessage extends BaseConfiguration {
     }
 
     @Override
-    protected void prepareConfiguration() {
+    protected void prepareConfiguration() throws ConfigurationException {
         for (NameKey nameKey : NameKey.values()) {
             String path = nameKey.getPath();
             if (!defaultConfig.contains(path)) {
-                throw new ConfigurationException("Missing message \"%s\" from the default messages. Unable to continue!", path);
+                throw new ConfigurationException(String.format("Missing message \"%s\" from the default messages. " +
+                        "Unable to continue!", path));
             }
 
             defaultMessages.put(nameKey, ChatColor.translateAlternateColorCodes('&', defaultConfig.getString(path)));

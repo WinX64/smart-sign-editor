@@ -2,8 +2,8 @@ package io.github.winx64.sse;
 
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.material.Sign;
 import org.bukkit.util.Vector;
 
 import java.util.Collections;
@@ -53,7 +53,7 @@ public final class MathUtil {
     /**
      * Pairs of Y coordinates for the boundaries of each line in the sign plate
      */
-    private static final double SIGN_LINE_Y_OFFSET[] = new double[]{0.5, 0.36650, 0.26250, 0.15850, 0.0};
+    private static final double[] SIGN_LINE_Y_OFFSET = new double[] { 0.5, 0.36650, 0.26250, 0.15850, 0.0 };
 
     /**
      * One eighth of PI
@@ -71,39 +71,36 @@ public final class MathUtil {
                         return new Vector(Math.cos(angle), 0, Math.sin(angle));
                     })));
 
-    private MathUtil() {
-    }
+    private MathUtil() { }
 
     /**
      * Gets at which coordinates the player's line of sight intersected a sign
      *
-     * @param player The player
-     * @param sign   The sign
+     * @param player the player
+     * @param signLocation the location of the sign block
+     * @param signData the <code>MaterialData</code> of the sign block
      * @return The point of intersection of the player's line of sight and the
      * sign, or null, if it happened out of bounds
      */
-    public static Vector getSightSignIntersection(Player player, Sign sign) {
-        org.bukkit.material.Sign materialData = (org.bukkit.material.Sign) sign.getData();
-
+    public static Vector getSightSignIntersection(Player player, Location signLocation, Sign signData) {
         Location loc = player.getEyeLocation();
-        BlockFace face = materialData.getFacing();
+        BlockFace face = signData.getFacing();
 
         Vector linePoint = loc.toVector();
         Vector lineDirection = loc.getDirection();
         Vector planeNormal = SIGN_NORMAL_VECTORS.get(face);
-        Location planeLocation = sign.getLocation();
 
-        if (materialData.isWallSign()) {
-            planeLocation = planeLocation.add(0.5, SIGN_HEIGHT / 2 + WALL_SIGN_WALL_HEIGHT_OFFSET, 0.5);
-            planeLocation = planeLocation
+        if (signData.isWallSign()) {
+            signLocation = signLocation.add(0.5, SIGN_HEIGHT / 2 + WALL_SIGN_WALL_HEIGHT_OFFSET, 0.5);
+            signLocation = signLocation
                     .add(planeNormal.clone().multiply(WALL_SIGN_WALL_DISTANCE_OFFSET + SIGN_THICKNESS / 2 - 0.5));
 
         } else {
-            planeLocation = planeLocation.add(0.5, SIGN_HEIGHT / 2 + SIGN_POST_POLE_HEIGHT_OFFSET, 0.5);
-            planeLocation = planeLocation.add(planeNormal.clone().multiply(SIGN_THICKNESS / 2));
+            signLocation = signLocation.add(0.5, SIGN_HEIGHT / 2 + SIGN_POST_POLE_HEIGHT_OFFSET, 0.5);
+            signLocation = signLocation.add(planeNormal.clone().multiply(SIGN_THICKNESS / 2));
         }
 
-        Vector planePoint = planeLocation.toVector();
+        Vector planePoint = signLocation.toVector();
         Vector intersection = getLinePlaneIntersection(linePoint, lineDirection, planePoint, planeNormal);
         if (intersection == null || !isInsidePostSignBoundaries(intersection, planePoint)
                 || !isPointInFrontOfPlane(linePoint, planePoint, planeNormal)) {
@@ -116,15 +113,14 @@ public final class MathUtil {
     /**
      * Gets which line the player is looking at
      *
-     * @param intersection The point of intersection between the player's line of sight
-     *                     and the sign
-     * @param sign         The sign
-     * @return The line of the sign that the intersection is on
+     * @param intersection the point of intersection between the player's line of sight and the sign
+     * @param signLocation the location of the sign block
+     * @param signData the <code>MaterialData</code> of the sign block
+     * @return the line of the sign that the intersection is on
      */
-    public static int getSignLine(Vector intersection, Sign sign) {
-        org.bukkit.material.Sign materialData = (org.bukkit.material.Sign) sign.getData();
-        double y = intersection.getY() - sign.getLocation().getY()
-                - (materialData.isWallSign() ? WALL_SIGN_WALL_HEIGHT_OFFSET : SIGN_POST_POLE_HEIGHT_OFFSET);
+    public static int getSignLine(Vector intersection, Location signLocation, Sign signData) {
+        double y = intersection.getY() - signLocation.getY()
+                - (signData.isWallSign() ? WALL_SIGN_WALL_HEIGHT_OFFSET : SIGN_POST_POLE_HEIGHT_OFFSET);
         for (int i = 0; i < 4; i++) {
             if (SIGN_LINE_Y_OFFSET[i] >= y && SIGN_LINE_Y_OFFSET[i + 1] < y) {
                 return i;

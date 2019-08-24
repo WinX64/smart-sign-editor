@@ -64,8 +64,8 @@ public final class SmartSignEditor extends JavaPlugin {
                 logger.severe("Your current version is " + currentVersion
                         + ". Get off your dinosaur and update your server!");
             } else {
-                logger.severe("Your current version is " + currentVersion
-                        + ". This is a newer version that still not supported. Ask the author to provide support for it!");
+                logger.severe("Your current version is " + currentVersion + ". This is a newer version that is " +
+                        "still not supported. Ask the author to provide support for it!");
             }
             getServer().getPluginManager().disablePlugin(this);
             return;

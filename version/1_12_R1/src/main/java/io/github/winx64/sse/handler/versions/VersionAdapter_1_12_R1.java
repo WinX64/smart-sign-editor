@@ -58,4 +58,9 @@ public final class VersionAdapter_1_12_R1 implements VersionAdapter {
     public boolean shouldProcessEvent(PlayerInteractEvent event) {
         return event.getHand() == EquipmentSlot.HAND;
     }
+
+    @Override
+    public org.bukkit.material.Sign buildSignMaterialData(Sign sign) {
+        return (org.bukkit.material.Sign) sign.getData();
+    }
 }

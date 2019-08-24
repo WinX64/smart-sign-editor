@@ -3,7 +3,11 @@ package io.github.winx64.sse.handler.versions;
 import io.github.winx64.sse.handler.VersionAdapter;
 import net.minecraft.server.v1_13_R1.*;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.craftbukkit.v1_13_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -57,5 +61,19 @@ public final class VersionAdapter_1_13_R1 implements VersionAdapter {
     @Override
     public boolean shouldProcessEvent(PlayerInteractEvent event) {
         return event.getHand() == EquipmentSlot.HAND;
+    }
+
+    @Override
+    public org.bukkit.material.Sign buildSignMaterialData(Sign sign) {
+        BlockData blockData = sign.getBlockData();
+        if (blockData instanceof WallSign) {
+            org.bukkit.material.Sign signData = new org.bukkit.material.Sign(Material.LEGACY_WALL_SIGN);
+            signData.setFacingDirection(((WallSign) blockData).getFacing());
+            return signData;
+        } else {
+            org.bukkit.material.Sign signData = new org.bukkit.material.Sign(Material.LEGACY_SIGN_POST);
+            signData.setFacingDirection(((org.bukkit.block.data.type.Sign) blockData).getRotation());
+            return signData;
+        }
     }
 }

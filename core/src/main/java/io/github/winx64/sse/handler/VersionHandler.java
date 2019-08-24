@@ -30,6 +30,7 @@ public final class VersionHandler {
         supportedVersions.put("v1_12_R1", VersionAdapter_1_12_R1.class);
         supportedVersions.put("v1_13_R1", VersionAdapter_1_13_R1.class);
         supportedVersions.put("v1_13_R2", VersionAdapter_1_13_R2.class);
+        supportedVersions.put("v1_14_R1", VersionAdapter_1_14_R1.class);
 
         UNSUPPORTED_VERSIONS = Collections.unmodifiableList(unsupportedVersions);
         SUPPORTED_VERSIONS = Collections.unmodifiableMap(supportedVersions);
@@ -64,8 +65,7 @@ public final class VersionHandler {
         if (adapterClass != null) {
             try {
                 return adapterClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException ignored) {
-            }
+            } catch (InstantiationException | IllegalAccessException ignored) { }
         }
         return null;
     }

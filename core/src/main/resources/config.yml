@@ -1,7 +1,7 @@
 #Version. Do NOT touch this
 config-version: 3
 
-#SubTool item configuration
+#Tool item configuration
 tool-item:
 
   #The physical item used to handle sign modifications

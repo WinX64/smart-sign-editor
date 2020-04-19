@@ -17,31 +17,14 @@
  */
 package io.github.winx64.sse.handler.versions;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collection;
-
-import org.bukkit.Bukkit;
+import io.github.winx64.sse.handler.VersionAdapter;
+import net.minecraft.server.v1_8_R2.*;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import com.google.common.base.Charsets;
-
-import io.github.winx64.sse.handler.VersionAdapter;
-import net.minecraft.server.v1_8_R2.BlockPosition;
-import net.minecraft.server.v1_8_R2.ChatComponentText;
-import net.minecraft.server.v1_8_R2.EntityPlayer;
-import net.minecraft.server.v1_8_R2.PacketPlayOutOpenSignEditor;
-import net.minecraft.server.v1_8_R2.PacketPlayOutUpdateSign;
-import net.minecraft.server.v1_8_R2.PlayerConnection;
-import net.minecraft.server.v1_8_R2.TileEntitySign;
-import net.minecraft.server.v1_8_R2.World;
 
 public final class VersionAdapter_1_8_R2 implements VersionAdapter {
 

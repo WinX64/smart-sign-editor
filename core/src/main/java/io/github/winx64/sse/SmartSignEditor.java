@@ -10,10 +10,7 @@ import io.github.winx64.sse.listener.PlayerInOutListener;
 import io.github.winx64.sse.listener.SignChangeListener;
 import io.github.winx64.sse.listener.SignInteractionListener;
 import io.github.winx64.sse.player.SmartPlayer;
-import io.github.winx64.sse.tool.SubTool;
-import io.github.winx64.sse.tool.Tool;
 import org.bstats.bukkit.Metrics;
-import org.bstats.bukkit.Metrics.DrilldownPie;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -25,17 +22,14 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.util.Arrays.stream;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonMap;
-import static java.util.stream.Collectors.toMap;
-
 /**
  * SmartSignEditor's main class
  *
  * @author WinX64
  */
 public final class SmartSignEditor extends JavaPlugin {
+
+    private static final int PLUGIN_ID = 36;
 
     private final Map<UUID, SmartPlayer> smartPlayers;
 
@@ -96,9 +90,7 @@ public final class SmartSignEditor extends JavaPlugin {
         this.getCommand("sse").setExecutor(new CommandTool(this));
         this.getCommand("sse-reload").setExecutor(new CommandReload(this));
 
-        Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new DrilldownPie("mostUsedTool", this::getMostUsedToolMetric));
-        metrics.addCustomChart(new DrilldownPie("toolUseCount", this::getToolUseCountMetric));
+        new Metrics(this, PLUGIN_ID);
     }
 
     public SignConfiguration getSignConfig() {
@@ -107,42 +99,6 @@ public final class SmartSignEditor extends JavaPlugin {
 
     public SignMessage getSignMessage() {
         return signMessage;
-    }
-
-    private Map<String, Map<String, Integer>> getMostUsedToolMetric() {
-        Tool mostUsedTool = null;
-        for (Tool tool : Tool.values()) {
-            if (mostUsedTool == null || mostUsedTool.getTotalUseCount() < tool.getTotalUseCount()) {
-                mostUsedTool = tool;
-            }
-        }
-
-        if (mostUsedTool == null) {
-            return emptyMap();
-        }
-
-        SubTool mostUsedSubTool = null;
-        for (SubTool subTool : mostUsedTool.getSubTools().values()) {
-            if (mostUsedSubTool == null || mostUsedSubTool.getUseCount() < subTool.getUseCount()) {
-                mostUsedSubTool = subTool;
-            }
-        }
-
-        if (mostUsedSubTool == null) {
-            return emptyMap();
-        }
-
-        String toolName = signMessage.getDefault(mostUsedTool.getNameKey());
-        String subToolName = signMessage.getDefault(mostUsedSubTool.getNameKey());
-        return singletonMap(toolName, singletonMap(subToolName, 1));
-    }
-
-    private Map<String, Map<String, Integer>> getToolUseCountMetric() {
-        return stream(Tool.values()).collect(toMap(
-                (tool) -> signMessage.getDefault(tool.getNameKey()),
-                (tool) -> tool.getSubTools().values().stream().collect(toMap(
-                        (subTool) -> signMessage.getDefault(subTool.getNameKey()),
-                        SubTool::getUseCount))));
     }
 
     public void log(Level level, String format, Object... objects) {

@@ -1,16 +1,18 @@
 package io.github.winx64.sse.handler.versions;
 
 import io.github.winx64.sse.handler.VersionAdapter;
-import net.minecraft.server.v1_12_R1.*;
+import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.WallSign;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-public final class VersionAdapter_1_12_R1 implements VersionAdapter {
+public final class VersionAdapter_1_15_R1 implements VersionAdapter {
 
     @Override
     public void updateSignText(Player player, Sign sign, String[] text) {
@@ -38,7 +40,7 @@ public final class VersionAdapter_1_12_R1 implements VersionAdapter {
         PlayerConnection conn = nmsPlayer.playerConnection;
 
         tileEntitySign.isEditable = true;
-        tileEntitySign.a(nmsPlayer);
+        tileEntitySign.a((EntityHuman) nmsPlayer);
         conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
     }
 
@@ -59,6 +61,15 @@ public final class VersionAdapter_1_12_R1 implements VersionAdapter {
 
     @Override
     public org.bukkit.material.Sign buildSignMaterialData(Sign sign) {
-        return (org.bukkit.material.Sign) sign.getData();
+        BlockData blockData = sign.getBlockData();
+        if (blockData instanceof WallSign) {
+            org.bukkit.material.Sign signData = new org.bukkit.material.Sign(org.bukkit.Material.LEGACY_WALL_SIGN);
+            signData.setFacingDirection(((WallSign) blockData).getFacing());
+            return signData;
+        } else {
+            org.bukkit.material.Sign signData = new org.bukkit.material.Sign(org.bukkit.Material.LEGACY_SIGN_POST);
+            signData.setFacingDirection(((org.bukkit.block.data.type.Sign) blockData).getRotation());
+            return signData;
+        }
     }
 }

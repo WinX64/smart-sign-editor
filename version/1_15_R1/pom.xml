@@ -2,9 +2,9 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>smart-sign-editor-1_11_R1</artifactId>
-    <name>SmartSignEditor-1_11_R1</name>
-    <description>Version adapter implementation for v1_11_R1</description>
+    <artifactId>smart-sign-editor-1_15_R1</artifactId>
+    <name>SmartSignEditor-1_15_R1</name>
+    <description>Version adapter implementation for v1_15_R1</description>
 
     <parent>
         <groupId>io.github.winx64</groupId>
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.11-R0.1-SNAPSHOT</version>
+            <version>1.15-R0.1-SNAPSHOT</version>
             <optional>true</optional>
         </dependency>
         <dependency>

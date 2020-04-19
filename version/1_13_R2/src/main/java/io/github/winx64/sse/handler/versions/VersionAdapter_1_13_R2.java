@@ -26,9 +26,7 @@ public final class VersionAdapter_1_13_R2 implements VersionAdapter {
             tileEntitySign.lines[i] = new ChatComponentText(text[i]);
         }
         conn.sendPacket(tileEntitySign.getUpdatePacket());
-        for (int i = 0; i < 4; i++) {
-            tileEntitySign.lines[i] = oldSignText[i];
-        }
+        System.arraycopy(oldSignText, 0, tileEntitySign.lines, 0, 4);
     }
 
     @Override

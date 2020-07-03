@@ -32,6 +32,7 @@ public final class VersionHandler {
         supportedVersions.put("v1_13_R2", VersionAdapter_1_13_R2.class);
         supportedVersions.put("v1_14_R1", VersionAdapter_1_14_R1.class);
         supportedVersions.put("v1_15_R1", VersionAdapter_1_15_R1.class);
+        supportedVersions.put("v1_16_R1", VersionAdapter_1_16_R1.class);
 
         UNSUPPORTED_VERSIONS = Collections.unmodifiableList(unsupportedVersions);
         SUPPORTED_VERSIONS = Collections.unmodifiableMap(supportedVersions);

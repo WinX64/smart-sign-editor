@@ -92,6 +92,11 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.github.winx64</groupId>
+            <artifactId>smart-sign-editor-1_16_R1</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>1.7</version>
@@ -135,6 +140,7 @@
                                     <include>io.github.winx64:smart-sign-editor-1_13_R2</include>
                                     <include>io.github.winx64:smart-sign-editor-1_14_R1</include>
                                     <include>io.github.winx64:smart-sign-editor-1_15_R1</include>
+                                    <include>io.github.winx64:smart-sign-editor-1_16_R1</include>
                                     <include>org.bstats:bstats-bukkit</include>
                                 </includes>
                             </artifactSet>

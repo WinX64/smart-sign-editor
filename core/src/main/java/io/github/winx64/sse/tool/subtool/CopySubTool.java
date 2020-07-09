@@ -1,16 +1,16 @@
 package io.github.winx64.sse.tool.subtool;
 
-import io.github.winx64.sse.util.MathUtil;
-import io.github.winx64.sse.SmartSignEditor;
+import io.github.winx64.sse.configuration.SignMessage;
 import io.github.winx64.sse.configuration.SignMessage.NameKey;
-import io.github.winx64.sse.player.Permissions;
 import io.github.winx64.sse.data.SmartPlayer;
+import io.github.winx64.sse.handler.VersionAdapter;
+import io.github.winx64.sse.player.Permissions;
 import io.github.winx64.sse.tool.SubTool;
 import io.github.winx64.sse.tool.ToolUsage;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 public final class CopySubTool {
 
@@ -24,8 +24,9 @@ public final class CopySubTool {
         }
 
         @Override
-        public void use(SmartSignEditor plugin, SmartPlayer sPlayer, Sign sign) {
+        public void use(VersionAdapter adapter, SignMessage signMessage, SmartPlayer sPlayer, Block clickedSign) {
             Player player = sPlayer.getPlayer();
+            Sign sign = (Sign) clickedSign.getState();
 
             for (int i = 0; i < 4; i++) {
                 if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
@@ -34,7 +35,8 @@ public final class CopySubTool {
                     sPlayer.setSignBuffer(i, sign.getLine(i));
                 }
             }
-            player.sendMessage(plugin.getSignMessage().get(NameKey.TOOL_SIGN_COPIED));
+
+            player.sendMessage(signMessage.get(NameKey.TOOL_SIGN_COPIED));
             this.useCount++;
         }
     }
@@ -46,24 +48,18 @@ public final class CopySubTool {
         }
 
         @Override
-        public void use(SmartSignEditor plugin, SmartPlayer sPlayer, Sign sign) {
+        public void use(VersionAdapter adapter, SignMessage signMessage, SmartPlayer sPlayer, Block clickedSign) {
             Player player = sPlayer.getPlayer();
 
-            org.bukkit.material.Sign signData = plugin.getVersionAdapter().buildSignMaterialData(sign);
-            Vector intersection = MathUtil.getSightSignIntersection(player, sign.getLocation(), signData);
-            if (intersection == null) {
-                player.sendMessage(plugin.getSignMessage().get(NameKey.INVALID_LINE));
-                return;
-            }
-            int clickedLine = MathUtil.getSignLine(intersection, sign.getLocation(), signData);
-
-            if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
-                sPlayer.setLineBuffer(ChatColor.stripColor(sign.getLine(clickedLine)));
-            } else {
-                sPlayer.setLineBuffer(sign.getLine(clickedLine));
-            }
-            player.sendMessage(plugin.getSignMessage().get(NameKey.TOOL_LINE_COPIED, sPlayer.getLineBuffer()));
-            this.useCount++;
+            runAfterLineValidation(adapter, signMessage, player, clickedSign, ((sign, clickedLine) -> {
+                if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
+                    sPlayer.setLineBuffer(ChatColor.stripColor(sign.getLine(clickedLine)));
+                } else {
+                    sPlayer.setLineBuffer(sign.getLine(clickedLine));
+                }
+                player.sendMessage(signMessage.get(NameKey.TOOL_LINE_COPIED, sPlayer.getLineBuffer()));
+                this.useCount++;
+            }));
         }
     }
 }

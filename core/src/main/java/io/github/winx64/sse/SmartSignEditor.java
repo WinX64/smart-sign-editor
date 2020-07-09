@@ -9,7 +9,7 @@ import io.github.winx64.sse.handler.VersionHandler;
 import io.github.winx64.sse.listener.PlayerInOutListener;
 import io.github.winx64.sse.listener.SignChangeListener;
 import io.github.winx64.sse.listener.SignInteractionListener;
-import io.github.winx64.sse.player.SmartPlayer;
+import io.github.winx64.sse.data.SmartPlayer;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

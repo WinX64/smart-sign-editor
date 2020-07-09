@@ -1,9 +1,14 @@
 package io.github.winx64.sse.handler;
 
+import io.github.winx64.sse.data.SignData;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+/**
+ * Interface specifying version dependent methods to be implemented separately
+ */
 public interface VersionAdapter {
 
     /**
@@ -25,14 +30,6 @@ public interface VersionAdapter {
     void openSignEditor(Player player, Sign sign);
 
     /**
-     * Checks if the specified sign is currently being edited by a player or not
-     *
-     * @param sign the sign
-     * @return whether the sign is being edited or not
-     */
-    boolean isSignBeingEdited(Sign sign);
-
-    /**
      * Checks if the plugin should continue processing this event. Mainly to
      * avoid calling interact events twice due to the dual wielding in newer
      * versions
@@ -43,9 +40,23 @@ public interface VersionAdapter {
     boolean shouldProcessEvent(PlayerInteractEvent event);
 
     /**
-     * Creates the respective <code>MaterialData</code> instance for this <code>Sign</code>
-     * @param sign The sign to be used
-     * @return the respective <code>MaterialData</code>
+     * Verifies if the given block is a sign of any type (wall-sign or sign-post)
+     * @param block the block to be verified
+     * @return whether the block is a sign or not
      */
-    org.bukkit.material.Sign buildSignMaterialData(Sign sign);
+    boolean isSign(Block block);
+
+    /**
+     * Builds the corresponding <see>SignData</see> from the given block
+     * @param block the given sign
+     * @return the newly created data, or null if the given block is not a sign
+     */
+    SignData getSignData(Block block);
+
+    /**
+     * Verifies if the given sign is currently being edited by someone
+     * @param block the given sign
+     * @return whether the sign is being edited or not, or false if the given block is not a sign
+     */
+    boolean isSignBeingEdited(Block block);
 }

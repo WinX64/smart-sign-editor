@@ -1,4 +1,4 @@
-package io.github.winx64.sse.player;
+package io.github.winx64.sse.data;
 
 import io.github.winx64.sse.tool.Tool;
 import org.bukkit.entity.Player;

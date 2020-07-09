@@ -3,7 +3,7 @@ package io.github.winx64.sse.tool;
 import io.github.winx64.sse.SmartSignEditor;
 import io.github.winx64.sse.configuration.SignMessage;
 import io.github.winx64.sse.configuration.SignMessage.NameKey;
-import io.github.winx64.sse.player.SmartPlayer;
+import io.github.winx64.sse.data.SmartPlayer;
 import org.bukkit.block.Sign;
 
 public abstract class SubTool {

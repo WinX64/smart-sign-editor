@@ -3,7 +3,7 @@ package io.github.winx64.sse.tool.subtool;
 import io.github.winx64.sse.SmartSignEditor;
 import io.github.winx64.sse.configuration.SignMessage.NameKey;
 import io.github.winx64.sse.player.Permissions;
-import io.github.winx64.sse.player.SmartPlayer;
+import io.github.winx64.sse.data.SmartPlayer;
 import io.github.winx64.sse.tool.SubTool;
 import io.github.winx64.sse.tool.ToolUsage;
 import org.bukkit.ChatColor;

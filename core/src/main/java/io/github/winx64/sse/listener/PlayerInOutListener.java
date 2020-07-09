@@ -1,7 +1,7 @@
 package io.github.winx64.sse.listener;
 
 import io.github.winx64.sse.SmartSignEditor;
-import io.github.winx64.sse.player.SmartPlayer;
+import io.github.winx64.sse.data.SmartPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;

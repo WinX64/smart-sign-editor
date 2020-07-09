@@ -5,7 +5,7 @@ import io.github.winx64.sse.configuration.SignConfiguration;
 import io.github.winx64.sse.configuration.SignMessage;
 import io.github.winx64.sse.configuration.SignMessage.NameKey;
 import io.github.winx64.sse.player.Permissions;
-import io.github.winx64.sse.player.SmartPlayer;
+import io.github.winx64.sse.data.SmartPlayer;
 import io.github.winx64.sse.tool.SubTool;
 import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolUsage;

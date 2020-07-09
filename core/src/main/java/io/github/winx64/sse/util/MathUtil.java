@@ -1,4 +1,4 @@
-package io.github.winx64.sse;
+package io.github.winx64.sse.util;
 
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;

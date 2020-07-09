@@ -3,13 +3,11 @@ package io.github.winx64.sse.configuration;
 import io.github.winx64.sse.SmartSignEditor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import sun.security.krb5.Config;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.ConnectException;
 import java.nio.file.Files;
 import java.util.logging.Level;
 

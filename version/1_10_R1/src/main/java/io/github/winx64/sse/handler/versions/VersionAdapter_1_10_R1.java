@@ -64,10 +64,8 @@ public final class VersionAdapter_1_10_R1 implements VersionAdapter {
 
     @Override
     public SignData getSignData(Block block) {
-        org.bukkit.block.Sign blockState = (org.bukkit.block.Sign) block.getState();
         Sign materialData = (Sign) block.getState().getData();
-        return new SignData(blockState.getLines(), block.getLocation(), materialData.getFacing(),
-                materialData.isWallSign());
+        return new SignData(materialData.getFacing(), materialData.isWallSign());
     }
 
     @Override

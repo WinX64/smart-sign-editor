@@ -17,6 +17,9 @@ import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.material.Sign;
+
+import java.util.Objects;
 
 public final class VersionAdapter_1_9_R2 implements VersionAdapter {
 
@@ -24,7 +27,7 @@ public final class VersionAdapter_1_9_R2 implements VersionAdapter {
     public void updateSignText(Player player, Location location, String[] text) {
         BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
+        TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(nmsPlayer.world.getTileEntity(pos));
         PlayerConnection conn = nmsPlayer.playerConnection;
         IChatBaseComponent[] oldSignText = new IChatBaseComponent[4];
 
@@ -40,7 +43,7 @@ public final class VersionAdapter_1_9_R2 implements VersionAdapter {
     public void openSignEditor(Player player, Location location) {
         BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
+        TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(nmsPlayer.world.getTileEntity(pos));
         PlayerConnection conn = nmsPlayer.playerConnection;
 
         tileEntitySign.isEditable = true;
@@ -59,9 +62,11 @@ public final class VersionAdapter_1_9_R2 implements VersionAdapter {
     }
 
     @Override
-    public SignData getSignData(org.bukkit.block.Block block) {
-        org.bukkit.material.Sign sign = (org.bukkit.material.Sign) block.getState().getData();
-        return new SignData(block.getLocation(), sign.getFacing(), block.getType() == org.bukkit.Material.WALL_SIGN);
+    public SignData getSignData(Block block) {
+        org.bukkit.block.Sign blockState = (org.bukkit.block.Sign) block.getState();
+        Sign materialData = (Sign) block.getState().getData();
+        return new SignData(blockState.getLines(), block.getLocation(), materialData.getFacing(),
+                materialData.isWallSign());
     }
 
     @Override
@@ -69,7 +74,7 @@ public final class VersionAdapter_1_9_R2 implements VersionAdapter {
         Location loc = block.getLocation();
         BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
         World world = ((CraftWorld) block.getWorld()).getHandle();
-        TileEntitySign tileEntitySign = (TileEntitySign) world.getTileEntity(pos);
+        TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(world.getTileEntity(pos));
 
         return tileEntitySign.isEditable;
     }

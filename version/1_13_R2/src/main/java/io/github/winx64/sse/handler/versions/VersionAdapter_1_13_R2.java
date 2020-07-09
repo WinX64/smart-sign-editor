@@ -22,13 +22,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import java.util.Objects;
+
 public final class VersionAdapter_1_13_R2 implements VersionAdapter {
 
     @Override
     public void updateSignText(Player player, Location location, String[] text) {
         BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
+        TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(nmsPlayer.world.getTileEntity(pos));
         PlayerConnection conn = nmsPlayer.playerConnection;
         IChatBaseComponent[] oldSignText = new IChatBaseComponent[4];
 
@@ -44,7 +46,7 @@ public final class VersionAdapter_1_13_R2 implements VersionAdapter {
     public void openSignEditor(Player player, Location location) {
         BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
+        TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(nmsPlayer.world.getTileEntity(pos));
         PlayerConnection conn = nmsPlayer.playerConnection;
 
         tileEntitySign.isEditable = true;
@@ -78,7 +80,7 @@ public final class VersionAdapter_1_13_R2 implements VersionAdapter {
         Location loc = block.getLocation();
         BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
         World world = ((CraftWorld) block.getWorld()).getHandle();
-        TileEntitySign tileEntitySign = (TileEntitySign) world.getTileEntity(pos);
+        TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(world.getTileEntity(pos));
 
         return tileEntitySign.isEditable;
     }

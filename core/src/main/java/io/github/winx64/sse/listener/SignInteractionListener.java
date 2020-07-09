@@ -4,8 +4,10 @@ import io.github.winx64.sse.SmartSignEditor;
 import io.github.winx64.sse.configuration.SignConfiguration;
 import io.github.winx64.sse.configuration.SignMessage;
 import io.github.winx64.sse.configuration.SignMessage.NameKey;
-import io.github.winx64.sse.player.Permissions;
+import io.github.winx64.sse.data.PlayerRepository;
 import io.github.winx64.sse.data.SmartPlayer;
+import io.github.winx64.sse.handler.VersionAdapter;
+import io.github.winx64.sse.player.Permissions;
 import io.github.winx64.sse.tool.SubTool;
 import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolUsage;
@@ -23,43 +25,37 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.BlockIterator;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public final class SignInteractionListener implements Listener {
 
-    private final SmartSignEditor plugin;
+    private final PlayerRepository repository;
     private final SignConfiguration signConfig;
     private final SignMessage signMessage;
+    private final VersionAdapter adapter;
 
-    private final Map<PlayerInteractEvent, BlockState> blockStates;
+    private BlockState lastInteractedSign;
 
     public SignInteractionListener(SmartSignEditor plugin) {
-        this.plugin = plugin;
+        this.repository = plugin;
         this.signConfig = plugin.getSignConfig();
         this.signMessage = plugin.getSignMessage();
-        this.blockStates = new HashMap<>();
+        this.adapter = plugin.getVersionAdapter();
+
+        this.lastInteractedSign = null;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        SmartPlayer sPlayer = plugin.getSmartPlayer(player.getUniqueId());
+        Action action = event.getAction();
+        SmartPlayer sPlayer = repository.getPlayer(player);
+
         if (sPlayer == null) {
             return;
         }
-
-        Tool tool = sPlayer.getTool();
-        Block block = event.getClickedBlock();
-        BlockState state = block == null ? null : block.getState();
-        Action action = event.getAction();
-        ToolUsage usage = ToolUsage.getToolUsage(action, player.isSneaking());
-
         if (action == Action.PHYSICAL) {
             return;
         }
-
-        if (!plugin.getVersionAdapter().shouldProcessEvent(event)) {
+        if (!adapter.shouldProcessEvent(event)) {
             return;
         }
 
@@ -67,83 +63,101 @@ public final class SignInteractionListener implements Listener {
             return;
         }
 
-        if (block == null && player.hasPermission(Permissions.EXTENDED_TOOL) && signConfig.isUsingExtendedTool()) {
-            BlockIterator iterator = new BlockIterator(player, signConfig.getExtendedToolReach());
-            while (iterator.hasNext()) {
-                Block tracedBlock = iterator.next();
-                state = tracedBlock.getState();
-                if (state instanceof Sign) {
-                    block = tracedBlock;
-                    break;
+        Block clickedBlock = event.getClickedBlock();
+
+        //Player clicked air, let's use ray-tracing to get the sign they're looking at
+        if (clickedBlock == null) {
+            //Only if the feature is enabled and the player has permission
+            if (signConfig.isUsingExtendedTool() && player.hasPermission(Permissions.EXTENDED_TOOL)) {
+                BlockIterator iterator = new BlockIterator(player, signConfig.getExtendedToolReach());
+                while (iterator.hasNext()) {
+                    clickedBlock = iterator.next();
+
+                    //If a sign is found, stop tracing
+                    if (adapter.isSign(clickedBlock)) {
+                        break;
+                    }
                 }
             }
         }
 
-        if (block == null || !(state instanceof Sign)) {
-            boolean forward = !player.isSneaking();
-            Tool currentTool = sPlayer.getTool();
-            Tool newTool = currentTool;
-            do {
-                newTool = forward ? newTool.getNextToolMode() : newTool.getPreviousToolMode();
-            } while (newTool != currentTool && !player.hasPermission(newTool.getPermission()));
-
-            if (!player.hasPermission(newTool.getPermission())) {
-                return;
-            }
-
-            sPlayer.setTool(newTool);
-            sPlayer.getPlayer().sendMessage(signMessage.get(NameKey.TOOL_CHANGED, newTool.getName(signMessage)));
+        if (clickedBlock == null || !adapter.isSign(clickedBlock)) {
+            handleChangeTool(sPlayer);
         } else {
-            SubTool subTool = tool.matchesUsage(usage);
-            if (subTool == null) {
-                return;
-            }
-
-            if (!player.hasPermission(tool.getPermission())) {
-                player.sendMessage(signMessage.get(SignMessage.NameKey.TOOL_NO_PERMISSION, tool.getName(signMessage)));
-                return;
-            }
-            if (!player.hasPermission(subTool.getPermission())) {
-                player.sendMessage(signMessage.get(SignMessage.NameKey.SUB_TOOL_NO_PERMISSION, subTool.getName(signMessage)));
-                return;
-            }
-
-            Sign sign = (Sign) state;
-            if (subTool.modifiesWorld() && !checkBuildPermission(player, sign)) {
-                return;
-            }
-
-            event.setCancelled(true);
-
-            if (subTool.requiresPreSpecialHandling()) {
-                this.handleSpecialSigns(event, sign);
-            }
-            subTool.use(plugin, sPlayer, sign);
-            if (!subTool.requiresPreSpecialHandling()) {
-                this.handleSpecialSigns(event, sign);
-            }
+            event.setCancelled(handleUseTool(sPlayer, clickedBlock, action));
         }
+    }
+
+    private void handleChangeTool(SmartPlayer sPlayer) {
+        Player player = sPlayer.getPlayer();
+        boolean forward = !player.isSneaking();
+        Tool currentTool = sPlayer.getTool();
+        Tool newTool = currentTool;
+        do {
+            newTool = forward ? newTool.getNextToolMode() : newTool.getPreviousToolMode();
+        } while (newTool != currentTool && !player.hasPermission(newTool.getPermission()));
+
+        if (!player.hasPermission(newTool.getPermission())) {
+            return;
+        }
+
+        sPlayer.setTool(newTool);
+        sPlayer.getPlayer().sendMessage(signMessage.get(NameKey.TOOL_CHANGED, newTool.getName(signMessage)));
+    }
+
+    private boolean handleUseTool(SmartPlayer sPlayer, Block clickedSign, Action action) {
+        Player player = sPlayer.getPlayer();
+        Tool tool = sPlayer.getTool();
+        ToolUsage usage = ToolUsage.getToolUsage(action, player.isSneaking());
+        SubTool subTool = tool.matchesUsage(usage);
+        if (subTool == null) {
+            return false;
+        }
+
+        if (!player.hasPermission(tool.getPermission())) {
+            player.sendMessage(signMessage.get(NameKey.TOOL_NO_PERMISSION, tool.getName(signMessage)));
+            return false;
+        }
+        if (!player.hasPermission(subTool.getPermission())) {
+            player.sendMessage(signMessage.get(NameKey.SUB_TOOL_NO_PERMISSION, subTool.getName(signMessage)));
+            return false;
+        }
+
+        if (subTool.modifiesWorld() && !checkBuildPermission(player, clickedSign)) {
+            return false;
+        }
+
+        if (subTool.requiresPreSpecialHandling()) {
+            this.handleSpecialSigns(clickedSign);
+        }
+        subTool.use(adapter, signMessage, sPlayer, clickedSign);
+        if (!subTool.requiresPreSpecialHandling()) {
+            this.handleSpecialSigns(clickedSign);
+        }
+
+        return true;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void postProcess(PlayerInteractEvent event) {
-        BlockState lastSignState = blockStates.remove(event);
-        if (lastSignState != null) {
-            lastSignState.update();
+        if (lastInteractedSign != null) {
+            lastInteractedSign.update();
+            lastInteractedSign = null;
         }
     }
 
-    private void handleSpecialSigns(PlayerInteractEvent event, Sign sign) {
+    private void handleSpecialSigns(Block clickedSign) {
+        Sign sign = (Sign) clickedSign.getState();
         String firstLine = ChatColor.stripColor(sign.getLine(0));
         if (signConfig.isSpecialSign(firstLine)) {
-            blockStates.put(event, sign.getBlock().getState());
+            lastInteractedSign = clickedSign.getState();
             sign.setLine(0, firstLine);
             sign.update(true);
         }
     }
 
-    private boolean checkBuildPermission(Player player, Sign sign) {
-        BlockBreakEvent event = new BlockBreakEvent(sign.getBlock(), player);
+    private boolean checkBuildPermission(Player player, Block clickedSign) {
+        BlockBreakEvent event = new BlockBreakEvent(clickedSign, player);
         Bukkit.getPluginManager().callEvent(event);
         return !event.isCancelled();
     }

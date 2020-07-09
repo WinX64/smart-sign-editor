@@ -3,8 +3,6 @@ package io.github.winx64.sse.data;
 import io.github.winx64.sse.tool.Tool;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
 /**
  * Data class to store the player information related to SmartSignEditor
  *
@@ -34,15 +32,6 @@ public final class SmartPlayer {
      */
     public Player getPlayer() {
         return player;
-    }
-
-    /**
-     * Gets the unique id of this player
-     *
-     * @return The UUID
-     */
-    public UUID getUniqueId() {
-        return player.getUniqueId();
     }
 
     /**

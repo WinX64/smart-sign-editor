@@ -1,9 +1,9 @@
 package io.github.winx64.sse.util;
 
+import io.github.winx64.sse.data.SignData;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.material.Sign;
 import org.bukkit.util.Vector;
 
 import java.util.Collections;
@@ -78,11 +78,11 @@ public final class MathUtil {
      *
      * @param player the player
      * @param signLocation the location of the sign block
-     * @param signData the <code>MaterialData</code> of the sign block
+     * @param signData the <see>SignData</see> of the sign block
      * @return The point of intersection of the player's line of sight and the
      * sign, or null, if it happened out of bounds
      */
-    public static Vector getSightSignIntersection(Player player, Location signLocation, Sign signData) {
+    public static Vector getSightSignIntersection(Player player, Location signLocation, SignData signData) {
         Location loc = player.getEyeLocation();
         BlockFace face = signData.getFacing();
 
@@ -115,10 +115,10 @@ public final class MathUtil {
      *
      * @param intersection the point of intersection between the player's line of sight and the sign
      * @param signLocation the location of the sign block
-     * @param signData the <code>MaterialData</code> of the sign block
+     * @param signData the <see>SignData</see> of the sign block
      * @return the line of the sign that the intersection is on
      */
-    public static int getSignLine(Vector intersection, Location signLocation, Sign signData) {
+    public static int getSignLine(Vector intersection, Location signLocation, SignData signData) {
         double y = intersection.getY() - signLocation.getY()
                 - (signData.isWallSign() ? WALL_SIGN_WALL_HEIGHT_OFFSET : SIGN_POST_POLE_HEIGHT_OFFSET);
         for (int i = 0; i < 4; i++) {

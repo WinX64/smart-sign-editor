@@ -1,12 +1,15 @@
 package io.github.winx64.sse.tool.subtool;
 
-import io.github.winx64.sse.SmartSignEditor;
+import io.github.winx64.sse.configuration.SignMessage;
 import io.github.winx64.sse.configuration.SignMessage.NameKey;
-import io.github.winx64.sse.player.Permissions;
 import io.github.winx64.sse.data.SmartPlayer;
+import io.github.winx64.sse.handler.VersionAdapter;
+import io.github.winx64.sse.player.Permissions;
 import io.github.winx64.sse.tool.SubTool;
 import io.github.winx64.sse.tool.ToolUsage;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
@@ -17,21 +20,23 @@ public final class EditSubTool extends SubTool {
     }
 
     @Override
-    public void use(SmartSignEditor plugin, SmartPlayer sPlayer, Sign sign) {
+    public void use(VersionAdapter adapter, SignMessage signMessage, SmartPlayer sPlayer, Block clickedSign) {
         Player player = sPlayer.getPlayer();
 
-        if (plugin.getVersionAdapter().isSignBeingEdited(sign)
-                && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
-            player.sendMessage(plugin.getSignMessage().get(NameKey.OVERRIDE_NO_PERMISSION));
+        if (adapter.isSignBeingEdited(clickedSign) && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
+            player.sendMessage(signMessage.get(NameKey.OVERRIDE_NO_PERMISSION));
             return;
         }
 
-        String[] noColors = sign.getLines();
+        Sign sign = (Sign) clickedSign.getState();
+        String[] noColors = new String[4];
         for (int i = 0; i < 4; i++) {
-            noColors[i] = noColors[i].replace(ChatColor.COLOR_CHAR, '&');
+            noColors[i] = sign.getLine(i).replace(ChatColor.COLOR_CHAR, '&');
         }
-        plugin.getVersionAdapter().updateSignText(player, sign, noColors);
-        plugin.getVersionAdapter().openSignEditor(player, sign);
+
+        Location location = clickedSign.getLocation();
+        adapter.updateSignText(player, location, noColors);
+        adapter.openSignEditor(player, location);
         this.useCount++;
     }
 }

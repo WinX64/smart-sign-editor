@@ -1,15 +1,15 @@
 package io.github.winx64.sse.tool.subtool;
 
-import io.github.winx64.sse.util.MathUtil;
-import io.github.winx64.sse.SmartSignEditor;
+import io.github.winx64.sse.configuration.SignMessage;
+import io.github.winx64.sse.handler.VersionAdapter;
 import io.github.winx64.sse.configuration.SignMessage.NameKey;
 import io.github.winx64.sse.player.Permissions;
 import io.github.winx64.sse.data.SmartPlayer;
 import io.github.winx64.sse.tool.SubTool;
 import io.github.winx64.sse.tool.ToolUsage;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 public final class EraseSubTool {
 
@@ -23,20 +23,20 @@ public final class EraseSubTool {
         }
 
         @Override
-        public void use(SmartSignEditor plugin, SmartPlayer sPlayer, Sign sign) {
+        public void use(VersionAdapter adapter, SignMessage signMessage, SmartPlayer sPlayer, Block clickedSign) {
             Player player = sPlayer.getPlayer();
 
-            if (plugin.getVersionAdapter().isSignBeingEdited(sign)
-                    && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
-                player.sendMessage(plugin.getSignMessage().get(NameKey.OVERRIDE_NO_PERMISSION));
+            if (adapter.isSignBeingEdited(clickedSign) && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
+                player.sendMessage(signMessage.get(NameKey.OVERRIDE_NO_PERMISSION));
                 return;
             }
 
+            Sign sign = (Sign) clickedSign.getState();
             for (int i = 0; i < 4; i++) {
                 sign.setLine(i, "");
             }
             sign.update();
-            player.sendMessage(plugin.getSignMessage().get(NameKey.TOOL_SIGN_CLEARED));
+            player.sendMessage(signMessage.get(NameKey.TOOL_SIGN_CLEARED));
             this.useCount++;
         }
     }
@@ -48,28 +48,20 @@ public final class EraseSubTool {
         }
 
         @Override
-        public void use(SmartSignEditor plugin, SmartPlayer sPlayer, Sign sign) {
+        public void use(VersionAdapter adapter, SignMessage signMessage, SmartPlayer sPlayer, Block clickedSign) {
             Player player = sPlayer.getPlayer();
 
-            if (plugin.getVersionAdapter().isSignBeingEdited(sign)
-                    && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
-                player.sendMessage(plugin.getSignMessage().get(NameKey.OVERRIDE_NO_PERMISSION));
+            if (adapter.isSignBeingEdited(clickedSign) && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
+                player.sendMessage(signMessage.get(NameKey.OVERRIDE_NO_PERMISSION));
                 return;
             }
 
-            org.bukkit.material.Sign signData = plugin.getVersionAdapter().buildSignMaterialData(sign);
-            Vector intersection = MathUtil.getSightSignIntersection(player, sign.getLocation(), signData);
-            if (intersection == null) {
-                player.sendMessage(plugin.getSignMessage().get(NameKey.INVALID_LINE));
-                return;
-            }
-
-            int clickedLine = MathUtil.getSignLine(intersection, sign.getLocation(), signData);
-
-            sign.setLine(clickedLine, "");
-            sign.update();
-            player.sendMessage(plugin.getSignMessage().get(NameKey.TOOL_LINE_CLEARED));
-            this.useCount++;
+            runAfterLineValidation(adapter, signMessage, player, clickedSign, (sign, clickedLine) -> {
+                sign.setLine(clickedLine, "");
+                sign.update();
+                player.sendMessage(signMessage.get(NameKey.TOOL_LINE_CLEARED));
+                this.useCount++;
+            });
         }
     }
 }

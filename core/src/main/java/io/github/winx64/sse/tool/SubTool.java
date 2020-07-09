@@ -1,10 +1,17 @@
 package io.github.winx64.sse.tool;
 
-import io.github.winx64.sse.SmartSignEditor;
 import io.github.winx64.sse.configuration.SignMessage;
 import io.github.winx64.sse.configuration.SignMessage.NameKey;
+import io.github.winx64.sse.data.SignData;
 import io.github.winx64.sse.data.SmartPlayer;
+import io.github.winx64.sse.handler.VersionAdapter;
+import io.github.winx64.sse.util.MathUtil;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
+import java.util.function.BiConsumer;
 
 public abstract class SubTool {
 
@@ -31,10 +38,6 @@ public abstract class SubTool {
         return id;
     }
 
-    public final NameKey getNameKey() {
-        return nameKey;
-    }
-
     public final String getName(SignMessage signMessage) {
         return signMessage.get(nameKey);
     }
@@ -59,9 +62,18 @@ public abstract class SubTool {
         this.usage = usage;
     }
 
-    public final int getUseCount() {
-        return useCount;
-    }
+    public abstract void use(VersionAdapter adapter, SignMessage signMessage, SmartPlayer sPlayer, Block clickedSign);
 
-    public abstract void use(SmartSignEditor plugin, SmartPlayer sPlayer, Sign sign);
+    protected static void runAfterLineValidation(VersionAdapter adapter, SignMessage signMessage, Player player,
+                                                 Block clickedSign, BiConsumer<Sign, Integer> postAction) {
+        SignData signData = adapter.getSignData(clickedSign);
+        Vector intersection = MathUtil.getSightSignIntersection(player, clickedSign.getLocation(), signData);
+        if (intersection == null) {
+            player.sendMessage(signMessage.get(NameKey.INVALID_LINE));
+            return;
+        }
+        int clickedLine = MathUtil.getSignLine(intersection, clickedSign.getLocation(), signData);
+        Sign sign = (Sign) clickedSign.getState();
+        postAction.accept(sign, clickedLine);
+    }
 }

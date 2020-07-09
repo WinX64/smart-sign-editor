@@ -78,15 +78,6 @@ public enum Tool {
     }
 
     /**
-     * Gets the name key for this tool
-     *
-     * @return The nameKey
-     */
-    public NameKey getNameKey() {
-        return nameKey;
-    }
-
-    /**
      * Gets the user-friendly name for this tool
      *
      * @param signMessage The SignMessage instance
@@ -114,12 +105,8 @@ public enum Tool {
         return Collections.unmodifiableMap(subTools);
     }
 
-    public int getTotalUseCount() {
-        return subTools.values().stream().mapToInt(SubTool::getUseCount).sum();
-    }
-
     public SubTool matchesUsage(ToolUsage usage) {
-        return subTools.values().stream().filter((subTool) -> usage.matchesWith(subTool.getUsage())).findFirst().orElse(null);
+        return subTools.values().stream().filter(subTool -> usage.matchesWith(subTool.getUsage())).findFirst().orElse(null);
     }
 
     /**

@@ -25,10 +25,6 @@ public final class SignMessage extends BaseConfiguration {
         return loadedMessages.get(nameKey);
     }
 
-    public String getDefault(NameKey nameKey) {
-        return defaultMessages.get(nameKey);
-    }
-
     public String get(NameKey nameKey, String... arguments) {
         String message = loadedMessages.get(nameKey);
         for (int i = 0; i < Math.min(nameKey.parameters.length, arguments.length); i++) {

@@ -4,6 +4,7 @@ import io.github.winx64.sse.command.CommandReload;
 import io.github.winx64.sse.command.CommandTool;
 import io.github.winx64.sse.configuration.SignConfiguration;
 import io.github.winx64.sse.configuration.SignMessage;
+import io.github.winx64.sse.data.PlayerRepository;
 import io.github.winx64.sse.handler.VersionAdapter;
 import io.github.winx64.sse.handler.VersionHandler;
 import io.github.winx64.sse.listener.PlayerInOutListener;
@@ -27,7 +28,7 @@ import java.util.logging.Logger;
  *
  * @author WinX64
  */
-public final class SmartSignEditor extends JavaPlugin {
+public final class SmartSignEditor extends JavaPlugin implements PlayerRepository {
 
     private static final int PLUGIN_ID = 36;
 
@@ -109,16 +110,19 @@ public final class SmartSignEditor extends JavaPlugin {
         logger.log(level, String.format(format, objects), e);
     }
 
-    public void registerSmartPlayer(SmartPlayer sPlayer) {
-        smartPlayers.put(sPlayer.getUniqueId(), sPlayer);
+    @Override
+    public void registerPlayer(Player player) {
+        smartPlayers.put(player.getUniqueId(), new SmartPlayer(player));
     }
 
-    public SmartPlayer getSmartPlayer(UUID uniqueId) {
-        return smartPlayers.get(uniqueId);
+    @Override
+    public SmartPlayer getPlayer(Player player) {
+        return smartPlayers.get(player.getUniqueId());
     }
 
-    public void unregisterSmartPlayer(UUID uniqueId) {
-        smartPlayers.remove(uniqueId);
+    @Override
+    public void unregisterPlayer(Player player) {
+        smartPlayers.remove(player.getUniqueId());
     }
 
     public VersionAdapter getVersionAdapter() {

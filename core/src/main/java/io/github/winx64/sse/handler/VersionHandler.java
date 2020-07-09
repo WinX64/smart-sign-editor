@@ -66,8 +66,8 @@ public final class VersionHandler {
         Class<? extends VersionAdapter> adapterClass = SUPPORTED_VERSIONS.get(version);
         if (adapterClass != null) {
             try {
-                return adapterClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException ignored) { }
+                return adapterClass.getDeclaredConstructor().newInstance();
+            } catch (Exception ignored) { }
         }
         return null;
     }

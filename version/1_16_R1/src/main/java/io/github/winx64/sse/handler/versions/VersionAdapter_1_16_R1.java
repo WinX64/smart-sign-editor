@@ -1,10 +1,19 @@
 package io.github.winx64.sse.handler.versions;
 
+import io.github.winx64.sse.data.SignData;
 import io.github.winx64.sse.handler.VersionAdapter;
-import net.minecraft.server.v1_16_R1.*;
+import net.minecraft.server.v1_16_R1.BlockPosition;
+import net.minecraft.server.v1_16_R1.ChatComponentText;
+import net.minecraft.server.v1_16_R1.EntityPlayer;
+import net.minecraft.server.v1_16_R1.IChatBaseComponent;
+import net.minecraft.server.v1_16_R1.PacketPlayOutOpenSignEditor;
+import net.minecraft.server.v1_16_R1.PlayerConnection;
+import net.minecraft.server.v1_16_R1.TileEntitySign;
+import net.minecraft.server.v1_16_R1.World;
 import org.bukkit.Location;
-import org.bukkit.block.Sign;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Sign;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
@@ -15,9 +24,8 @@ import org.bukkit.inventory.EquipmentSlot;
 public final class VersionAdapter_1_16_R1 implements VersionAdapter {
 
     @Override
-    public void updateSignText(Player player, Sign sign, String[] text) {
-        Location loc = sign.getLocation();
-        BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
+    public void updateSignText(Player player, Location location, String[] text) {
+        BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
         PlayerConnection conn = nmsPlayer.playerConnection;
@@ -32,26 +40,15 @@ public final class VersionAdapter_1_16_R1 implements VersionAdapter {
     }
 
     @Override
-    public void openSignEditor(Player player, Sign sign) {
-        Location loc = sign.getLocation();
-        BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
+    public void openSignEditor(Player player, Location location) {
+        BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);
         PlayerConnection conn = nmsPlayer.playerConnection;
 
         tileEntitySign.isEditable = true;
-        tileEntitySign.a((EntityHuman) nmsPlayer);
+        tileEntitySign.a(nmsPlayer);
         conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
-    }
-
-    @Override
-    public boolean isSignBeingEdited(Sign sign) {
-        Location loc = sign.getLocation();
-        BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
-        World world = ((CraftWorld) sign.getWorld()).getHandle();
-        TileEntitySign tileEntitySign = (TileEntitySign) world.getTileEntity(pos);
-
-        return tileEntitySign.isEditable;
     }
 
     @Override
@@ -60,16 +57,29 @@ public final class VersionAdapter_1_16_R1 implements VersionAdapter {
     }
 
     @Override
-    public org.bukkit.material.Sign buildSignMaterialData(Sign sign) {
-        BlockData blockData = sign.getBlockData();
-        if (blockData instanceof WallSign) {
-            org.bukkit.material.Sign signData = new org.bukkit.material.Sign(org.bukkit.Material.LEGACY_WALL_SIGN);
-            signData.setFacingDirection(((WallSign) blockData).getFacing());
-            return signData;
+    public boolean isSign(Block block) {
+        BlockData data = block.getBlockData();
+        return data instanceof org.bukkit.block.data.type.Sign || data instanceof WallSign;
+    }
+
+    @Override
+    public SignData getSignData(Block block) {
+        org.bukkit.block.Sign blockState = (org.bukkit.block.Sign) block.getState();
+        BlockData blockData = block.getBlockData();
+        if (blockData instanceof org.bukkit.block.data.type.Sign) {
+            return new SignData(blockState.getLines(), block.getLocation(), ((Sign) blockData).getRotation(), false);
         } else {
-            org.bukkit.material.Sign signData = new org.bukkit.material.Sign(org.bukkit.Material.LEGACY_SIGN_POST);
-            signData.setFacingDirection(((org.bukkit.block.data.type.Sign) blockData).getRotation());
-            return signData;
+            return new SignData(blockState.getLines(), block.getLocation(), ((WallSign) blockData).getFacing(), true);
         }
+    }
+
+    @Override
+    public boolean isSignBeingEdited(Block block) {
+        Location loc = block.getLocation();
+        BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
+        World world = ((CraftWorld) block.getWorld()).getHandle();
+        TileEntitySign tileEntitySign = (TileEntitySign) world.getTileEntity(pos);
+
+        return tileEntitySign.isEditable;
     }
 }

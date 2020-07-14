@@ -4,7 +4,7 @@
 
     <artifactId>smart-sign-editor-1_9_R1</artifactId>
     <name>SmartSignEditor-1_9_R1</name>
-    <description>Version adapter implementation for v1_9_R2</description>
+    <description>Version adapter implementation for v1_9_R1</description>
 
     <parent>
         <groupId>io.github.winx64</groupId>

@@ -22,6 +22,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.BlockIterator;
 
@@ -44,6 +45,17 @@ public final class SignInteractionListener implements Listener {
         this.adapter = adapter;
 
         this.lastInteractedSign = null;
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onSignChange(SignChangeEvent event) {
+        Player player = event.getPlayer();
+
+        if (player.hasPermission(Permissions.TOOL_EDIT_COLORS)) {
+            for (int i = 0; i < 4; i++) {
+                event.setLine(i, ChatColor.translateAlternateColorCodes('&', event.getLine(i)));
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

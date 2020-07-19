@@ -4,13 +4,11 @@ import io.github.winx64.sse.command.CommandReload;
 import io.github.winx64.sse.command.CommandTool;
 import io.github.winx64.sse.configuration.SignConfiguration;
 import io.github.winx64.sse.configuration.SignMessage;
-import io.github.winx64.sse.player.PlayerRegistry;
-import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.handler.VersionAdapter;
 import io.github.winx64.sse.handler.VersionHandler;
-import io.github.winx64.sse.listener.PlayerInOutListener;
-import io.github.winx64.sse.listener.SignChangeListener;
 import io.github.winx64.sse.listener.SignInteractionListener;
+import io.github.winx64.sse.player.PlayerRegistry;
+import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.tool.CopyToolCategory;
 import io.github.winx64.sse.tool.EditToolCategory;
 import io.github.winx64.sse.tool.EraseToolCategory;
@@ -20,11 +18,14 @@ import io.github.winx64.sse.tool.ToolRegistry;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,25 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRegistry,
 
     @Override
     public void onEnable() {
+        if (!hookVersionAdapter()) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        registerDefaultTools();
+
+        registerListeners();
+
+        registerCommands();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            smartPlayers.put(player.getUniqueId(), new SmartPlayer(player, getDefaultToolCategory()));
+        }
+
+        new Metrics(this, PLUGIN_ID);
+    }
+
+    private boolean hookVersionAdapter() {
         String currentVersion = VersionHandler.getVersion();
         this.versionAdapter = VersionHandler.getAdapter(currentVersion);
         if (versionAdapter == null) {
@@ -73,38 +93,42 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRegistry,
                 logger.severe("Your current version is " + currentVersion + ". This is a newer version that is " +
                         "still not supported. Ask the author to provide support for it!");
             }
-            getServer().getPluginManager().disablePlugin(this);
-            return;
+            return false;
         }
         logger.info("Registered version adapter with success! Using " + versionAdapter.getClass().getSimpleName());
 
         if (!signConfig.initializeConfiguration()) {
             logger.severe("Failed to load the configuration. The plugin will be disabled to avoid further damage!");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
+            return false;
         }
 
         if (!signMessage.initializeConfiguration()) {
             logger.severe("Failed to load the messages. The plugin is unable to function correctly without them!");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
+            return false;
         }
+        return true;
+    }
 
-        registerDefaultTools();
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            smartPlayers.put(player.getUniqueId(), new SmartPlayer(player, getDefaultToolCategory()));
-        }
-
+    private void registerListeners() {
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(new PlayerInOutListener(this), this);
-        pm.registerEvents(new SignChangeListener(), this);
-        pm.registerEvents(new SignInteractionListener(this, this, signConfig, signMessage, versionAdapter), this);
+        pm.registerEvents(new Listener() {
+            @EventHandler
+            public void onJoin(PlayerJoinEvent event) {
+                Player player = event.getPlayer();
+                smartPlayers.put(player.getUniqueId(), new SmartPlayer(player, getDefaultToolCategory()));
+            }
 
+            @EventHandler
+            public void onQuit(PlayerQuitEvent event) {
+                smartPlayers.remove(event.getPlayer().getUniqueId());
+            }
+        }, this);
+        pm.registerEvents(new SignInteractionListener(this, this, signConfig, signMessage, versionAdapter), this);
+    }
+
+    private void registerCommands() {
         this.getCommand("sse").setExecutor(new CommandTool(signConfig, signMessage));
         this.getCommand("sse-reload").setExecutor(new CommandReload(signConfig, signMessage));
-
-        new Metrics(this, PLUGIN_ID);
     }
 
     private void registerDefaultTools() {
@@ -115,18 +139,8 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRegistry,
     }
 
     @Override
-    public void registerPlayer(Player player) {
-        smartPlayers.put(player.getUniqueId(), new SmartPlayer(player, getDefaultToolCategory()));
-    }
-
-    @Override
     public SmartPlayer getPlayer(Player player) {
         return smartPlayers.get(player.getUniqueId());
-    }
-
-    @Override
-    public void unregisterPlayer(Player player) {
-        smartPlayers.remove(player.getUniqueId());
     }
 
     @Override

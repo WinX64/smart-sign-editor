@@ -1,15 +1,15 @@
 package io.github.winx64.sse.listener;
 
-import io.github.winx64.sse.SmartSignEditor;
 import io.github.winx64.sse.configuration.SignConfiguration;
 import io.github.winx64.sse.configuration.SignMessage;
-import io.github.winx64.sse.configuration.SignMessage.NameKey;
-import io.github.winx64.sse.data.PlayerRepository;
-import io.github.winx64.sse.data.SmartPlayer;
+import io.github.winx64.sse.configuration.SignMessage.Message;
+import io.github.winx64.sse.player.PlayerRegistry;
+import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.handler.VersionAdapter;
 import io.github.winx64.sse.player.Permissions;
-import io.github.winx64.sse.tool.SubTool;
 import io.github.winx64.sse.tool.Tool;
+import io.github.winx64.sse.tool.ToolCategory;
+import io.github.winx64.sse.tool.ToolRegistry;
 import io.github.winx64.sse.tool.ToolUsage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,18 +27,21 @@ import org.bukkit.util.BlockIterator;
 
 public final class SignInteractionListener implements Listener {
 
-    private final PlayerRepository repository;
+    private final PlayerRegistry playerRegistry;
+    private final ToolRegistry toolRegistry;
     private final SignConfiguration signConfig;
     private final SignMessage signMessage;
     private final VersionAdapter adapter;
 
     private BlockState lastInteractedSign;
 
-    public SignInteractionListener(SmartSignEditor plugin) {
-        this.repository = plugin;
-        this.signConfig = plugin.getSignConfig();
-        this.signMessage = plugin.getSignMessage();
-        this.adapter = plugin.getVersionAdapter();
+    public SignInteractionListener(PlayerRegistry playerRegistry, ToolRegistry toolRegistry,
+                                   SignConfiguration signConfig, SignMessage signMessage, VersionAdapter adapter) {
+        this.playerRegistry = playerRegistry;
+        this.toolRegistry = toolRegistry;
+        this.signConfig = signConfig;
+        this.signMessage = signMessage;
+        this.adapter = adapter;
 
         this.lastInteractedSign = null;
     }
@@ -47,7 +50,7 @@ public final class SignInteractionListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Action action = event.getAction();
-        SmartPlayer sPlayer = repository.getPlayer(player);
+        SmartPlayer sPlayer = playerRegistry.getPlayer(player);
 
         if (sPlayer == null) {
             return;
@@ -91,47 +94,47 @@ public final class SignInteractionListener implements Listener {
     private void handleChangeTool(SmartPlayer sPlayer) {
         Player player = sPlayer.getPlayer();
         boolean forward = !player.isSneaking();
-        Tool currentTool = sPlayer.getTool();
-        Tool newTool = currentTool;
+        ToolCategory currentCategory = sPlayer.getSelectedToolCategory();
+        ToolCategory newCategory = currentCategory;
         do {
-            newTool = forward ? newTool.getNextToolMode() : newTool.getPreviousToolMode();
-        } while (newTool != currentTool && !player.hasPermission(newTool.getPermission()));
+           newCategory = toolRegistry.switchToolCategory(newCategory, forward);
+        } while (newCategory != currentCategory && !player.hasPermission(newCategory.getPermission()));
 
-        if (!player.hasPermission(newTool.getPermission())) {
+        if (!player.hasPermission(newCategory.getPermission())) {
             return;
         }
 
-        sPlayer.setTool(newTool);
-        sPlayer.getPlayer().sendMessage(signMessage.get(NameKey.TOOL_CHANGED, newTool.getName(signMessage)));
+        sPlayer.setSelectedToolCategory(newCategory);
+        sPlayer.getPlayer().sendMessage(signMessage.get(Message.TOOL_CHANGED, newCategory.getName()));
     }
 
     private boolean handleUseTool(SmartPlayer sPlayer, Block clickedSign, Action action) {
         Player player = sPlayer.getPlayer();
-        Tool tool = sPlayer.getTool();
+        ToolCategory selectedCategory = sPlayer.getSelectedToolCategory();
         ToolUsage usage = ToolUsage.getToolUsage(action, player.isSneaking());
-        SubTool subTool = tool.matchesUsage(usage);
-        if (subTool == null) {
+        Tool tool = selectedCategory.getToolByUsage(usage);
+        if (tool == null) {
             return false;
         }
 
+        if (!player.hasPermission(selectedCategory.getPermission())) {
+            player.sendMessage(signMessage.get(Message.TOOL_NO_PERMISSION, selectedCategory.getName()));
+            return false;
+        }
         if (!player.hasPermission(tool.getPermission())) {
-            player.sendMessage(signMessage.get(NameKey.TOOL_NO_PERMISSION, tool.getName(signMessage)));
-            return false;
-        }
-        if (!player.hasPermission(subTool.getPermission())) {
-            player.sendMessage(signMessage.get(NameKey.SUB_TOOL_NO_PERMISSION, subTool.getName(signMessage)));
+            player.sendMessage(signMessage.get(Message.SUB_TOOL_NO_PERMISSION, tool.getName()));
             return false;
         }
 
-        if (subTool.modifiesWorld() && !checkBuildPermission(player, clickedSign)) {
+        if (tool.modifiesWorld() && !checkBuildPermission(player, clickedSign)) {
             return false;
         }
 
-        if (subTool.requiresPreSpecialHandling()) {
+        if (tool.requiresSpecialHandling()) {
             this.handleSpecialSigns(clickedSign);
         }
-        subTool.use(adapter, signMessage, sPlayer, clickedSign);
-        if (!subTool.requiresPreSpecialHandling()) {
+        tool.use(sPlayer, clickedSign);
+        if (!tool.requiresSpecialHandling()) {
             this.handleSpecialSigns(clickedSign);
         }
 

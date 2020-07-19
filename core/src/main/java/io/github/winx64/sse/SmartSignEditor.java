@@ -4,20 +4,29 @@ import io.github.winx64.sse.command.CommandReload;
 import io.github.winx64.sse.command.CommandTool;
 import io.github.winx64.sse.configuration.SignConfiguration;
 import io.github.winx64.sse.configuration.SignMessage;
-import io.github.winx64.sse.data.PlayerRepository;
+import io.github.winx64.sse.player.PlayerRegistry;
+import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.handler.VersionAdapter;
 import io.github.winx64.sse.handler.VersionHandler;
 import io.github.winx64.sse.listener.PlayerInOutListener;
 import io.github.winx64.sse.listener.SignChangeListener;
 import io.github.winx64.sse.listener.SignInteractionListener;
-import io.github.winx64.sse.data.SmartPlayer;
+import io.github.winx64.sse.tool.CopyToolCategory;
+import io.github.winx64.sse.tool.EditToolCategory;
+import io.github.winx64.sse.tool.EraseToolCategory;
+import io.github.winx64.sse.tool.PasteToolCategory;
+import io.github.winx64.sse.tool.ToolCategory;
+import io.github.winx64.sse.tool.ToolRegistry;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -28,11 +37,12 @@ import java.util.logging.Logger;
  *
  * @author WinX64
  */
-public final class SmartSignEditor extends JavaPlugin implements PlayerRepository {
+public final class SmartSignEditor extends JavaPlugin implements PlayerRegistry, ToolRegistry {
 
     private static final int PLUGIN_ID = 36;
 
     private final Map<UUID, SmartPlayer> smartPlayers;
+    private List<ToolCategory> registeredTools;
 
     private final Logger logger;
     private final SignConfiguration signConfig;
@@ -43,6 +53,7 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRepositor
     public SmartSignEditor() {
         this.logger = getLogger();
         this.smartPlayers = new HashMap<>();
+        this.registeredTools = new ArrayList<>();
         this.signConfig = new SignConfiguration(this);
         this.signMessage = new SignMessage(this);
     }
@@ -79,40 +90,33 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRepositor
             return;
         }
 
+        registerDefaultTools();
+
         for (Player player : Bukkit.getOnlinePlayers()) {
-            smartPlayers.put(player.getUniqueId(), new SmartPlayer(player));
+            smartPlayers.put(player.getUniqueId(), new SmartPlayer(player, getDefaultToolCategory()));
         }
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerInOutListener(this), this);
         pm.registerEvents(new SignChangeListener(), this);
-        pm.registerEvents(new SignInteractionListener(this), this);
+        pm.registerEvents(new SignInteractionListener(this, this, signConfig, signMessage, versionAdapter), this);
 
-        this.getCommand("sse").setExecutor(new CommandTool(this));
-        this.getCommand("sse-reload").setExecutor(new CommandReload(this));
+        this.getCommand("sse").setExecutor(new CommandTool(signConfig, signMessage));
+        this.getCommand("sse-reload").setExecutor(new CommandReload(signConfig, signMessage));
 
         new Metrics(this, PLUGIN_ID);
     }
 
-    public SignConfiguration getSignConfig() {
-        return signConfig;
-    }
-
-    public SignMessage getSignMessage() {
-        return signMessage;
-    }
-
-    public void log(Level level, String format, Object... objects) {
-        log(level, null, format, objects);
-    }
-
-    public void log(Level level, Exception e, String format, Object... objects) {
-        logger.log(level, String.format(format, objects), e);
+    private void registerDefaultTools() {
+        registeredTools.add(new EditToolCategory(versionAdapter, signConfig, signMessage));
+        registeredTools.add(new CopyToolCategory(versionAdapter, signConfig, signMessage));
+        registeredTools.add(new PasteToolCategory(versionAdapter, signConfig, signMessage));
+        registeredTools.add(new EraseToolCategory(versionAdapter, signConfig, signMessage));
     }
 
     @Override
     public void registerPlayer(Player player) {
-        smartPlayers.put(player.getUniqueId(), new SmartPlayer(player));
+        smartPlayers.put(player.getUniqueId(), new SmartPlayer(player, getDefaultToolCategory()));
     }
 
     @Override
@@ -125,7 +129,21 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRepositor
         smartPlayers.remove(player.getUniqueId());
     }
 
-    public VersionAdapter getVersionAdapter() {
-        return versionAdapter;
+    @Override
+    public ToolCategory getDefaultToolCategory() {
+        return registeredTools.get(0);
+    }
+
+    @Override
+    public ToolCategory switchToolCategory(ToolCategory reference, boolean forward) {
+        return null;
+    }
+
+    public void log(Level level, String format, Object... objects) {
+        log(level, null, format, objects);
+    }
+
+    public void log(Level level, Exception e, String format, Object... objects) {
+        logger.log(level, String.format(format, objects), e);
     }
 }

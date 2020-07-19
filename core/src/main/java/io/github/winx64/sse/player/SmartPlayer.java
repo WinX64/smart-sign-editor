@@ -1,6 +1,6 @@
-package io.github.winx64.sse.data;
+package io.github.winx64.sse.player;
 
-import io.github.winx64.sse.tool.Tool;
+import io.github.winx64.sse.tool.ToolCategory;
 import org.bukkit.entity.Player;
 
 /**
@@ -12,14 +12,15 @@ public final class SmartPlayer {
 
     private final Player player;
 
-    private Tool tool;
+    private ToolCategory selectedCategory;
 
     private String lineBuffer;
     private String[] signBuffer;
 
-    public SmartPlayer(Player player) {
+    public SmartPlayer(Player player, ToolCategory selectedCategory) {
         this.player = player;
-        this.tool = Tool.EDIT;
+
+        this.selectedCategory = selectedCategory;
 
         this.lineBuffer = null;
         this.signBuffer = null;
@@ -35,21 +36,19 @@ public final class SmartPlayer {
     }
 
     /**
-     * Gets the current tool type this player is using
+     * Gets the current tool category this player is using
      *
      * @return The current tool
      */
-    public Tool getTool() {
-        return tool;
-    }
+    public ToolCategory getSelectedToolCategory() { return selectedCategory; }
 
     /**
-     * Sets the current tool type this player is using
+     * Sets the current tool category this player is using
      *
-     * @param tool The new tool
+     * @param toolCategory The new category
      */
-    public void setTool(Tool tool) {
-        this.tool = tool;
+    public void setSelectedToolCategory(ToolCategory toolCategory) {
+        this.selectedCategory = toolCategory;
     }
 
     /**

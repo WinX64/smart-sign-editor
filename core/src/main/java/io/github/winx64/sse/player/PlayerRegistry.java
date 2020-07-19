@@ -1,8 +1,8 @@
-package io.github.winx64.sse.data;
+package io.github.winx64.sse.player;
 
 import org.bukkit.entity.Player;
 
-public interface PlayerRepository {
+public interface PlayerRegistry {
 
     void registerPlayer(Player player);
 

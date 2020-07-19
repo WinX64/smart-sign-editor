@@ -1,8 +1,6 @@
 package io.github.winx64.sse.configuration;
 
 import io.github.winx64.sse.SmartSignEditor;
-import io.github.winx64.sse.tool.SubTool;
-import io.github.winx64.sse.tool.Tool;
 import io.github.winx64.sse.tool.ToolUsage;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -26,6 +24,17 @@ public final class SignConfiguration extends BaseConfiguration {
 
     private Set<String> specialSigns;
 
+    private ToolUsage editToolUsage;
+
+    private ToolUsage signCopyToolUsage;
+    private ToolUsage lineCopyToolUsage;
+
+    private ToolUsage signPasteToolUsage;
+    private ToolUsage linePasteToolUsage;
+
+    private ToolUsage signEraseToolUsage;
+    private ToolUsage lineEraseToolUsage;
+
     public SignConfiguration(SmartSignEditor plugin) {
         super(plugin, "Config", "config.yml", "config-version", CONFIG_VERSION);
 
@@ -37,6 +46,17 @@ public final class SignConfiguration extends BaseConfiguration {
         this.extendedToolReach = 10;
 
         this.specialSigns = new HashSet<>();
+
+        this.editToolUsage = ToolUsage.RIGHT_CLICK;
+
+        this.signCopyToolUsage = ToolUsage.NO_SHIFT_RIGHT_CLICK;
+        this.lineCopyToolUsage = ToolUsage.SHIFT_RIGHT_CLICK;
+
+        this.signPasteToolUsage = ToolUsage.NO_SHIFT_RIGHT_CLICK;
+        this.linePasteToolUsage = ToolUsage.SHIFT_RIGHT_CLICK;
+
+        this.signEraseToolUsage = ToolUsage.NO_SHIFT_RIGHT_CLICK;
+        this.lineEraseToolUsage = ToolUsage.SHIFT_RIGHT_CLICK;
     }
 
     public ItemStack getToolItem() {
@@ -83,6 +103,34 @@ public final class SignConfiguration extends BaseConfiguration {
         return specialSigns.contains(text.toLowerCase());
     }
 
+    public ToolUsage getEditToolUsage() {
+        return editToolUsage;
+    }
+
+    public ToolUsage getSignCopyToolUsage() {
+        return signCopyToolUsage;
+    }
+
+    public ToolUsage getLineCopyToolUsage() {
+        return lineCopyToolUsage;
+    }
+
+    public ToolUsage getSignPasteToolUsage() {
+        return signPasteToolUsage;
+    }
+
+    public ToolUsage getLinePasteToolUsage() {
+        return linePasteToolUsage;
+    }
+
+    public ToolUsage getSignEraseToolUsage() {
+        return signEraseToolUsage;
+    }
+
+    public ToolUsage getLineEraseToolUsage() {
+        return lineEraseToolUsage;
+    }
+
     private void loadToolItem(ConfigurationSection config) {
         if (config == null) {
             plugin.log(Level.WARNING, "[Config] SubTool item section does not exist!");
@@ -122,33 +170,34 @@ public final class SignConfiguration extends BaseConfiguration {
             return;
         }
 
-        for (Tool tool : Tool.values()) {
-            ConfigurationSection toolSection = config.getConfigurationSection(tool.getId());
-            if (toolSection == null || toolSection.getKeys(false).isEmpty()) {
-                plugin.log(Level.WARNING, "[Config] SubTool usage section for the %s tool doesn't exist!",
-                        tool.getId());
-                continue;
-            }
+        this.editToolUsage = loadToolUsage(config, "edit.sign-edit", ToolUsage.RIGHT_CLICK);
 
-            for (SubTool subTool : tool.getSubTools().values()) {
-                String subToolKey = subTool.getId();
-                String usageValue = toolSection.getString(subToolKey);
-                if (usageValue == null) {
-                    plugin.log(Level.WARNING, "[Config] Tool usage \"%s.%s\" not found. Using default value %s",
-                            toolSection.getCurrentPath(), subToolKey, ToolUsage.NO_SHIFT_RIGHT_CLICK);
-                    usageValue = ToolUsage.NO_SHIFT_RIGHT_CLICK.name();
-                }
+        this.signCopyToolUsage = loadToolUsage(config, "copy.sign-copy", ToolUsage.NO_SHIFT_RIGHT_CLICK);
+        this.lineCopyToolUsage = loadToolUsage(config, "copy.line-copy", ToolUsage.SHIFT_RIGHT_CLICK);
 
-                ToolUsage usage = ToolUsage.getToolUsage(usageValue);
-                if (usage == null) {
-                    plugin.log(Level.WARNING, "[Config] Invalid tool usage \"%s\". Using default value %s",
-                            usageValue, ToolUsage.NO_SHIFT_RIGHT_CLICK);
-                    usage = ToolUsage.NO_SHIFT_RIGHT_CLICK;
-                }
+        this.signPasteToolUsage = loadToolUsage(config, "paste.sign-paste", ToolUsage.NO_SHIFT_RIGHT_CLICK);
+        this.linePasteToolUsage = loadToolUsage(config, "paste.line-paste", ToolUsage.SHIFT_RIGHT_CLICK);
 
-                subTool.setUsage(usage);
-            }
+        this.signEraseToolUsage = loadToolUsage(config, "erase.sign-erase", ToolUsage.NO_SHIFT_RIGHT_CLICK);
+        this.lineEraseToolUsage = loadToolUsage(config, "erase.line-erase", ToolUsage.SHIFT_RIGHT_CLICK);
+    }
+
+    private ToolUsage loadToolUsage(ConfigurationSection config, String path, ToolUsage defaultValue) {
+        String usageValue = config.getString(path);
+        if (usageValue == null) {
+            plugin.log(Level.WARNING, "[Config] Tool usage \"%s\" not found. Using default value %s", path,
+                    ToolUsage.NO_SHIFT_RIGHT_CLICK);
+            usageValue = defaultValue.name();
         }
+
+        ToolUsage usage = ToolUsage.getToolUsage(usageValue);
+        if (usage == null) {
+            plugin.log(Level.WARNING, "[Config] Invalid tool usage \"%s\". Using default value %s", usageValue,
+                    ToolUsage.NO_SHIFT_RIGHT_CLICK);
+            usage = defaultValue;
+        }
+
+        return usage;
     }
 
     @Override

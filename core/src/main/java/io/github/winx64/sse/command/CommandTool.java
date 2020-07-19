@@ -1,6 +1,5 @@
 package io.github.winx64.sse.command;
 
-import io.github.winx64.sse.SmartSignEditor;
 import io.github.winx64.sse.configuration.SignConfiguration;
 import io.github.winx64.sse.configuration.SignMessage;
 import org.bukkit.command.Command;
@@ -13,15 +12,15 @@ public final class CommandTool implements CommandExecutor {
     private final SignConfiguration signConfig;
     private final SignMessage signMessage;
 
-    public CommandTool(SmartSignEditor plugin) {
-        this.signConfig = plugin.getSignConfig();
-        this.signMessage = plugin.getSignMessage();
+    public CommandTool(SignConfiguration signConfig, SignMessage signMessage) {
+        this.signConfig = signConfig;
+        this.signMessage = signMessage;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(signMessage.get(SignMessage.NameKey.COMMAND_NO_CONSOLE));
+            sender.sendMessage(signMessage.get(SignMessage.Message.COMMAND_NO_CONSOLE));
             return true;
         }
 

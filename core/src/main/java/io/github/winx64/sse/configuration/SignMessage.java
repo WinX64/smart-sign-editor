@@ -11,21 +11,21 @@ public final class SignMessage extends BaseConfiguration {
 
     private static final int MESSAGES_VERSION = 3;
 
-    private Map<NameKey, String> defaultMessages;
-    private Map<NameKey, String> loadedMessages;
+    private Map<Message, String> defaultMessages;
+    private Map<Message, String> loadedMessages;
 
     public SignMessage(SmartSignEditor plugin) {
         super(plugin, "Messages", "messages.yml", "messages-version", MESSAGES_VERSION);
 
-        this.defaultMessages = new EnumMap<>(NameKey.class);
-        this.loadedMessages = new EnumMap<>(NameKey.class);
+        this.defaultMessages = new EnumMap<>(Message.class);
+        this.loadedMessages = new EnumMap<>(Message.class);
     }
 
-    public String get(NameKey nameKey) {
-        return loadedMessages.get(nameKey);
+    public String get(Message message) {
+        return loadedMessages.get(message);
     }
 
-    public String get(NameKey nameKey, String... arguments) {
+    public String get(Message nameKey, String... arguments) {
         String message = loadedMessages.get(nameKey);
         for (int i = 0; i < Math.min(nameKey.parameters.length, arguments.length); i++) {
             message = message.replace(nameKey.parameters[i], arguments[i]);
@@ -35,7 +35,7 @@ public final class SignMessage extends BaseConfiguration {
 
     @Override
     protected void prepareConfiguration() throws ConfigurationException {
-        for (NameKey nameKey : NameKey.values()) {
+        for (Message nameKey : Message.values()) {
             String path = nameKey.getPath();
             if (!defaultConfig.contains(path)) {
                 throw new ConfigurationException(String.format("Missing message \"%s\" from the default messages. " +
@@ -59,7 +59,7 @@ public final class SignMessage extends BaseConfiguration {
         }
     }
 
-    public enum NameKey {
+    public enum Message {
 
         COMMAND_RELOAD_SUCCESS("command.reload.success"),
         COMMAND_RELOAD_FAILURE("command.reload.failure"),
@@ -91,7 +91,7 @@ public final class SignMessage extends BaseConfiguration {
         private final String path;
         private final String[] parameters;
 
-        NameKey(String path, String... parameters) {
+        Message(String path, String... parameters) {
             this.path = path;
             for (int i = 0; i < parameters.length; i++) {
                 parameters[i] = "{" + parameters[i] + "}";

@@ -150,7 +150,12 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRegistry,
 
     @Override
     public ToolCategory switchToolCategory(ToolCategory reference, boolean forward) {
-        return null;
+        int index = registeredTools.indexOf(reference);
+        if (index == -1) {
+            return getDefaultToolCategory();
+        }
+
+        return registeredTools.get((registeredTools.size() + index + (forward ? +1 : -1)) % registeredTools.size());
     }
 
     public void log(Level level, String format, Object... objects) {

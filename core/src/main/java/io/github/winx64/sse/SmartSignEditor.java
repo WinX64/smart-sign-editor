@@ -43,7 +43,7 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRegistry,
     private static final int PLUGIN_ID = 36;
 
     private final Map<UUID, SmartPlayer> smartPlayers;
-    private List<ToolCategory> registeredTools;
+    private final List<ToolCategory> registeredTools;
 
     private final Logger logger;
     private final SignConfiguration signConfig;

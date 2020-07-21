@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class AbstractTool implements Tool {
@@ -63,7 +64,7 @@ public abstract class AbstractTool implements Tool {
         return requiresSpecialHandling;
     }
 
-    protected void runAfterLineValidation(Player player, Block clickedSign, BiConsumer<Sign, Integer> postAction) {
+    protected void runAfterLineValidation(Player player, Sign clickedSign, Consumer<Integer> postAction) {
         SignData signData = adapter.getSignData(clickedSign);
         Vector intersection = MathUtil.getSightSignIntersection(player, clickedSign.getLocation(), signData);
         if (intersection == null) {
@@ -71,7 +72,6 @@ public abstract class AbstractTool implements Tool {
             return;
         }
         int clickedLine = MathUtil.getSignLine(intersection, clickedSign.getLocation(), signData);
-        Sign sign = (Sign) clickedSign.getState();
-        postAction.accept(sign, clickedLine);
+        postAction.accept(clickedLine);
     }
 }

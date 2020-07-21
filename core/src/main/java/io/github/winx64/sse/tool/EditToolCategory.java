@@ -20,7 +20,7 @@ public class EditToolCategory extends AbstractToolCategory {
         registerTool(new AbstractTool(adapter, message, Message.TOOL_EDIT_NAME, Permissions.TOOL_EDIT,
                 true, true, config::getEditToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Block clickedSign) {
+            public void use(SmartPlayer sPlayer, Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
                 if (adapter.isSignBeingEdited(clickedSign) && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
@@ -28,10 +28,9 @@ public class EditToolCategory extends AbstractToolCategory {
                     return;
                 }
 
-                Sign sign = (Sign) clickedSign.getState();
                 String[] noColors = new String[4];
                 for (int i = 0; i < 4; i++) {
-                    noColors[i] = sign.getLine(i).replace(ChatColor.COLOR_CHAR, '&');
+                    noColors[i] = clickedSign.getLine(i).replace(ChatColor.COLOR_CHAR, '&');
                 }
 
                 Location location = clickedSign.getLocation();

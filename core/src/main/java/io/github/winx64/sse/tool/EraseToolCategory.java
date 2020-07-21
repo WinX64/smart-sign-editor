@@ -3,10 +3,9 @@ package io.github.winx64.sse.tool;
 import io.github.winx64.sse.configuration.SignConfiguration;
 import io.github.winx64.sse.configuration.SignMessage;
 import io.github.winx64.sse.configuration.SignMessage.Message;
-import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.handler.VersionAdapter;
 import io.github.winx64.sse.player.Permissions;
-import org.bukkit.block.Block;
+import io.github.winx64.sse.player.SmartPlayer;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
@@ -19,7 +18,7 @@ public class EraseToolCategory extends AbstractToolCategory {
                 Permissions.TOOL_ERASE_ALL, true, false,
                 config::getSignEraseToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Block clickedSign) {
+            public void use(SmartPlayer sPlayer, Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
                 if (adapter.isSignBeingEdited(clickedSign) && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
@@ -27,11 +26,10 @@ public class EraseToolCategory extends AbstractToolCategory {
                     return;
                 }
 
-                Sign sign = (Sign) clickedSign.getState();
                 for (int i = 0; i < 4; i++) {
-                    sign.setLine(i, "");
+                    clickedSign.setLine(i, "");
                 }
-                sign.update();
+                clickedSign.update();
                 player.sendMessage(message.get(Message.TOOL_SIGN_CLEARED));
             }
         });
@@ -40,7 +38,7 @@ public class EraseToolCategory extends AbstractToolCategory {
                 Permissions.TOOL_ERASE_LINE, true, false,
                 config::getLineEraseToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Block clickedSign) {
+            public void use(SmartPlayer sPlayer, Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
                 if (adapter.isSignBeingEdited(clickedSign) && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
@@ -48,9 +46,9 @@ public class EraseToolCategory extends AbstractToolCategory {
                     return;
                 }
 
-                runAfterLineValidation(player, clickedSign, (sign, clickedLine) -> {
-                    sign.setLine(clickedLine, "");
-                    sign.update();
+                runAfterLineValidation(player, clickedSign, clickedLine -> {
+                    clickedSign.setLine(clickedLine, "");
+                    clickedSign.update();
                     player.sendMessage(message.get(Message.TOOL_LINE_CLEARED));
                 });
             }

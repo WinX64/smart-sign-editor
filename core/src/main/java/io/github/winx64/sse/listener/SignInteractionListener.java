@@ -120,8 +120,9 @@ public final class SignInteractionListener implements Listener {
         sPlayer.getPlayer().sendMessage(signMessage.get(Message.TOOL_CHANGED, newCategory.getName()));
     }
 
-    private boolean handleUseTool(SmartPlayer sPlayer, Block clickedSign, Action action) {
+    private boolean handleUseTool(SmartPlayer sPlayer, Block clickedBlock, Action action) {
         Player player = sPlayer.getPlayer();
+
         ToolCategory selectedCategory = sPlayer.getSelectedToolCategory();
         ToolUsage usage = ToolUsage.getToolUsage(action, player.isSneaking());
         Tool tool = selectedCategory.getToolByUsage(usage);
@@ -138,16 +139,19 @@ public final class SignInteractionListener implements Listener {
             return false;
         }
 
-        if (tool.modifiesWorld() && !checkBuildPermission(player, clickedSign)) {
+        if (tool.modifiesWorld() && !checkBuildPermission(player, clickedBlock)) {
             return false;
         }
 
         if (tool.requiresSpecialHandling()) {
-            this.handleSpecialSigns(clickedSign);
+            this.handleSpecialSigns(clickedBlock);
         }
+
+        Sign clickedSign = (Sign) clickedBlock.getState();
         tool.use(sPlayer, clickedSign);
+
         if (!tool.requiresSpecialHandling()) {
-            this.handleSpecialSigns(clickedSign);
+            this.handleSpecialSigns(clickedBlock);
         }
 
         return true;

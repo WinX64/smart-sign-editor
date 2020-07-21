@@ -11,13 +11,12 @@ import net.minecraft.server.v1_9_R2.PlayerConnection;
 import net.minecraft.server.v1_9_R2.TileEntitySign;
 import net.minecraft.server.v1_9_R2.World;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.material.Sign;
 
 import java.util.Objects;
 
@@ -62,16 +61,16 @@ public final class VersionAdapter_1_9_R2 implements VersionAdapter {
     }
 
     @Override
-    public SignData getSignData(Block block) {
-        Sign materialData = (Sign) block.getState().getData();
+    public SignData getSignData(Sign sign) {
+        org.bukkit.material.Sign materialData = (org.bukkit.material.Sign) sign.getData();
         return new SignData(materialData.getFacing(), materialData.isWallSign());
     }
 
     @Override
-    public boolean isSignBeingEdited(Block block) {
-        Location loc = block.getLocation();
+    public boolean isSignBeingEdited(Sign sign) {
+        Location loc = sign.getLocation();
         BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
-        World world = ((CraftWorld) block.getWorld()).getHandle();
+        World world = ((CraftWorld) sign.getWorld()).getHandle();
         TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(world.getTileEntity(pos));
 
         return tileEntitySign.isEditable;

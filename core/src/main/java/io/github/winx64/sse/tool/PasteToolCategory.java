@@ -20,7 +20,7 @@ public class PasteToolCategory extends AbstractToolCategory {
                 Permissions.TOOL_PASTE_ALL, true, false,
                 config::getSignPasteToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Block clickedSign) {
+            public void use(SmartPlayer sPlayer, Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
                 if (sPlayer.getSignBuffer() == null) {
@@ -33,15 +33,14 @@ public class PasteToolCategory extends AbstractToolCategory {
                     return;
                 }
 
-                Sign sign = (Sign) clickedSign.getState();
                 for (int i = 0; i < 4; i++) {
                     if (player.hasPermission(Permissions.TOOL_PASTE_COLORS)) {
-                        sign.setLine(i, sPlayer.getSignBuffer()[i]);
+                        clickedSign.setLine(i, sPlayer.getSignBuffer()[i]);
                     } else {
-                        sign.setLine(i, ChatColor.stripColor(sPlayer.getSignBuffer()[i]));
+                        clickedSign.setLine(i, ChatColor.stripColor(sPlayer.getSignBuffer()[i]));
                     }
                 }
-                sign.update();
+                clickedSign.update();
                 player.sendMessage(message.get(Message.TOOL_SIGN_REPLACED));
             }
         });
@@ -50,7 +49,7 @@ public class PasteToolCategory extends AbstractToolCategory {
                 Permissions.TOOL_PASTE_LINE, true, false,
                 config::getLinePasteToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Block clickedSign) {
+            public void use(SmartPlayer sPlayer, Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
                 if (sPlayer.getLineBuffer() == null) {
@@ -63,13 +62,13 @@ public class PasteToolCategory extends AbstractToolCategory {
                     return;
                 }
 
-                runAfterLineValidation(player, clickedSign, (sign, clickedLine) -> {
+                runAfterLineValidation(player, clickedSign, clickedLine -> {
                     if (player.hasPermission(Permissions.TOOL_PASTE_COLORS)) {
-                        sign.setLine(clickedLine, sPlayer.getLineBuffer());
+                        clickedSign.setLine(clickedLine, sPlayer.getLineBuffer());
                     } else {
-                        sign.setLine(clickedLine, ChatColor.stripColor(sPlayer.getLineBuffer()));
+                        clickedSign.setLine(clickedLine, ChatColor.stripColor(sPlayer.getLineBuffer()));
                     }
-                    sign.update();
+                    clickedSign.update();
                     player.sendMessage(message.get(Message.TOOL_LINE_REPLACED, sPlayer.getLineBuffer()));
                 });
             }

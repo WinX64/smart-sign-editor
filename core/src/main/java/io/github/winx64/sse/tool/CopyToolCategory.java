@@ -19,15 +19,14 @@ public class CopyToolCategory extends AbstractToolCategory {
         registerTool(new AbstractTool(adapter, message, Message.TOOL_COPY_SUBTOOL_SIGN_COPY, Permissions.TOOL_COPY_ALL,
                 false, false, config::getSignCopyToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Block clickedSign) {
+            public void use(SmartPlayer sPlayer, Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
-                Sign sign = (Sign) clickedSign.getState();
 
                 for (int i = 0; i < 4; i++) {
                     if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
-                        sPlayer.setSignBuffer(i, ChatColor.stripColor(sign.getLine(i)));
+                        sPlayer.setSignBuffer(i, ChatColor.stripColor(clickedSign.getLine(i)));
                     } else {
-                        sPlayer.setSignBuffer(i, sign.getLine(i));
+                        sPlayer.setSignBuffer(i, clickedSign.getLine(i));
                     }
                 }
 
@@ -38,14 +37,14 @@ public class CopyToolCategory extends AbstractToolCategory {
         registerTool(new AbstractTool(adapter, message, Message.TOOL_COPY_SUBTOOL_LINE_COPY, Permissions.TOOL_COPY_LINE,
                 false, false, config::getLineCopyToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Block clickedSign) {
+            public void use(SmartPlayer sPlayer, Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
-                runAfterLineValidation(player, clickedSign, ((sign, clickedLine) -> {
+                runAfterLineValidation(player, clickedSign, (clickedLine -> {
                     if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
-                        sPlayer.setLineBuffer(ChatColor.stripColor(sign.getLine(clickedLine)));
+                        sPlayer.setLineBuffer(ChatColor.stripColor(clickedSign.getLine(clickedLine)));
                     } else {
-                        sPlayer.setLineBuffer(sign.getLine(clickedLine));
+                        sPlayer.setLineBuffer(clickedSign.getLine(clickedLine));
                     }
                     player.sendMessage(message.get(Message.TOOL_LINE_COPIED, sPlayer.getLineBuffer()));
                 }));

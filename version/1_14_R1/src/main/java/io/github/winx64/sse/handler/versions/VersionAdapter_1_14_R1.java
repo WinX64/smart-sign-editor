@@ -12,8 +12,8 @@ import net.minecraft.server.v1_14_R1.TileEntitySign;
 import net.minecraft.server.v1_14_R1.World;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.Sign;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
@@ -65,20 +65,20 @@ public final class VersionAdapter_1_14_R1 implements VersionAdapter {
     }
 
     @Override
-    public SignData getSignData(Block block) {
-        BlockData blockData = block.getBlockData();
+    public SignData getSignData(Sign sign) {
+        BlockData blockData = sign.getBlockData();
         if (blockData instanceof org.bukkit.block.data.type.Sign) {
-            return new SignData(((Sign) blockData).getRotation(), false);
+            return new SignData(((org.bukkit.block.data.type.Sign) blockData).getRotation(), false);
         } else {
             return new SignData(((WallSign) blockData).getFacing(), true);
         }
     }
 
     @Override
-    public boolean isSignBeingEdited(Block block) {
-        Location loc = block.getLocation();
+    public boolean isSignBeingEdited(Sign sign) {
+        Location loc = sign.getLocation();
         BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
-        World world = ((CraftWorld) block.getWorld()).getHandle();
+        World world = ((CraftWorld) sign.getWorld()).getHandle();
         TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(world.getTileEntity(pos));
 
         return tileEntitySign.isEditable;

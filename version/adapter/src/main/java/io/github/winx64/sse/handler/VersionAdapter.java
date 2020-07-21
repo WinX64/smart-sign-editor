@@ -3,6 +3,7 @@ package io.github.winx64.sse.handler;
 import io.github.winx64.sse.data.SignData;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -37,18 +38,18 @@ public interface VersionAdapter {
     boolean isSign(Block block);
 
     /**
-     * Builds the corresponding <see>SignData</see> from the given block
-     * @param block the given sign
-     * @return the newly created data, or null if the given block is not a sign
+     * Builds the corresponding <see>SignData</see> from the given sign
+     * @param sign the given sign
+     * @return the newly created data
      */
-    SignData getSignData(Block block);
+    SignData getSignData(Sign sign);
 
     /**
      * Verifies if the given sign is currently being edited by someone
-     * @param block the given sign
-     * @return whether the sign is being edited or not, or false if the given block is not a sign
+     * @param sign the given sign
+     * @return whether the sign is being edited or not
      */
-    boolean isSignBeingEdited(Block block);
+    boolean isSignBeingEdited(Sign sign);
 
     /**
      * Checks if the plugin should continue processing this event. Mainly to

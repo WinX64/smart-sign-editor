@@ -8,13 +8,13 @@ SmartSignEditor is a Spigot plugin with the purpose to facilitate your every day
 
 ## Compiling
 
-This project uses Maven as build and dependency management tool.
+This project uses Gradle as build and dependency management tool.
 
-1. Make sure to have Maven and Git installed.
+1. Clone this repository with `git clone https://github.com/WinX64/smart-sign-editor.git`
 
-2. Clone this repository with `git clone https://github.com/WinX64/smart-sign-editor.git`
+2. Make sure you have the necessary Spigot dependencies installed.
 
-3. Build the project and install it on your machine with `mvn clean install`
+3. Build the project and install it on your machine with `gradle clean shadowJar`
 
 ## How to use
 

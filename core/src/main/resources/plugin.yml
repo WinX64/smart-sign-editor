@@ -1,10 +1,10 @@
-main: io.github.winx64.sse.SmartSignEditor
-name: ${project.name}
-description: ${project.description}
-version: ${project.version}
+main: 'io.github.winx64.sse.SmartSignEditor'
+name: 'SmartSignEditor'
+description: 'Edit your signs with style!'
+version: '${project.version}'
 author: '123'
-website: ${project.url}
-api-version: 1.13
+website: 'https://www.spigotmc.org/resources/smartsigneditor.24594/'
+api-version: '1.13'
 
 commands:
   sse:

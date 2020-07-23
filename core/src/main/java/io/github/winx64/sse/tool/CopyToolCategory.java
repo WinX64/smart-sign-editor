@@ -3,13 +3,17 @@ package io.github.winx64.sse.tool;
 import io.github.winx64.sse.configuration.SignConfiguration;
 import io.github.winx64.sse.configuration.SignMessage;
 import io.github.winx64.sse.configuration.SignMessage.Message;
-import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.handler.VersionAdapter;
 import io.github.winx64.sse.player.Permissions;
+import io.github.winx64.sse.player.SmartPlayer;
 import org.bukkit.ChatColor;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CopyToolCategory extends AbstractToolCategory {
 
@@ -19,16 +23,14 @@ public class CopyToolCategory extends AbstractToolCategory {
         registerTool(new AbstractTool(adapter, message, Message.TOOL_COPY_SUBTOOL_SIGN_COPY, Permissions.TOOL_COPY_ALL,
                 false, false, config::getSignCopyToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Sign clickedSign) {
+            public void use(@NotNull SmartPlayer sPlayer, @NotNull Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
-                for (int i = 0; i < 4; i++) {
-                    if (!player.hasPermission(Permissions.TOOL_COPY_COLORS)) {
-                        sPlayer.setSignBuffer(i, ChatColor.stripColor(clickedSign.getLine(i)));
-                    } else {
-                        sPlayer.setSignBuffer(i, clickedSign.getLine(i));
-                    }
-                }
+                boolean canCopyColors = player.hasPermission(Permissions.TOOL_COPY_COLORS);
+                List<String> newSignBuffer = Arrays.stream(clickedSign.getLines())
+                        .map(line -> canCopyColors ? line : ChatColor.stripColor(line))
+                        .collect(Collectors.toList());
+                sPlayer.setSignBuffer(newSignBuffer);
 
                 player.sendMessage(message.get(Message.TOOL_SIGN_COPIED));
             }
@@ -37,7 +39,7 @@ public class CopyToolCategory extends AbstractToolCategory {
         registerTool(new AbstractTool(adapter, message, Message.TOOL_COPY_SUBTOOL_LINE_COPY, Permissions.TOOL_COPY_LINE,
                 false, false, config::getLineCopyToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Sign clickedSign) {
+            public void use(@NotNull SmartPlayer sPlayer, @NotNull Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
                 runAfterLineValidation(player, clickedSign, (clickedLine -> {

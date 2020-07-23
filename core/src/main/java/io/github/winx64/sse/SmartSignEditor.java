@@ -9,6 +9,7 @@ import io.github.winx64.sse.handler.VersionHandler;
 import io.github.winx64.sse.listener.SignInteractionListener;
 import io.github.winx64.sse.player.PlayerRegistry;
 import io.github.winx64.sse.player.SmartPlayer;
+import io.github.winx64.sse.player.SmartPlayerImpl;
 import io.github.winx64.sse.tool.CopyToolCategory;
 import io.github.winx64.sse.tool.EditToolCategory;
 import io.github.winx64.sse.tool.EraseToolCategory;
@@ -23,9 +24,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,8 +77,10 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRegistry,
         registerCommands();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            smartPlayers.put(player.getUniqueId(), new SmartPlayer(player, getDefaultToolCategory()));
+            smartPlayers.put(player.getUniqueId(), new SmartPlayerImpl(player, getDefaultToolCategory()));
         }
+
+        registerServices();
 
         new Metrics(this, PLUGIN_ID);
     }
@@ -115,7 +121,7 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRegistry,
             @EventHandler
             public void onJoin(PlayerJoinEvent event) {
                 Player player = event.getPlayer();
-                smartPlayers.put(player.getUniqueId(), new SmartPlayer(player, getDefaultToolCategory()));
+                smartPlayers.put(player.getUniqueId(), new SmartPlayerImpl(player, getDefaultToolCategory()));
             }
 
             @EventHandler
@@ -131,6 +137,11 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRegistry,
         this.getCommand("sse-reload").setExecutor(new CommandReload(signConfig, signMessage));
     }
 
+    private void registerServices() {
+        Bukkit.getServicesManager().register(PlayerRegistry.class, this, this, ServicePriority.Normal);
+        Bukkit.getServicesManager().register(ToolRegistry.class, this, this, ServicePriority.Normal);
+    }
+
     private void registerDefaultTools() {
         registeredTools.add(new EditToolCategory(versionAdapter, signConfig, signMessage));
         registeredTools.add(new CopyToolCategory(versionAdapter, signConfig, signMessage));
@@ -139,23 +150,18 @@ public final class SmartSignEditor extends JavaPlugin implements PlayerRegistry,
     }
 
     @Override
-    public SmartPlayer getPlayer(Player player) {
+    public SmartPlayer getPlayer(@NotNull Player player) {
         return smartPlayers.get(player.getUniqueId());
     }
 
     @Override
-    public ToolCategory getDefaultToolCategory() {
+    public @NotNull ToolCategory getDefaultToolCategory() {
         return registeredTools.get(0);
     }
 
     @Override
-    public ToolCategory switchToolCategory(ToolCategory reference, boolean forward) {
-        int index = registeredTools.indexOf(reference);
-        if (index == -1) {
-            return getDefaultToolCategory();
-        }
-
-        return registeredTools.get((registeredTools.size() + index + (forward ? +1 : -1)) % registeredTools.size());
+    public @NotNull List<ToolCategory> getToolCategories() {
+        return Collections.unmodifiableList(registeredTools);
     }
 
     public void log(Level level, String format, Object... objects) {

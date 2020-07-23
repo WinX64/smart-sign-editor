@@ -8,9 +8,9 @@ import io.github.winx64.sse.handler.VersionAdapter;
 import io.github.winx64.sse.player.Permissions;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class EditToolCategory extends AbstractToolCategory {
 
@@ -20,7 +20,7 @@ public class EditToolCategory extends AbstractToolCategory {
         registerTool(new AbstractTool(adapter, message, Message.TOOL_EDIT_NAME, Permissions.TOOL_EDIT,
                 true, true, config::getEditToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Sign clickedSign) {
+            public void use(@NotNull SmartPlayer sPlayer, @NotNull Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
                 if (adapter.isSignBeingEdited(clickedSign) && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {

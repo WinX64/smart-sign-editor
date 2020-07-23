@@ -26,6 +26,8 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.BlockIterator;
 
+import java.util.List;
+
 public final class SignInteractionListener implements Listener {
 
     private final PlayerRegistry playerRegistry;
@@ -103,13 +105,23 @@ public final class SignInteractionListener implements Listener {
         }
     }
 
+    private ToolCategory handleSwitchTool(ToolCategory reference, boolean forward) {
+        List<ToolCategory> registeredTools = toolRegistry.getToolCategories();
+        int index = registeredTools.indexOf(reference);
+        if (index == -1) {
+            return toolRegistry.getDefaultToolCategory();
+        }
+
+        return registeredTools.get((registeredTools.size() + index + (forward ? +1 : -1)) % registeredTools.size());
+    }
+
     private void handleChangeTool(SmartPlayer sPlayer) {
         Player player = sPlayer.getPlayer();
         boolean forward = !player.isSneaking();
         ToolCategory currentCategory = sPlayer.getSelectedToolCategory();
         ToolCategory newCategory = currentCategory;
         do {
-           newCategory = toolRegistry.switchToolCategory(newCategory, forward);
+           newCategory = handleSwitchTool(newCategory, forward);
         } while (newCategory != currentCategory && !player.hasPermission(newCategory.getPermission()));
 
         if (!player.hasPermission(newCategory.getPermission())) {
@@ -124,7 +136,7 @@ public final class SignInteractionListener implements Listener {
         Player player = sPlayer.getPlayer();
 
         ToolCategory selectedCategory = sPlayer.getSelectedToolCategory();
-        ToolUsage usage = ToolUsage.getToolUsage(action, player.isSneaking());
+        ToolUsage usage = ToolUsage.getByAction(action, player.isSneaking());
         Tool tool = selectedCategory.getToolByUsage(usage);
         if (tool == null) {
             return false;
@@ -143,14 +155,14 @@ public final class SignInteractionListener implements Listener {
             return false;
         }
 
-        if (tool.requiresSpecialHandling()) {
+        if (tool.requiresPriorSpecialHandling()) {
             this.handleSpecialSigns(clickedBlock);
         }
 
         Sign clickedSign = (Sign) clickedBlock.getState();
         tool.use(sPlayer, clickedSign);
 
-        if (!tool.requiresSpecialHandling()) {
+        if (!tool.requiresPriorSpecialHandling()) {
             this.handleSpecialSigns(clickedBlock);
         }
 

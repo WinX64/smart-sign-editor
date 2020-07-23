@@ -5,12 +5,11 @@ import io.github.winx64.sse.configuration.SignMessage.Message;
 import io.github.winx64.sse.data.SignData;
 import io.github.winx64.sse.handler.VersionAdapter;
 import io.github.winx64.sse.util.MathUtil;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -45,12 +44,12 @@ public abstract class AbstractTool implements Tool {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return message.get(toolName);
     }
 
     @Override
-    public String getPermission() {
+    public @NotNull String getPermission() {
         return toolPermission;
     }
 
@@ -60,7 +59,7 @@ public abstract class AbstractTool implements Tool {
     }
 
     @Override
-    public boolean requiresSpecialHandling() {
+    public boolean requiresPriorSpecialHandling() {
         return requiresSpecialHandling;
     }
 

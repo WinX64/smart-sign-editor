@@ -8,6 +8,7 @@ import io.github.winx64.sse.player.Permissions;
 import io.github.winx64.sse.player.SmartPlayer;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class EraseToolCategory extends AbstractToolCategory {
 
@@ -18,7 +19,7 @@ public class EraseToolCategory extends AbstractToolCategory {
                 Permissions.TOOL_ERASE_ALL, true, false,
                 config::getSignEraseToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Sign clickedSign) {
+            public void use(@NotNull SmartPlayer sPlayer, @NotNull Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
                 if (adapter.isSignBeingEdited(clickedSign) && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {
@@ -38,7 +39,7 @@ public class EraseToolCategory extends AbstractToolCategory {
                 Permissions.TOOL_ERASE_LINE, true, false,
                 config::getLineEraseToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Sign clickedSign) {
+            public void use(@NotNull SmartPlayer sPlayer, @NotNull Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
                 if (adapter.isSignBeingEdited(clickedSign) && !player.hasPermission(Permissions.TOOL_EDIT_OVERRIDE)) {

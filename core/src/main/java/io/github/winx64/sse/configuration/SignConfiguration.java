@@ -190,7 +190,7 @@ public final class SignConfiguration extends BaseConfiguration {
             usageValue = defaultValue.name();
         }
 
-        ToolUsage usage = ToolUsage.getToolUsage(usageValue);
+        ToolUsage usage = ToolUsage.getByName(usageValue);
         if (usage == null) {
             plugin.log(Level.WARNING, "[Config] Invalid tool usage \"%s\". Using default value %s", usageValue,
                     ToolUsage.NO_SHIFT_RIGHT_CLICK);

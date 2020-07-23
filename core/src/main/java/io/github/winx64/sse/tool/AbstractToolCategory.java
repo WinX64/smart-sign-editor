@@ -1,6 +1,7 @@
 package io.github.winx64.sse.tool;
 
 import io.github.winx64.sse.configuration.SignMessage;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,18 +23,18 @@ public abstract class AbstractToolCategory implements ToolCategory {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return message.get(categoryName);
     }
 
     @Override
-    public String getPermission() {
+    public @NotNull String getPermission() {
         return categoryPermission;
     }
 
     @Override
-    public Tool getToolByUsage(ToolUsage usage) {
-        return tools.stream().filter(tool -> usage.matchesWith(tool.getUsage())).findFirst().orElse(null);
+    public Tool getToolByUsage(@NotNull ToolUsage usage) {
+        return tools.stream().filter(tool -> usage.isChildOf(tool.getUsage())).findFirst().orElse(null);
     }
 
     protected final void registerTool(AbstractTool tool) {

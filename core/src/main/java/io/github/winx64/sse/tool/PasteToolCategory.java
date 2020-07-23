@@ -7,9 +7,11 @@ import io.github.winx64.sse.player.SmartPlayer;
 import io.github.winx64.sse.handler.VersionAdapter;
 import io.github.winx64.sse.player.Permissions;
 import org.bukkit.ChatColor;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class PasteToolCategory extends AbstractToolCategory {
 
@@ -20,7 +22,7 @@ public class PasteToolCategory extends AbstractToolCategory {
                 Permissions.TOOL_PASTE_ALL, true, false,
                 config::getSignPasteToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Sign clickedSign) {
+            public void use(@NotNull SmartPlayer sPlayer, @NotNull Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
                 if (sPlayer.getSignBuffer() == null) {
@@ -33,12 +35,10 @@ public class PasteToolCategory extends AbstractToolCategory {
                     return;
                 }
 
+                boolean canPasteColors = player.hasPermission(Permissions.TOOL_PASTE_COLORS);
+                List<String> signBuffer = sPlayer.getSignBuffer();
                 for (int i = 0; i < 4; i++) {
-                    if (player.hasPermission(Permissions.TOOL_PASTE_COLORS)) {
-                        clickedSign.setLine(i, sPlayer.getSignBuffer()[i]);
-                    } else {
-                        clickedSign.setLine(i, ChatColor.stripColor(sPlayer.getSignBuffer()[i]));
-                    }
+                    clickedSign.setLine(i, canPasteColors ? signBuffer.get(i) : ChatColor.stripColor(signBuffer.get(i)));
                 }
                 clickedSign.update();
                 player.sendMessage(message.get(Message.TOOL_SIGN_REPLACED));
@@ -49,7 +49,7 @@ public class PasteToolCategory extends AbstractToolCategory {
                 Permissions.TOOL_PASTE_LINE, true, false,
                 config::getLinePasteToolUsage) {
             @Override
-            public void use(SmartPlayer sPlayer, Sign clickedSign) {
+            public void use(@NotNull SmartPlayer sPlayer, @NotNull Sign clickedSign) {
                 Player player = sPlayer.getPlayer();
 
                 if (sPlayer.getLineBuffer() == null) {

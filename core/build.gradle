@@ -3,7 +3,7 @@
  */
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot:1.8-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
     compileOnly 'org.jetbrains:annotations:19.0.0'
     implementation project(':smart-sign-editor-api')
     implementation project(':smart-sign-editor-adapter')
@@ -20,6 +20,7 @@ dependencies {
     implementation project(':smart-sign-editor-1_14_R1')
     implementation project(':smart-sign-editor-1_15_R1')
     implementation project(':smart-sign-editor-1_16_R1')
+    implementation project(':smart-sign-editor-1_16_R2')
     implementation 'org.bstats:bstats-bukkit:1.7'
 }
 
@@ -30,12 +31,13 @@ buildscript {
 }
 
 processResources {
-    filesMatching("**/*.yml") {
-        expand(project.properties)
+    filesMatching("**/plugin.yml") {
+        expand "version": project.version
     }
 }
 
 shadowJar {
     archiveFileName.set(project.description + " " + project.version + "." + archiveExtension.get())
     destinationDirectory.set(new File(rootDir, "target"))
+    relocate("org.bstats.bukkit", "io.github.winx64.sse.metrics")
 }

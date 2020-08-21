@@ -80,7 +80,7 @@ public enum ToolUsage {
      */
     @NotNull
     public static ToolUsage getByAction(@NotNull Action action, boolean isSneaking) {
-        if (VALID_ACTIONS.contains(Objects.requireNonNull(action))) {
+        if (!VALID_ACTIONS.contains(Objects.requireNonNull(action))) {
             throw new IllegalArgumentException("Invalid action");
         }
         boolean isRightClick = action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;

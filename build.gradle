@@ -16,18 +16,14 @@ subprojects {
 
     repositories {
         mavenLocal()
-        maven {
-            url = 'http://repo.maven.apache.org/maven2'
-        }
-
-        maven {
-            url = 'https://repo.codemc.org/repository/maven-public'
-        }
+        mavenCentral()
     }
 
     sourceCompatibility = '1.8'
 
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
+    tasks {
+        compileJava {
+            options.encoding = "UTF-8"
+        }
     }
 }

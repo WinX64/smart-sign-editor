@@ -2,6 +2,7 @@ package io.github.winx64.sse.tool;
 
 import io.github.winx64.sse.player.SmartPlayer;
 import org.bukkit.block.Sign;
+import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author WinX64
  */
+@Experimental
 public interface Tool {
 
     /**

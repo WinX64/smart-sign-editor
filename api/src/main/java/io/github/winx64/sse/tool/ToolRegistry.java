@@ -1,5 +1,6 @@
 package io.github.winx64.sse.tool;
 
+import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  *
  * @author WinX64
  */
+@Experimental
 public interface ToolRegistry {
 
     /**

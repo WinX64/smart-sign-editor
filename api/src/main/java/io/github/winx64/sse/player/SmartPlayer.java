@@ -2,6 +2,7 @@ package io.github.winx64.sse.player;
 
 import io.github.winx64.sse.tool.ToolCategory;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,6 +13,7 @@ import java.util.List;
  *
  * @author WinX64
  */
+@Experimental
 public interface SmartPlayer {
 
     /**

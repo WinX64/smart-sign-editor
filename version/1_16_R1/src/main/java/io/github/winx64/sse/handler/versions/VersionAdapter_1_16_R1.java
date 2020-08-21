@@ -4,6 +4,7 @@ import io.github.winx64.sse.data.SignData;
 import io.github.winx64.sse.handler.VersionAdapter;
 import net.minecraft.server.v1_16_R1.BlockPosition;
 import net.minecraft.server.v1_16_R1.ChatComponentText;
+import net.minecraft.server.v1_16_R1.EntityHuman;
 import net.minecraft.server.v1_16_R1.EntityPlayer;
 import net.minecraft.server.v1_16_R1.IChatBaseComponent;
 import net.minecraft.server.v1_16_R1.PacketPlayOutOpenSignEditor;
@@ -49,7 +50,7 @@ public final class VersionAdapter_1_16_R1 implements VersionAdapter {
         PlayerConnection conn = nmsPlayer.playerConnection;
 
         tileEntitySign.isEditable = true;
-        tileEntitySign.a(nmsPlayer);
+        tileEntitySign.a((EntityHuman) nmsPlayer);
         conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
     }
 

@@ -14,6 +14,7 @@ public interface ToolCategory {
 
     /**
      * Gets the name of this tool category
+     *
      * @return the tool category's name
      */
     @NotNull
@@ -21,6 +22,7 @@ public interface ToolCategory {
 
     /**
      * Gets the general necessary permission for tools in this category to be used
+     *
      * @return the tool category's permission
      */
     @NotNull
@@ -28,9 +30,10 @@ public interface ToolCategory {
 
     /**
      * Gets the tool bound to the specified tool usage
+     *
      * @param usage the tool usage
-     * @throws NullPointerException if usage is null
      * @return the bound tool, or null if there's none
+     * @throws NullPointerException if usage is null
      */
     @Nullable
     Tool getToolByUsage(@NotNull ToolUsage usage);

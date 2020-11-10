@@ -15,6 +15,7 @@ public interface Tool {
 
     /**
      * Gets the name of this tool
+     *
      * @return the tool's name
      */
     @NotNull
@@ -22,6 +23,7 @@ public interface Tool {
 
     /**
      * Gets the permission necessary to use this tool
+     *
      * @return the tool's permission
      */
     @NotNull
@@ -29,19 +31,22 @@ public interface Tool {
 
     /**
      * Gets whether or not this tool physically modifies the world
+     *
      * @return whether or not it modifies the world
      */
     boolean modifiesWorld();
 
     /**
      * Gets whether or not this tool requires special signs to be handled before it is used
+     *
      * @return whether or not prior handling is required
      */
     boolean requiresPriorSpecialHandling();
 
     /**
      * Makes the given player use the tool on the given sign
-     * @param sPlayer the smart player
+     *
+     * @param sPlayer     the smart player
      * @param clickedSign the interacted sign
      * @throws NullPointerException if sPlayer is null
      * @throws NullPointerException if clickedSign is null

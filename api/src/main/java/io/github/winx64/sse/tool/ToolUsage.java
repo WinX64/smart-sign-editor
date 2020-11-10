@@ -4,12 +4,7 @@ import org.bukkit.event.block.Action;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents the different ways to use a certain tool
@@ -75,11 +70,12 @@ public enum ToolUsage {
 
     /**
      * Gets the corresponding tool usage by the given parameters
-     * @param action the player's action
+     *
+     * @param action     the player's action
      * @param isSneaking whether the player is crouching
-     * @throws NullPointerException if action is null
-     * @throws IllegalArgumentException if the given action is not right/left click block/air action
      * @return the tool usage
+     * @throws NullPointerException     if action is null
+     * @throws IllegalArgumentException if the given action is not right/left click block/air action
      */
     @NotNull
     public static ToolUsage getByAction(@NotNull Action action, boolean isSneaking) {
@@ -92,9 +88,10 @@ public enum ToolUsage {
 
     /**
      * Gets the tool usage by the given name
+     *
      * @param name the name
-     * @throws NullPointerException if name is null
      * @return the tool usage, or null if it doesn't exist
+     * @throws NullPointerException if name is null
      */
     @Nullable
     public static ToolUsage getByName(@NotNull String name) {
@@ -107,9 +104,10 @@ public enum ToolUsage {
 
     /**
      * Verifies if this tool usage is a child of the given target
+     *
      * @param target the target
-     * @throws NullPointerException if target is null
      * @return whether or not this usage is a child
+     * @throws NullPointerException if target is null
      */
     public boolean isChildOf(@NotNull ToolUsage target) {
         return this == target || this.parent == target;
@@ -117,9 +115,10 @@ public enum ToolUsage {
 
     /**
      * Verifies if this tool usage is the parent of the given target
+     *
      * @param target the target
-     * @throws NullPointerException if target is null
      * @return whether or not this usage is the parent
+     * @throws NullPointerException if target is null
      */
     public boolean isParentOf(@NotNull ToolUsage target) {
         return this == target || target.parent == this;

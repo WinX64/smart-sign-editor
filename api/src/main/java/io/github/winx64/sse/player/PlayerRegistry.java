@@ -15,6 +15,7 @@ public interface PlayerRegistry {
 
     /**
      * Gets the SmartPlayer associated with the given Player
+     *
      * @param player the player
      * @return the SmartPlayer, or null if there isn't one
      */

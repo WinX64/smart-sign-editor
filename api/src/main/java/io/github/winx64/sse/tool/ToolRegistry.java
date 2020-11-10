@@ -15,6 +15,7 @@ public interface ToolRegistry {
 
     /**
      * Gets the default tool category in this registry
+     *
      * @return the tool category
      */
     @NotNull
@@ -22,6 +23,7 @@ public interface ToolRegistry {
 
     /**
      * Gets an immutable list of all the registered categories
+     *
      * @return the tool categories
      */
     @NotNull

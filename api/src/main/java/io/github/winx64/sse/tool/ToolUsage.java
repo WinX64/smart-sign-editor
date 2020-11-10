@@ -19,29 +19,29 @@ import java.util.Objects;
 public enum ToolUsage {
 
     /**
-     * Right-click action while crouching
-     */
-    SHIFT_RIGHT_CLICK,
-    /**
-     * Right-click action without crouching
-     */
-    NO_SHIFT_RIGHT_CLICK,
-    /**
-     * Left-click action while crouching
-     */
-    SHIFT_LEFT_CLICK,
-    /**
-     * Left-click action without crouching
-     */
-    NO_SHIFT_LEFT_CLICK,
-    /**
      * General right-click action
      */
     RIGHT_CLICK,
     /**
      * General left-click action
      */
-    LEFT_CLICK;
+    LEFT_CLICK,
+    /**
+     * Right-click action while crouching
+     */
+    SHIFT_RIGHT_CLICK(RIGHT_CLICK),
+    /**
+     * Right-click action without crouching
+     */
+    NO_SHIFT_RIGHT_CLICK(RIGHT_CLICK),
+    /**
+     * Left-click action while crouching
+     */
+    SHIFT_LEFT_CLICK(LEFT_CLICK),
+    /**
+     * Left-click action without crouching
+     */
+    NO_SHIFT_LEFT_CLICK(LEFT_CLICK);
 
     private static final List<Action> VALID_ACTIONS = Collections.unmodifiableList(Arrays.asList(
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK, Action.LEFT_CLICK_AIR, Action.LEFT_CLICK_BLOCK));
@@ -49,11 +49,6 @@ public enum ToolUsage {
     private static final Map<Boolean, Map<Boolean, ToolUsage>> USAGES;
 
     static {
-        SHIFT_RIGHT_CLICK.parent = RIGHT_CLICK;
-        NO_SHIFT_RIGHT_CLICK.parent = RIGHT_CLICK;
-        SHIFT_LEFT_CLICK.parent = LEFT_CLICK;
-        NO_SHIFT_LEFT_CLICK.parent = LEFT_CLICK;
-
         Map<Boolean, ToolUsage> rightClick = new HashMap<>();
         rightClick.put(true, SHIFT_RIGHT_CLICK);
         rightClick.put(false, NO_SHIFT_RIGHT_CLICK);
@@ -68,7 +63,15 @@ public enum ToolUsage {
         USAGES = Collections.unmodifiableMap(usages);
     }
 
-    private ToolUsage parent;
+    private final ToolUsage parent;
+
+    ToolUsage() {
+        this.parent = null;
+    }
+
+    ToolUsage(ToolUsage parent) {
+        this.parent = parent;
+    }
 
     /**
      * Gets the corresponding tool usage by the given parameters

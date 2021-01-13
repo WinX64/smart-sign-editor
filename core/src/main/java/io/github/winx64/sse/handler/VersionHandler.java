@@ -1,26 +1,9 @@
 package io.github.winx64.sse.handler;
 
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_10_R1;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_11_R1;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_12_R1;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_13_R1;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_13_R2;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_14_R1;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_15_R1;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_16_R1;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_16_R2;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_8_R1;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_8_R2;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_8_R3;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_9_R1;
-import io.github.winx64.sse.handler.versions.VersionAdapter_1_9_R2;
+import io.github.winx64.sse.handler.versions.*;
 import org.bukkit.Bukkit;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Helper class to handle the implementation's adapter and version checking
@@ -51,6 +34,7 @@ public final class VersionHandler {
         supportedVersions.put("v1_15_R1", VersionAdapter_1_15_R1.class);
         supportedVersions.put("v1_16_R1", VersionAdapter_1_16_R1.class);
         supportedVersions.put("v1_16_R2", VersionAdapter_1_16_R2.class);
+        supportedVersions.put("v1_16_R3", VersionAdapter_1_16_R3.class);
 
         UNSUPPORTED_VERSIONS = Collections.unmodifiableList(unsupportedVersions);
         SUPPORTED_VERSIONS = Collections.unmodifiableMap(supportedVersions);
@@ -85,7 +69,8 @@ public final class VersionHandler {
         if (adapterClass != null) {
             try {
                 return adapterClass.getDeclaredConstructor().newInstance();
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
         }
         return null;
     }

@@ -22,7 +22,7 @@ dependencies {
     implementation project(':smart-sign-editor-1_16_R1')
     implementation project(':smart-sign-editor-1_16_R2')
     implementation project(':smart-sign-editor-1_16_R3')
-    implementation 'org.bstats:bstats-bukkit:1.7'
+    implementation 'org.bstats:bstats-bukkit:2.2.1'
 }
 
 description = 'SmartSignEditor'

@@ -22,6 +22,7 @@ dependencies {
     implementation project(':smart-sign-editor-1_16_R1')
     implementation project(':smart-sign-editor-1_16_R2')
     implementation project(':smart-sign-editor-1_16_R3')
+    implementation project(':smart-sign-editor-1_17_R1')
     implementation 'org.bstats:bstats-bukkit:2.2.1'
 }
 

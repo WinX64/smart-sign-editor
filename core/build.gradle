@@ -40,5 +40,5 @@ processResources {
 shadowJar {
     archiveFileName.set(project.description + " " + project.version + "." + archiveExtension.get())
     destinationDirectory.set(new File(rootDir, "target"))
-    relocate("org.bstats.bukkit", "io.github.winx64.sse.metrics")
+    relocate("org.bstats", "io.github.winx64.sse.metrics")
 }

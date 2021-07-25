@@ -21,7 +21,7 @@ tool-item:
   #Does the item lore have to match the tool item's lore? If TRUE, only items with the same type and lore will work
   match-lore: false
 
-#Usages for the different subtool and options
+#Usages for the different sub-tool and options
 #Available options: NO_SHIFT_RIGHT_CLICK, SHIFT_RIGHT_CLICK, RIGHT_CLICK, NO_SHIFT_LEFT_CLICK, SHIFT_LEFT_CLICK, LEFT_CLICK
 #Make sure that usages for a single tool don't conflict with each other. Eg.: SHIFT_RIGHT_CLICK for line-copy and RIGHT_CLICK for sign-copy
 tool-usages:

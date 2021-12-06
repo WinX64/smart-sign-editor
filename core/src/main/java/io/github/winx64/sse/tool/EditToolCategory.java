@@ -34,7 +34,7 @@ public class EditToolCategory extends AbstractToolCategory {
                 }
 
                 Location location = clickedSign.getLocation();
-                adapter.updateSignText(player, location, noColors);
+                player.sendSignChange(location, noColors);
                 adapter.openSignEditor(player, location);
             }
         });

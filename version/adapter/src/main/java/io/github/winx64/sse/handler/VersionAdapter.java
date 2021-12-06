@@ -13,15 +13,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public interface VersionAdapter {
 
     /**
-     * Updates a the text of a sign for a specific player
-     *
-     * @param player the player
-     * @param location the location of the sign
-     * @param text the new lines of text
-     */
-    void updateSignText(Player player, Location location, String[] text);
-
-    /**
      * Set the player as the one editing the sign and opens the sign editor for
      * them
      *

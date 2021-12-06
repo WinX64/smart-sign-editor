@@ -19,22 +19,6 @@ import java.util.Objects;
 public final class VersionAdapter_1_16_R3 implements VersionAdapter {
 
     @Override
-    public void updateSignText(Player player, Location location, String[] text) {
-        BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(nmsPlayer.world.getTileEntity(pos));
-        PlayerConnection conn = nmsPlayer.playerConnection;
-        IChatBaseComponent[] oldSignText = new IChatBaseComponent[4];
-
-        for (int i = 0; i < 4; i++) {
-            oldSignText[i] = tileEntitySign.lines[i];
-            tileEntitySign.lines[i] = new ChatComponentText(text[i]);
-        }
-        conn.sendPacket(tileEntitySign.getUpdatePacket());
-        System.arraycopy(oldSignText, 0, tileEntitySign.lines, 0, 4);
-    }
-
-    @Override
     public void openSignEditor(Player player, Location location) {
         BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();

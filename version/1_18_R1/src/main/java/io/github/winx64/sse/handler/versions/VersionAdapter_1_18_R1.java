@@ -3,8 +3,6 @@ package io.github.winx64.sse.handler.versions;
 import io.github.winx64.sse.data.SignData;
 import io.github.winx64.sse.handler.VersionAdapter;
 import net.minecraft.core.BlockPosition;
-import net.minecraft.network.chat.ChatComponentText;
-import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.network.PlayerConnection;
@@ -24,22 +22,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import java.util.Objects;
 
 public final class VersionAdapter_1_18_R1 implements VersionAdapter {
-
-    @Override
-    public void updateSignText(Player player, Location location, String[] text) {
-        BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(nmsPlayer.cA().c_(pos));
-        PlayerConnection conn = nmsPlayer.b;
-        IChatBaseComponent[] oldSignText = new IChatBaseComponent[4];
-
-        for (int i = 0; i < 4; i++) {
-            oldSignText[i] = tileEntitySign.d[i];
-            tileEntitySign.d[i] = new ChatComponentText(text[i]);
-        }
-        conn.a(tileEntitySign.c());
-        System.arraycopy(oldSignText, 0, tileEntitySign.d, 0, 4);
-    }
 
     @Override
     public void openSignEditor(Player player, Location location) {

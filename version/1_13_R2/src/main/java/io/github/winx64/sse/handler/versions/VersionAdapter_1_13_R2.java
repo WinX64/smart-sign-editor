@@ -2,15 +2,7 @@ package io.github.winx64.sse.handler.versions;
 
 import io.github.winx64.sse.data.SignData;
 import io.github.winx64.sse.handler.VersionAdapter;
-import net.minecraft.server.v1_13_R2.BlockPosition;
-import net.minecraft.server.v1_13_R2.ChatComponentText;
-import net.minecraft.server.v1_13_R2.EntityHuman;
-import net.minecraft.server.v1_13_R2.EntityPlayer;
-import net.minecraft.server.v1_13_R2.IChatBaseComponent;
-import net.minecraft.server.v1_13_R2.PacketPlayOutOpenSignEditor;
-import net.minecraft.server.v1_13_R2.PlayerConnection;
-import net.minecraft.server.v1_13_R2.TileEntitySign;
-import net.minecraft.server.v1_13_R2.World;
+import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,22 +18,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import java.util.Objects;
 
 public final class VersionAdapter_1_13_R2 implements VersionAdapter {
-
-    @Override
-    public void updateSignText(Player player, Location location, String[] text) {
-        BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(nmsPlayer.world.getTileEntity(pos));
-        PlayerConnection conn = nmsPlayer.playerConnection;
-        IChatBaseComponent[] oldSignText = new IChatBaseComponent[4];
-
-        for (int i = 0; i < 4; i++) {
-            oldSignText[i] = tileEntitySign.lines[i];
-            tileEntitySign.lines[i] = new ChatComponentText(text[i]);
-        }
-        conn.sendPacket(tileEntitySign.getUpdatePacket());
-        System.arraycopy(oldSignText, 0, tileEntitySign.lines, 0, 4);
-    }
 
     @Override
     public void openSignEditor(Player player, Location location) {

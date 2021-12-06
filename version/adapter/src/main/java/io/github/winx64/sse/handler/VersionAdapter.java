@@ -1,7 +1,6 @@
 package io.github.winx64.sse.handler;
 
 import io.github.winx64.sse.data.SignData;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -15,11 +14,10 @@ public interface VersionAdapter {
     /**
      * Set the player as the one editing the sign and opens the sign editor for
      * them
-     *
      * @param player the player
-     * @param location the location of the sign
+     * @param sign the sign
      */
-    void openSignEditor(Player player, Location location);
+    void openSignEditor(Player player, Sign sign);
 
     /**
      * Verifies if the given block is a sign of any type (wall-sign or sign-post)

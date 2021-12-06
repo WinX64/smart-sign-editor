@@ -35,7 +35,7 @@ public class EditToolCategory extends AbstractToolCategory {
 
                 Location location = clickedSign.getLocation();
                 player.sendSignChange(location, noColors);
-                adapter.openSignEditor(player, location);
+                adapter.openSignEditor(player, clickedSign);
             }
         });
     }

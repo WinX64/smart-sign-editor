@@ -16,7 +16,8 @@ import org.bukkit.inventory.EquipmentSlot;
 public final class VersionAdapter_1_9_R1 implements VersionAdapter {
 
     @Override
-    public void openSignEditor(Player player, Location location) {
+    public void openSignEditor(Player player, Sign sign) {
+        Location location = sign.getLocation();
         BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         TileEntitySign tileEntitySign = (TileEntitySign) nmsPlayer.world.getTileEntity(pos);

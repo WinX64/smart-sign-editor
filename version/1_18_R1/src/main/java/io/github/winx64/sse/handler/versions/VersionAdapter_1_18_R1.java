@@ -3,9 +3,6 @@ package io.github.winx64.sse.handler.versions;
 import io.github.winx64.sse.data.SignData;
 import io.github.winx64.sse.handler.VersionAdapter;
 import net.minecraft.core.BlockPosition;
-import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.network.PlayerConnection;
 import net.minecraft.world.level.World;
 import net.minecraft.world.level.block.entity.TileEntitySign;
 import org.bukkit.Location;
@@ -14,7 +11,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -25,15 +21,7 @@ public final class VersionAdapter_1_18_R1 implements VersionAdapter {
 
     @Override
     public void openSignEditor(Player player, Sign sign) {
-        Location location = sign.getLocation();
-        BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        TileEntitySign tileEntitySign = (TileEntitySign) Objects.requireNonNull(nmsPlayer.cA().c_(pos));
-        PlayerConnection conn = nmsPlayer.b;
-
-        tileEntitySign.f = true;
-        tileEntitySign.a(nmsPlayer.cm());
-        conn.a(new PacketPlayOutOpenSignEditor(pos));
+        player.openSign(sign);
     }
 
     @Override
